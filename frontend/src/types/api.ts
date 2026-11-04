@@ -312,3 +312,29 @@ export interface IoTDeviceRegistration {
   status: string;
   last_heartbeat: string;
 }
+
+// Google Gemini AI Intelligence Types
+export interface GeminiIncidentAnalysis {
+  category_suggestion: string;
+  urgency_tier: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  estimated_water_depth_cm?: number | null;
+  passable_vehicles: {
+    two_wheelers: boolean;
+    four_wheelers: boolean;
+    emergency_vehicles: boolean;
+  };
+  key_hazards: string[];
+  is_suspicious_or_spam: boolean;
+  suspicion_reason?: string | null;
+  tactical_summary: string;
+  confidence_score: number;
+}
+
+export interface GeminiRiskExplanation {
+  corridor_name: string;
+  flood_risk_level: string;
+  geomorphology_factor: string;
+  monsoon_context: string;
+  recommended_action: string;
+  alternative_route_tip: string;
+}

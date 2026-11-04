@@ -54,6 +54,10 @@ class Settings(BaseSettings):
     ORS_API_KEY: str = ""
     ORS_BASE_URL: str = "https://api.heigit.org/openrouteservice"
 
+    # Google Gemini AI Integration (Kept strictly on backend)
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-3.5-flash-lite"
+
     # Firebase Admin SDK Integration (Backend push alerts)
     FIREBASE_PROJECT_ID: str = "neerpath"
     FIREBASE_SERVICE_ACCOUNT_KEY_PATH: Optional[str] = None

@@ -14,7 +14,9 @@ import type {
   SystemAlert,
   ResponderTacticalSummary,
   DemoScenarioStatus,
-  IoTDeviceRegistration
+  IoTDeviceRegistration,
+  GeminiIncidentAnalysis,
+  GeminiRiskExplanation
 } from '../types/api';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
@@ -183,6 +185,27 @@ export const aiApiClient = {
       method: 'POST'
     });
     if (!res.ok) throw new Error(`Classification failed: ${res.statusText}`);
+    return res.json();
+  },
+
+  // Google Gemini AI Methods
+  async analyzeWithGemini(description: string, locationName: string, reportedCategory = 'ROAD_INUNDATION'): Promise<GeminiIncidentAnalysis> {
+    const res = await fetch(`${API_BASE}/ai/gemini/analyze-report`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        description,
+        location_name: locationName,
+        reported_category: reportedCategory
+      })
+    });
+    if (!res.ok) throw new Error(`Gemini report analysis failed: ${res.statusText}`);
+    return res.json();
+  },
+
+  async explainRiskWithGemini(roadId: string): Promise<GeminiRiskExplanation> {
+    const res = await fetch(`${API_BASE}/ai/gemini/explain-risk/${roadId}`);
+    if (!res.ok) throw new Error(`Gemini risk explanation failed: ${res.statusText}`);
     return res.json();
   }
 };

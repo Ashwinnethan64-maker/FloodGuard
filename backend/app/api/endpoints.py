@@ -24,6 +24,7 @@ from app.ai.risk_engine import flood_risk_engine, RoadRiskAssessment, RiskCatego
 from app.ai.report_classifier import report_classifier, ClassifiedReportResult
 from app.ai.image_analyzer import image_analyzer, ImageAnalysisResult
 from app.ai.ml_pipeline import flood_ml_pipeline, ModelEvaluationMetrics
+from app.services.gemini_service import gemini_service, GeminiIncidentAnalysis, GeminiRiskExplanation
 from app.core.config import settings
 from app.core.supabase import upload_incident_photo_to_storage, get_supabase_client
 import httpx
@@ -185,6 +186,21 @@ async def check_integrations():
         "admin_sdk_initialized": fb_admin_live,
         "active_subscribers_count": alert_dispatch_service.get_registered_tokens_count(),
         "message": "FCM device registration active; push notifications dispatch ready." if fb_admin_live else "FCM client token registration active; server-side push running in simulation/broadcast mode."
+    }
+
+    # 6. Google Gemini AI Service Check
+    gemini_key_present = bool(settings.GEMINI_API_KEY)
+    results["services"]["gemini_ai"] = {
+        "status": "healthy" if gemini_key_present else "fallback_mode",
+        "model": settings.GEMINI_MODEL,
+        "sdk": "google-genai",
+        "key_configured": gemini_key_present,
+        "features": [
+            "Incident description parsing",
+            "Suspicious/spam report detection",
+            "Explainable flood-risk generation"
+        ],
+        "message": f"Gemini AI ({settings.GEMINI_MODEL}) connected and active for report classification & explainability." if gemini_key_present else "Gemini key missing; running on local rule-based heuristics."
     }
 
     return results
@@ -550,6 +566,52 @@ async def get_flood_hotspot_analysis():
 async def get_ml_model_info():
     metrics = flood_ml_pipeline.last_metrics or flood_ml_pipeline.train_and_evaluate()
     return metrics
+
+# ==============================================================================
+# GOOGLE GEMINI AI ADVANCED INTELLIGENCE ENDPOINTS
+# ==============================================================================
+
+class GeminiAnalyzeReportRequest(BaseModel):
+    description: str
+    location_name: str
+    reported_category: Optional[str] = "ROAD_INUNDATION"
+
+@api_router.post("/ai/gemini/analyze-report", response_model=GeminiIncidentAnalysis, tags=["Gemini AI"])
+async def gemini_analyze_citizen_report(payload: GeminiAnalyzeReportRequest):
+    """
+    Leverages Google Gemini 3.5 Flash to parse citizen flood descriptions,
+    estimate standing water depth, identify key hazards, detect suspicious/spam submissions,
+    and generate emergency dispatch summaries.
+    """
+    if not payload.description or len(payload.description.strip()) < 3:
+        raise HTTPException(status_code=400, detail="Description is too short for AI analysis.")
+    return gemini_service.analyze_incident_report(
+        description=payload.description,
+        location_name=payload.location_name,
+        reported_category=payload.reported_category or "ROAD_INUNDATION"
+    )
+
+@api_router.get("/ai/gemini/explain-risk/{road_id}", response_model=GeminiRiskExplanation, tags=["Gemini AI"])
+async def gemini_explain_corridor_risk(road_id: str):
+    """
+    Uses Google Gemini 3.5 Flash to provide human-readable, explainable flood-risk
+    insights, geomorphological context, and detour advice for a selected Mangaluru corridor.
+    """
+    road = road_service.get_road_by_id(road_id)
+    if not road:
+        raise HTTPException(status_code=404, detail="Road corridor not found")
+
+    weather = await WeatherService.get_mangaluru_weather()
+    rain_rate = weather.current_observation.current_precipitation_rate_mm_h
+
+    return gemini_service.explain_road_risk(
+        road_name=road.name,
+        ward=road.ward,
+        elevation=road.elevation_meters,
+        rainfall_rate_mm_h=rain_rate,
+        water_depth_cm=road.current_water_depth_cm,
+        current_status=road.current_status.value
+    )
 
 # ==============================================================================
 # PHASE 5: DEDICATED DEMO SCENARIO & IOT TELEMETRY ENDPOINTS
