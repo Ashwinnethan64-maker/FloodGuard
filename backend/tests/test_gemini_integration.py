@@ -31,3 +31,4 @@ def test_gemini_risk_explanation():
     assert result.flood_risk_level in ["LOW", "MODERATE", "HIGH", "CRITICAL"]
     assert len(result.recommended_action) > 0
     assert len(result.alternative_route_tip) > 0
+

@@ -201,3 +201,4 @@ Return raw JSON only.
         )
 
 gemini_service = GeminiService()
+
