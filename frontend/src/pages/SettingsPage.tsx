@@ -1,8 +1,35 @@
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Bell, AlertCircle, Loader2 } from 'lucide-react';
+import { requestFCMToken } from '../services/firebase';
+import { apiClient } from '../services/api';
 
 export const SettingsPage = () => {
   const { user } = useAuth();
+  const [fcmLoading, setFcmLoading] = useState(false);
+  const [fcmStatus, setFcmStatus] = useState<string | null>(null);
+  const [fcmError, setFcmError] = useState<string | null>(null);
+
+  const handleEnablePushNotifications = async () => {
+    try {
+      setFcmLoading(true);
+      setFcmError(null);
+      setFcmStatus(null);
+
+      const res = await requestFCMToken();
+      if (res.token) {
+        // Register token with backend
+        await apiClient.registerPushDevice(res.token, 'Resident Browser');
+        setFcmStatus('Push notifications successfully enabled and registered with NEERPATH.');
+      } else {
+        setFcmError(res.error || 'Failed to acquire FCM notification token.');
+      }
+    } catch (err: any) {
+      setFcmError(err.message || 'Error configuring push notifications.');
+    } finally {
+      setFcmLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
@@ -67,6 +94,43 @@ export const SettingsPage = () => {
                 <span className="text-[11px] text-slate-500">Enhanced road line casing for night & heavy storm visibility</span>
               </div>
               <input type="checkbox" defaultChecked className="accent-cyan-500 rounded" />
+            </div>
+
+            {/* Firebase Cloud Messaging Web Push Card */}
+            <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Bell className="w-4 h-4 text-cyan-400" />
+                  <span className="text-xs font-bold text-white">Browser Push Notifications (Firebase FCM)</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleEnablePushNotifications}
+                  disabled={fcmLoading}
+                  className="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-cyan-900/40"
+                >
+                  {fcmLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  <span>{fcmStatus ? 'Subscribed' : 'Enable Push Alerts'}</span>
+                </button>
+              </div>
+
+              <p className="text-[11px] text-slate-400">
+                Receive instant desktop/mobile push alerts for road blockages, flash waterlogging, and red alerts in Mangaluru.
+              </p>
+
+              {fcmStatus && (
+                <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-950/40 p-2 rounded-lg border border-emerald-800/40">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>{fcmStatus}</span>
+                </div>
+              )}
+
+              {fcmError && (
+                <div className="flex items-center gap-1.5 text-xs text-amber-400 font-medium bg-amber-950/40 p-2 rounded-lg border border-amber-800/40">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{fcmError}</span>
+                </div>
+              )}
             </div>
           </div>
 

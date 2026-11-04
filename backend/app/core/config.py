@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from pydantic import field_validator
-from typing import List, Union
+from typing import List, Union, Optional
 import json
 
 class Settings(BaseSettings):
@@ -53,6 +53,11 @@ class Settings(BaseSettings):
     # HeiGIT / OpenRouteService Integration
     ORS_API_KEY: str = ""
     ORS_BASE_URL: str = "https://api.heigit.org/openrouteservice"
+
+    # Firebase Admin SDK Integration (Backend push alerts)
+    FIREBASE_PROJECT_ID: str = "neerpath"
+    FIREBASE_SERVICE_ACCOUNT_KEY_PATH: Optional[str] = None
+    FIREBASE_SERVICE_ACCOUNT_JSON: Optional[str] = None
     
     # Mangaluru Coordinates baseline
     MANGALURU_LAT: float = 12.9141

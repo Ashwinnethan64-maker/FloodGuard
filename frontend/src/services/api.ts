@@ -141,6 +141,16 @@ export const apiClient = {
     if (!res.ok) throw new Error(`Failed to verify incident: ${res.statusText}`);
     return res.json();
   },
+
+  async registerPushDevice(token: string, deviceLabel = 'Web Browser'): Promise<{ status: string; registered: boolean; active_subscribers_count: number }> {
+    const res = await fetch(`${API_BASE}/alerts/register-device`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, device_label: deviceLabel })
+    });
+    if (!res.ok) throw new Error(`Failed to register push device: ${res.statusText}`);
+    return res.json();
+  },
 };
 // Phase 3 AI Intelligence Client Methods
 export const aiApiClient = {
@@ -266,6 +276,16 @@ export const demoApiClient = {
   async getIoTDevices(): Promise<IoTDeviceRegistration[]> {
     const res = await fetch(`${API_BASE}/iot/devices`);
     if (!res.ok) throw new Error(`Failed to fetch IoT devices: ${res.statusText}`);
+    return res.json();
+  },
+
+  async registerPushDevice(token: string, deviceLabel = 'Web Browser'): Promise<{ status: string; registered: boolean; active_subscribers_count: number }> {
+    const res = await fetch(`${API_BASE}/alerts/register-device`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, device_label: deviceLabel })
+    });
+    if (!res.ok) throw new Error(`Failed to register push device: ${res.statusText}`);
     return res.json();
   }
 };

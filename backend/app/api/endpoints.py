@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query, UploadFile, File, Form, Depends
+from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import os
 import uuid
@@ -173,6 +174,17 @@ async def check_integrations():
         "style": "streets-v2",
         "client_key_configured": True,
         "message": "MapLibre GL JS vector style with OSM raster fallback."
+    }
+
+    # 5. Firebase Cloud Messaging (FCM) & Push Dispatcher Check
+    from app.core.firebase import initialize_firebase_admin
+    fb_admin_live = initialize_firebase_admin()
+    results["services"]["firebase"] = {
+        "status": "healthy" if fb_admin_live else "configured_client_ready",
+        "project_id": settings.FIREBASE_PROJECT_ID,
+        "admin_sdk_initialized": fb_admin_live,
+        "active_subscribers_count": alert_dispatch_service.get_registered_tokens_count(),
+        "message": "FCM device registration active; push notifications dispatch ready." if fb_admin_live else "FCM client token registration active; server-side push running in simulation/broadcast mode."
     }
 
     return results
@@ -357,6 +369,40 @@ async def acknowledge_alert(alert_id: str):
     if not success:
         raise HTTPException(status_code=404, detail="Alert ID not found")
     return {"status": "acknowledged", "alert_id": alert_id}
+
+# 8.1 Firebase Cloud Messaging Device Token Registration
+class PushRegistrationPayload(BaseModel):
+    token: str
+    device_label: Optional[str] = "Web Browser"
+
+@api_router.post("/alerts/register-device", tags=["Emergency Alerts"])
+async def register_push_device(payload: PushRegistrationPayload):
+    if not payload.token:
+        raise HTTPException(status_code=400, detail="FCM token is required")
+
+    success = alert_dispatch_service.register_device_token(payload.token)
+
+    # Record token in Supabase user profiles / notification table if available
+    supabase_client = get_supabase_client()
+    supabase_synced = False
+    if supabase_client:
+        try:
+            supabase_client.table("fcm_device_registrations").upsert({
+                "token": payload.token,
+                "device_label": payload.device_label,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }).execute()
+            supabase_synced = True
+        except Exception as exc:
+            pass  # Table might not exist yet before migration, gracefully continue
+
+    return {
+        "status": "success" if success else "already_registered",
+        "registered": True,
+        "token_prefix": payload.token[:12] + "...",
+        "active_subscribers_count": alert_dispatch_service.get_registered_tokens_count(),
+        "supabase_synced": supabase_synced
+    }
 
 @api_router.get("/responder/tactical-summary", tags=["Responder Portal"])
 async def get_responder_tactical_summary():

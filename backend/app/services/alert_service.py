@@ -8,10 +8,13 @@ NEERPATH Emergency Notification & Patrol Alert Dispatch Engine.
     * Selected transit route condition updates
 - Compatible with Firebase Cloud Messaging (FCM) webhook integration.
 """
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Set
 from pydantic import BaseModel, Field
 from datetime import datetime, timezone
 import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 class AlertSeverity(str):
     INFO = "INFO"
@@ -33,6 +36,9 @@ class SystemAlert(BaseModel):
 
 class AlertDispatchService:
     def __init__(self):
+        # In-memory store for registered browser device tokens (mirrored to Supabase/PostgreSQL)
+        self._registered_fcm_tokens: Set[str] = set()
+
         # In-memory store initialized with realistic Mangaluru emergency broadcasts
         self._alerts: List[SystemAlert] = [
             SystemAlert(
@@ -71,6 +77,16 @@ class AlertDispatchService:
     def get_all_alerts(self, limit: int = 20) -> List[SystemAlert]:
         return sorted(self._alerts, key=lambda a: a.created_at, reverse=True)[:limit]
 
+    def register_device_token(self, token: str) -> bool:
+        if token and len(token) > 10:
+            self._registered_fcm_tokens.add(token)
+            logger.info(f"FCM token registered. Total active subscribers: {len(self._registered_fcm_tokens)}")
+            return True
+        return False
+
+    def get_registered_tokens_count(self) -> int:
+        return len(self._registered_fcm_tokens)
+
     def broadcast_alert(
         self,
         title: str,
@@ -93,6 +109,22 @@ class AlertDispatchService:
             created_at=datetime.now(timezone.utc)
         )
         self._alerts.insert(0, alert)
+
+        # Trigger Firebase Cloud Messaging Push to registered browsers
+        try:
+            from app.core.firebase import broadcast_flood_alert_push
+            tokens = list(self._registered_fcm_tokens)
+            if tokens:
+                push_data = {
+                    "alert_id": alert.id,
+                    "severity": alert.severity,
+                    "alert_type": alert.alert_type,
+                    "location_name": alert.location_name or "Mangaluru"
+                }
+                broadcast_flood_alert_push(tokens, title=title, body=message, data=push_data)
+        except Exception as push_err:
+            logger.warning(f"Failed to dispatch FCM push notification: {push_err}")
+
         return alert
 
     def mark_as_read(self, alert_id: str) -> bool:
