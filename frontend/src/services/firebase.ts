@@ -51,28 +51,35 @@ export async function isPushNotificationSupported(): Promise<boolean> {
 }
 
 /**
- * Ensures the firebase-messaging-sw.js service worker is registered AND active.
- * Resolves the "Subscription failed - no active Service Worker" browser exception.
+ * Ensures the firebase-messaging-sw.js service worker is registered, updated and active.
+ * Cleans up stale push subscriptions from previous VAPID keys to avoid "Registration failed - push service error".
  */
 async function getOrRegisterActiveServiceWorker(): Promise<ServiceWorkerRegistration> {
   if (!('serviceWorker' in navigator)) {
     throw new Error('Service Workers are not supported in this browser environment.');
   }
 
-  // 1. Check existing registrations first
-  const existingRegistrations = await navigator.serviceWorker.getRegistrations();
-  let registration = existingRegistrations.find(
-    r => r.scope === window.location.origin + '/' || r.active?.scriptURL.includes('firebase-messaging-sw.js')
-  );
-
-  // 2. If not registered, register it
+  // 1. Get existing registration or register anew
+  let registration = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
   if (!registration) {
     registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
       scope: '/'
     });
   }
 
-  // 3. Ensure the service worker is active before requesting PushManager subscription
+  // 2. If a push subscription already exists with an old/previous VAPID key, unsubscribe it first
+  // Browsers throw "Registration failed - push service error" if you subscribe with a new key while an old one is registered
+  try {
+    const existingSub = await registration.pushManager.getSubscription();
+    if (existingSub) {
+      console.log('[NEERPATH FCM] Clearing prior push subscription to renew with active VAPID key...');
+      await existingSub.unsubscribe();
+    }
+  } catch (subErr) {
+    console.warn('[NEERPATH FCM] Notice when checking prior push subscription:', subErr);
+  }
+
+  // 3. Ensure the service worker is active
   if (registration.installing) {
     await new Promise<void>((resolve) => {
       const sw = registration!.installing!;
@@ -86,21 +93,24 @@ async function getOrRegisterActiveServiceWorker(): Promise<ServiceWorkerRegistra
   }
 
   if (registration.waiting) {
-    // If a service worker is waiting, trigger it to activate
     registration.waiting.postMessage({ type: 'SKIP_WAITING' });
   }
 
-  // 4. Await navigator.serviceWorker.ready to guarantee active status
+  // 4. Await navigator.serviceWorker.ready
   const readyRegistration = await navigator.serviceWorker.ready;
   return readyRegistration;
 }
 
 /**
  * Requests browser notification permission and retrieves an FCM registration token.
- * Uses VAPID public key from VITE_FIREBASE_VAPID_KEY.
- * Gracefully handles permission denial, unsupported browsers, or missing keys.
+ * Gracefully handles permission denial, unsupported browsers, or missing/mismatched keys.
  */
-export async function requestFCMToken(): Promise<{ token: string | null; error?: string; permission: NotificationPermission }> {
+export async function requestFCMToken(): Promise<{
+  token: string | null;
+  error?: string;
+  errorDetails?: string;
+  permission: NotificationPermission;
+}> {
   if (typeof window === 'undefined') {
     return { token: null, error: 'SSR environment', permission: 'default' };
   }
@@ -109,13 +119,21 @@ export async function requestFCMToken(): Promise<{ token: string | null; error?:
 
   const supported = await isPushNotificationSupported();
   if (!supported) {
-    return { token: null, error: 'Push notifications are not supported by this browser.', permission: currentPermission };
+    return {
+      token: null,
+      error: 'Push notifications are not supported in this browser or private browsing mode.',
+      permission: currentPermission
+    };
   }
 
   try {
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
-      return { token: null, error: 'Notification permission was not granted by the browser.', permission };
+      return {
+        token: null,
+        error: 'Notification permission was denied. Please allow notifications in browser site permissions.',
+        permission
+      };
     }
 
     if (!firebaseApp) {
@@ -126,31 +144,42 @@ export async function requestFCMToken(): Promise<{ token: string | null; error?:
       messagingInstance = getMessaging(firebaseApp);
     }
 
-    const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
-    if (!vapidKey) {
-      return {
-        token: null,
-        error: 'VAPID key is missing in frontend/.env. Generate in Firebase Console → Cloud Messaging → Web Push certificates.',
-        permission
-      };
-    }
-
-    // Ensure the service worker is active to prevent 'Subscription failed - no active Service Worker'
+    const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY?.trim();
     const activeRegistration = await getOrRegisterActiveServiceWorker();
 
-    const token = await getToken(messagingInstance, {
-      vapidKey,
-      serviceWorkerRegistration: activeRegistration,
-    });
+    let token: string | null = null;
+    try {
+      token = await getToken(messagingInstance, {
+        vapidKey: vapidKey || undefined,
+        serviceWorkerRegistration: activeRegistration,
+      });
+    } catch (tokenErr: any) {
+      const msg = tokenErr?.message || '';
+      console.warn('[NEERPATH Firebase FCM] getToken attempt failed:', tokenErr);
+
+      if (msg.includes('push service error') || msg.includes('Registration failed')) {
+        return {
+          token: null,
+          error: 'Browser push service rejected subscription (push service error).',
+          errorDetails: 'Please clear site cookies/service workers for localhost in browser DevTools (Application > Storage > Clear site data) or restart your browser to clear cached PushManager keys.',
+          permission
+        };
+      }
+      throw tokenErr;
+    }
 
     if (token) {
       return { token, permission };
     } else {
-      return { token: null, error: 'No FCM registration token available.', permission };
+      return { token: null, error: 'No FCM registration token received from push service.', permission };
     }
   } catch (err: any) {
     console.warn('[NEERPATH Firebase FCM] Error getting token:', err);
-    return { token: null, error: err?.message || 'Failed to retrieve FCM token.', permission: Notification.permission };
+    return {
+      token: null,
+      error: err?.message || 'Failed to retrieve FCM push token.',
+      permission: Notification.permission
+    };
   }
 }
 

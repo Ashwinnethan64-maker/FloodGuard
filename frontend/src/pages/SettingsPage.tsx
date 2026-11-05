@@ -10,11 +10,13 @@ export const SettingsPage = () => {
   const [fcmLoading, setFcmLoading] = useState(false);
   const [fcmStatus, setFcmStatus] = useState<string | null>(null);
   const [fcmError, setFcmError] = useState<string | null>(null);
+  const [fcmHelp, setFcmHelp] = useState<string | null>(null);
 
   const handleEnablePushNotifications = async () => {
     try {
       setFcmLoading(true);
       setFcmError(null);
+      setFcmHelp(null);
       setFcmStatus(null);
 
       const res = await requestFCMToken();
@@ -23,6 +25,9 @@ export const SettingsPage = () => {
         setFcmStatus('Push alerts successfully registered with NEERPATH emergency grid.');
       } else {
         setFcmError(res.error || 'Failed to acquire notification token.');
+        if (res.errorDetails) {
+          setFcmHelp(res.errorDetails);
+        }
       }
     } catch (err: any) {
       setFcmError(err.message || 'Error configuring push notifications.');
@@ -141,9 +146,16 @@ export const SettingsPage = () => {
             )}
 
             {fcmError && (
-              <div className="flex items-center gap-2 text-xs text-[#dc2626] bg-[#fef2f2] border border-[#fecaca] p-2.5 rounded-[4px]">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{fcmError}</span>
+              <div className="space-y-1.5 bg-[#fef2f2] border border-[#fecaca] p-3 rounded-[4px]">
+                <div className="flex items-start gap-2 text-xs text-[#dc2626]">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span className="font-medium">{fcmError}</span>
+                </div>
+                {fcmHelp && (
+                  <p className="text-[11px] text-[#991b1b] pl-6 leading-relaxed">
+                    {fcmHelp}
+                  </p>
+                )}
               </div>
             )}
           </Card>
