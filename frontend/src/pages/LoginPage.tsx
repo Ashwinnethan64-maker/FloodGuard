@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, type UserRole } from '../context/AuthContext';
-import { Radio, Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
-import { Button } from '../components/ui';
+import { Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { Button, NeerpathLogo } from '../components/ui';
 
 export const LoginPage = () => {
   const { login, signInWithGoogle } = useAuth();
@@ -58,10 +58,8 @@ export const LoginPage = () => {
       <div className="max-w-[420px] w-full space-y-6">
         {/* Brand header */}
         <div className="text-center space-y-2">
-          <Link to="/" className="inline-flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-[4px] bg-[#533afd] flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105">
-              <Radio className="w-5 h-5 text-white" />
-            </div>
+          <Link to="/" className="inline-flex items-center gap-2.5 group">
+            <NeerpathLogo size="lg" className="group-hover:scale-105" />
             <span className="text-xl font-bold tracking-tight text-[#061b31]">NEERPATH</span>
           </Link>
           <h2 className="text-xl font-semibold text-[#061b31] tracking-tight">

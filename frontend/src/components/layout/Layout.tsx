@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { Sidebar, TopContentBar } from './Sidebar';
-import { Radio, ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { NeerpathLogo } from '../ui';
 
 export const Layout = () => {
   const location = useLocation();
@@ -18,9 +19,7 @@ export const Layout = () => {
         <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#e5edf5] px-4 sm:px-8 py-3.5 transition-all">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-[4px] bg-[#533afd] flex items-center justify-center text-white shadow-xs transition-transform group-hover:scale-105">
-                <Radio className="w-4 h-4 text-white" />
-              </div>
+              <NeerpathLogo size="md" className="group-hover:scale-105" />
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
                   <span className="font-bold text-sm tracking-tight text-[#061b31]">
@@ -71,10 +70,8 @@ export const Layout = () => {
         <footer className="bg-white border-t border-[#e5edf5] py-12 px-6">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-[4px] bg-[#533afd] flex items-center justify-center text-white">
-                  <Radio className="w-3.5 h-3.5" />
-                </div>
+              <div className="flex items-center gap-2.5">
+                <NeerpathLogo size="sm" />
                 <span className="font-bold text-sm tracking-tight text-[#061b31]">NEERPATH</span>
               </div>
               <p className="text-xs text-[#64748d] leading-relaxed">

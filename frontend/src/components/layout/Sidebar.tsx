@@ -14,12 +14,12 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
-  Radio,
   Menu,
   X,
   User,
 } from 'lucide-react';
 import { cn } from '../ui/tokens';
+import { NeerpathLogo } from '../ui';
 
 export const Sidebar = ({
   collapsed,
@@ -81,9 +81,7 @@ export const Sidebar = ({
         collapsed ? "px-3 justify-center" : "px-5"
       )}>
         <Link to="/" className="flex items-center gap-3 overflow-hidden group">
-          <div className="w-8 h-8 rounded-[4px] bg-[#533afd] flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:scale-105">
-            <Radio className="w-4 h-4 text-white" />
-          </div>
+          <NeerpathLogo size="sm" className="group-hover:scale-105" />
           {!collapsed && (
             <div className="flex flex-col truncate">
               <div className="flex items-center gap-1.5">

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
-import { Radio, AlertCircle, RefreshCw } from 'lucide-react';
-import { Button } from '../components/ui';
+import { AlertCircle, RefreshCw } from 'lucide-react';
+import { Button, NeerpathLogo } from '../components/ui';
 
 export const AuthCallbackPage = () => {
   const navigate = useNavigate();
@@ -112,8 +112,8 @@ export const AuthCallbackPage = () => {
   return (
     <div className="flex-1 min-h-[60vh] flex items-center justify-center p-4">
       <div className="max-w-sm w-full bg-white border border-[#e5edf5] rounded-[4px] p-8 text-center space-y-4 shadow-xs">
-        <div className="w-10 h-10 rounded-[4px] bg-[#533afd] text-white mx-auto flex items-center justify-center shadow-xs">
-          <Radio className="w-5 h-5 text-white" />
+        <div className="flex justify-center">
+          <NeerpathLogo size="lg" />
         </div>
         <div>
           <h3 className="text-sm font-semibold text-[#061b31]">

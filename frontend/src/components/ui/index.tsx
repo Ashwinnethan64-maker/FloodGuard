@@ -105,3 +105,5 @@ export const Badge = ({
     </span>
   );
 };
+
+export { NeerpathLogo } from './Logo';
