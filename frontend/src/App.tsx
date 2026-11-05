@@ -12,6 +12,7 @@ import { FloodAwareRoutingPage } from './pages/FloodAwareRoutingPage';
 import { ResponderDashboardPage } from './pages/ResponderDashboardPage';
 import { DemonstrationPage } from './pages/DemonstrationPage';
 import { LoginPage } from './pages/LoginPage';
+import { SignUpPage } from './pages/SignUpPage';
 import { SettingsPage } from './pages/SettingsPage';
 
 export function App() {
@@ -31,6 +32,7 @@ export function App() {
             <Route path="admin" element={<AdminDashboardPage />} />
             <Route path="incidents/:id" element={<IncidentDetailsPage />} />
             <Route path="login" element={<LoginPage />} />
+            <Route path="signup" element={<SignUpPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>

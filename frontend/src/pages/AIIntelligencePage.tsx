@@ -4,14 +4,11 @@ import type {
   RoadRiskAssessment, 
   HotspotAnalysisResponse, 
   ModelEvaluationMetrics, 
-  RiskCategory,
   GeminiRiskExplanation,
   GeminiIncidentAnalysis
 } from '../types/api';
 import { 
-  Cpu, 
   Activity, 
-  BarChart3, 
   Sparkles, 
   Info,
   Compass,
@@ -33,6 +30,7 @@ import {
   Pie, 
   Cell 
 } from 'recharts';
+import { Card, Button, Badge } from '../components/ui';
 
 export const AIIntelligencePage = () => {
   const [assessments, setAssessments] = useState<RoadRiskAssessment[]>([]);
@@ -99,27 +97,12 @@ export const AIIntelligencePage = () => {
     loadAIData();
   }, []);
 
-  const getRiskBadge = (category: RiskCategory) => {
-    switch (category) {
-      case 'CRITICAL':
-        return 'bg-rose-500/15 text-rose-400 border border-rose-500/40';
-      case 'HIGH':
-        return 'bg-orange-500/15 text-orange-400 border border-orange-500/40';
-      case 'MODERATE':
-        return 'bg-amber-500/15 text-amber-400 border border-amber-500/40';
-      case 'LOW':
-        return 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/40';
-      default:
-        return 'bg-slate-700/40 text-slate-400 border border-slate-600';
-    }
-  };
-
   // Distribution counts for Chart
   const distributionData = [
-    { name: 'Critical', count: assessments.filter(a => a.risk_category === 'CRITICAL').length, color: '#f43f5e' },
-    { name: 'High', count: assessments.filter(a => a.risk_category === 'HIGH').length, color: '#f97316' },
-    { name: 'Moderate', count: assessments.filter(a => a.risk_category === 'MODERATE').length, color: '#f59e0b' },
-    { name: 'Low', count: assessments.filter(a => a.risk_category === 'LOW').length, color: '#10b981' },
+    { name: 'Critical', count: assessments.filter(a => a.risk_category === 'CRITICAL').length, color: '#dc2626' },
+    { name: 'High', count: assessments.filter(a => a.risk_category === 'HIGH').length, color: '#ea580c' },
+    { name: 'Moderate', count: assessments.filter(a => a.risk_category === 'MODERATE').length, color: '#d97706' },
+    { name: 'Low', count: assessments.filter(a => a.risk_category === 'LOW').length, color: '#059669' },
   ];
 
   // Feature Importances formatting
@@ -130,56 +113,55 @@ export const AIIntelligencePage = () => {
 
   if (loading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center py-24 text-slate-400 gap-3">
-        <Activity className="w-8 h-8 text-cyan-400 animate-spin" />
-        <span className="text-sm font-medium">Computing Multi-Factor Road Risk Weights...</span>
+      <div className="flex-1 flex flex-col items-center justify-center py-28 text-[#64748d] gap-3">
+        <Activity className="w-7 h-7 text-[#533afd] animate-spin" />
+        <span className="text-xs font-medium text-[#061b31]">
+          Evaluating Multi-Factor Spatial Risk Matrices & Model Weights...
+        </span>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
+    <div className="space-y-6">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e5edf5]">
         <div>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-cyan-950 border border-cyan-800 flex items-center justify-center text-cyan-400">
-              <Cpu className="w-4 h-4" />
-            </div>
-            <h1 className="text-xl font-bold text-white">AI Flood Intelligence & Explainability Engine</h1>
+            <h1 className="text-xl font-light text-[#061b31] tracking-tight">
+              AI Flood Intelligence & Explainability Engine
+            </h1>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
+              Scikit-Learn + Gemini
+            </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Transparent multi-factor empirical risk scoring, spatial bottleneck hotspots, and Scikit-learn validation metrics
+          <p className="text-xs text-[#64748d] mt-1">
+            Empirical multi-factor hazard scoring, drainage convergence hotspots, and natural language model explanations.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span className="text-slate-300 font-mono text-[11px]">Model: {assessments[0]?.model_version}</span>
+        <div className="flex items-center gap-2 self-start sm:self-auto text-xs bg-white border border-[#e5edf5] px-3 py-1.5 rounded-[4px]">
+          <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse"></span>
+          <span className="text-[#061b31] font-mono text-[11px]">Model: {assessments[0]?.model_version || 'v2.4-rf'}</span>
         </div>
       </div>
 
       {/* Assumptions & Scientific Rigor Banner */}
-      <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 flex items-start gap-3">
-        <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+      <div className="p-4 rounded-[4px] bg-white border border-[#e5edf5] text-xs text-[#50617a] flex items-start gap-3">
+        <Info className="w-4 h-4 text-[#533afd] shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <strong className="text-cyan-300">Explainable AI & Calibration Integrity:</strong> Thresholds reflect transparent provisional empirical assumptions combining rainfall intensity (Open-Meteo), soil moisture saturation (24h accumulation), PostGIS elevation, and verified ground incidents. Every calculated score details its mathematical weights and drivers.
+          <strong className="text-[#061b31]">Explainable AI & Calibration Integrity:</strong> Thresholds reflect transparent empirical physics combining rainfall intensity (Open-Meteo), soil moisture saturation (24h accumulation), PostGIS elevation profiles, and verified ground incidents. Every calculated score exposes its exact mathematical factor contributions.
         </div>
       </div>
 
       {/* Top Row: Risk Distribution & ML Held-Out Evaluation */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Risk Distribution Card */}
-        <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between">
-          <div>
-            <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider mb-1">
-              Mangaluru Corridor Risk Distribution
-            </h3>
-            <p className="text-[11px] text-slate-400">
-              Categorized across {assessments.length} key urban corridors
-            </p>
-          </div>
-
+        <Card
+          className="p-5 flex flex-col justify-between"
+          title="Corridor Risk Distribution"
+          subtitle={`Categorized across ${assessments.length} key urban corridors`}
+        >
           <div className="h-44 w-full flex items-center justify-center mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -189,7 +171,7 @@ export const AIIntelligencePage = () => {
                   cy="50%"
                   innerRadius={45}
                   outerRadius={65}
-                  paddingAngle={5}
+                  paddingAngle={4}
                   dataKey="count"
                 >
                   {distributionData.map((entry, index) => (
@@ -197,74 +179,66 @@ export const AIIntelligencePage = () => {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.75rem', fontSize: '11px' }}
+                  contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e5edf5', borderRadius: '4px', fontSize: '11px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-xs pt-3 border-t border-slate-800">
+          <div className="grid grid-cols-2 gap-2 text-xs pt-3 border-t border-[#f1f5f9]">
             {distributionData.map(d => (
               <div key={d.name} className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }}></span>
-                <span className="text-slate-300 font-semibold">{d.name}:</span>
-                <span className="text-white font-bold">{d.count}</span>
+                <span className="w-2.5 h-2.5 rounded-[2px]" style={{ backgroundColor: d.color }}></span>
+                <span className="text-[#64748d] font-medium">{d.name}:</span>
+                <span className="text-[#061b31] font-semibold">{d.count}</span>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Scikit-Learn Model Information & Evaluation */}
-        <div className="lg:col-span-2 p-5 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
-                  ML Model Architecture & Held-Out Test Evaluation
-                </h3>
-                <span className="text-[9px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold">
-                  Validated Test Split
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                {modelInfo?.model_name} trained on historical calibrated monsoon records
-              </p>
-            </div>
-            <BarChart3 className="w-4 h-4 text-cyan-400" />
-          </div>
-
+        <Card
+          className="lg:col-span-2 p-5 flex flex-col justify-between"
+          title="ML Architecture & Held-Out Test Evaluation"
+          subtitle={`${modelInfo?.model_name || 'Random Forest Classifier'} trained on historical calibrated monsoon records`}
+          headerAction={
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#ecfdf5] text-[#059669] border border-[#a7f3d0]">
+              Validated Split
+            </span>
+          }
+        >
           {modelInfo && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-3">
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-[10px] text-slate-500 uppercase block">Held-Out Accuracy</span>
-                <span className="text-xl font-bold text-emerald-400">
+              <div className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+                <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Held-Out Accuracy</span>
+                <span className="text-xl font-light text-[#059669]">
                   {(modelInfo.test_accuracy * 100).toFixed(1)}%
                 </span>
-                <span className="text-[10px] text-slate-500 block">25% test partition</span>
+                <span className="text-[10px] text-[#64748d] block mt-0.5">25% test partition</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-[10px] text-slate-500 uppercase block">Macro F1 Score</span>
-                <span className="text-xl font-bold text-white">
+              <div className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+                <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Macro F1 Score</span>
+                <span className="text-xl font-light text-[#061b31]">
                   {modelInfo.test_f1_macro.toFixed(2)}
                 </span>
-                <span className="text-[10px] text-slate-500 block">Precision & Recall balance</span>
+                <span className="text-[10px] text-[#64748d] block mt-0.5">Balanced Precision</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-[10px] text-slate-500 uppercase block">Training Samples</span>
-                <span className="text-xl font-bold text-cyan-300">
+              <div className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+                <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Training Samples</span>
+                <span className="text-xl font-light text-[#533afd]">
                   {modelInfo.training_samples_count}
                 </span>
-                <span className="text-[10px] text-slate-500 block">Calibrated records</span>
+                <span className="text-[10px] text-[#64748d] block mt-0.5">Calibrated records</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-[10px] text-slate-500 uppercase block">Validation Split</span>
-                <span className="text-xl font-bold text-white">
-                  {modelInfo.test_samples_count} test
+              <div className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+                <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Validation Split</span>
+                <span className="text-xl font-light text-[#061b31]">
+                  {modelInfo.test_samples_count}
                 </span>
-                <span className="text-[10px] text-slate-500 block">Unseen evaluation</span>
+                <span className="text-[10px] text-[#64748d] block mt-0.5">Unseen evaluation</span>
               </div>
             </div>
           )}
@@ -272,34 +246,31 @@ export const AIIntelligencePage = () => {
           {/* Feature Importances Bar */}
           <div className="h-28 w-full mt-1">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={importanceChartData} layout="vertical" margin={{ top: 5, right: 20, left: 80, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis type="number" stroke="#64748b" tick={{ fontSize: 9 }} domain={[0, 0.5]} />
-                <YAxis dataKey="feature" type="category" stroke="#94a3b8" tick={{ fontSize: 9 }} />
-                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.5rem', fontSize: '11px' }} />
-                <Bar dataKey="importance" fill="#06b6d4" radius={[0, 4, 4, 0]} />
+              <BarChart data={importanceChartData} layout="vertical" margin={{ top: 5, right: 20, left: 100, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="2 2" stroke="#e5edf5" />
+                <XAxis type="number" stroke="#64748d" tick={{ fontSize: 9 }} domain={[0, 0.5]} />
+                <YAxis dataKey="feature" type="category" stroke="#061b31" tick={{ fontSize: 9 }} />
+                <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e5edf5', borderRadius: '4px', fontSize: '11px' }} />
+                <Bar dataKey="importance" fill="#533afd" radius={[0, 2, 2, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          <p className="text-[10px] text-slate-500 mt-2 italic">
+          <p className="text-[10px] text-[#64748d] mt-2 italic">
             * {modelInfo?.provenance_note}
           </p>
-        </div>
+        </Card>
       </div>
 
       {/* Corridors Grid & Interactive Explainability Inspector */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Corridors List */}
-        <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-              Road Corridors Risk Matrix ({assessments.length})
-            </h3>
-            <span className="text-[10px] text-cyan-400">Real-time weights</span>
-          </div>
-
-          <div className="flex flex-col gap-2.5 max-h-[500px] overflow-y-auto pr-1">
+        <Card
+          className="p-5"
+          title={`Road Risk Matrix (${assessments.length})`}
+          subtitle="Real-time multi-factor calculated weights"
+        >
+          <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-1">
             {assessments.map((a) => (
               <div
                 key={a.road_id}
@@ -307,293 +278,280 @@ export const AIIntelligencePage = () => {
                   setSelectedAssessment(a);
                   fetchGeminiExplanation(a.road_id);
                 }}
-                className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col gap-2 ${
+                className={`p-3 rounded-[4px] border transition-all cursor-pointer flex flex-col gap-2 ${
                   selectedAssessment?.road_id === a.road_id
-                    ? 'bg-cyan-950/40 border-cyan-500/60'
-                    : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+                    ? 'bg-[#e8e9ff]/50 border-[#533afd]'
+                    : 'bg-[#f8fafd] border-[#e5edf5] hover:border-[#cbd5e1]'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white">{a.road_name}</span>
-                  <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${getRiskBadge(a.risk_category)}`}>
+                  <span className="text-xs font-semibold text-[#061b31]">{a.road_name}</span>
+                  <Badge status={a.risk_category === 'CRITICAL' ? 'BLOCKED' : a.risk_category as any}>
                     {a.risk_category} ({Math.round(a.composite_risk_score * 100)})
-                  </span>
+                  </Badge>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-slate-400">
+                <div className="flex items-center justify-between text-[11px] text-[#64748d]">
                   <span>{a.ward}</span>
-                  <span className="text-slate-500">Confidence: {a.confidence_level}</span>
+                  <span>Confidence: {a.confidence_level}</span>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Explainability Breakdown Panel */}
         {selectedAssessment && (
-          <div className="lg:col-span-2 p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between">
-            <div>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-800">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${getRiskBadge(selectedAssessment.risk_category)}`}>
-                      {selectedAssessment.risk_category} RISK
-                    </span>
-                    <span className="text-xs text-slate-400">Score: {Math.round(selectedAssessment.composite_risk_score * 100)} / 100</span>
-                  </div>
-                  <h2 className="text-lg font-bold text-white mt-1">{selectedAssessment.road_name}</h2>
-                  <p className="text-xs text-slate-400">{selectedAssessment.ward}</p>
-                </div>
-
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-500 uppercase block">Data Completeness</span>
-                  <span className="text-sm font-bold text-cyan-400">{selectedAssessment.data_completeness_pct}%</span>
-                </div>
+          <Card
+            className="lg:col-span-2 p-6 flex flex-col justify-between"
+            title={selectedAssessment.road_name}
+            subtitle={selectedAssessment.ward}
+            headerAction={
+              <div className="text-right">
+                <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Data Completeness</span>
+                <span className="text-xs font-semibold text-[#533afd]">{selectedAssessment.data_completeness_pct}%</span>
+              </div>
+            }
+          >
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Badge status={selectedAssessment.risk_category === 'CRITICAL' ? 'BLOCKED' : selectedAssessment.risk_category as any}>
+                  {selectedAssessment.risk_category} RISK
+                </Badge>
+                <span className="text-xs text-[#64748d]">
+                  Calculated Score: {Math.round(selectedAssessment.composite_risk_score * 100)} / 100
+                </span>
               </div>
 
               {/* Natural Language Explanation Synthesis */}
-              <div className="my-4 p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <h4 className="text-[11px] font-bold text-cyan-300 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <div className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] space-y-2">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-[#533afd]">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Explainable AI Risk Rationale</span>
-                </h4>
-                <p className="text-xs text-slate-200 leading-relaxed">
+                </div>
+                <p className="text-xs text-[#061b31] leading-relaxed">
                   {selectedAssessment.plain_language_explanation}
                 </p>
-                <div className="mt-2 text-xs text-amber-300/90 font-medium bg-amber-950/20 p-2 rounded border border-amber-900/40">
+                <div className="p-2.5 rounded-[4px] bg-[#fffbeb] border border-[#fde68a] text-xs text-[#d97706] font-medium">
                   Advisory: {selectedAssessment.mitigation_advisory}
                 </div>
               </div>
 
               {/* Mathematical Factor Contributions */}
-              <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                Contributing Factor Weights Breakdown
-              </h4>
+              <div>
+                <h4 className="text-xs font-semibold text-[#061b31] uppercase tracking-wider mb-2">
+                  Contributing Factor Weights Breakdown
+                </h4>
 
-              <div className="flex flex-col gap-2.5">
-                {selectedAssessment.contributing_factors.map(f => (
-                  <div key={f.factor_name} className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80">
-                    <div className="flex justify-between items-center text-xs mb-1">
-                      <span className="font-semibold text-slate-200">{f.factor_name}</span>
-                      <span className="font-mono text-cyan-400 font-bold">
-                        +{(f.weighted_contribution * 100).toFixed(1)} pts (weight: {(f.weight * 100).toFixed(0)}%)
-                      </span>
+                <div className="flex flex-col gap-2">
+                  {selectedAssessment.contributing_factors.map(f => (
+                    <div key={f.factor_name} className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+                      <div className="flex justify-between items-center text-xs mb-1">
+                        <span className="font-medium text-[#061b31]">{f.factor_name}</span>
+                        <span className="font-mono text-[#533afd] font-semibold">
+                          +{(f.weighted_contribution * 100).toFixed(1)} pts (weight: {(f.weight * 100).toFixed(0)}%)
+                        </span>
+                      </div>
+                      <div className="w-full bg-[#e2e8f0] h-1.5 rounded-full overflow-hidden mb-1.5">
+                        <div
+                          className="bg-[#533afd] h-full rounded-full"
+                          style={{ width: `${Math.min(100, f.normalized_score * 100)}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-[11px] text-[#64748d]">{f.explanation}</p>
                     </div>
-                    {/* Progress bar */}
-                    <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mb-1.5">
-                      <div
-                        className="bg-cyan-500 h-full rounded-full"
-                        style={{ width: `${Math.min(100, f.normalized_score * 100)}%` }}
-                      ></div>
-                    </div>
-                    <p className="text-[11px] text-slate-400">{f.explanation}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Google Gemini AI Risk Explanation Briefing */}
-            <div className="mt-5 p-4 rounded-xl bg-purple-950/20 border border-purple-800/40 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Bot className="w-4 h-4 text-purple-400" />
-                  <span className="text-xs font-bold text-purple-200">Google Gemini AI • Explainable Corridor Analysis</span>
+                  ))}
                 </div>
-                {loadingGeminiRisk && (
-                  <span className="flex items-center gap-1 text-[10px] text-purple-400">
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                    Consulting Gemini...
-                  </span>
+              </div>
+
+              {/* Google Gemini AI Risk Explanation Briefing */}
+              <div className="p-4 rounded-[4px] bg-[#e8e9ff]/40 border border-[#d8dbff] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Bot className="w-4 h-4 text-[#533afd]" />
+                    <span className="text-xs font-semibold text-[#533afd]">Google Gemini AI • Explainable Corridor Analysis</span>
+                  </div>
+                  {loadingGeminiRisk && (
+                    <span className="flex items-center gap-1 text-[11px] text-[#533afd]">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Consulting Gemini...
+                    </span>
+                  )}
+                </div>
+
+                {geminiExplanation ? (
+                  <div className="text-xs text-[#061b31] space-y-2">
+                    <p className="leading-relaxed">
+                      <strong className="text-[#533afd]">Geomorphology:</strong> {geminiExplanation.geomorphology_factor}
+                    </p>
+                    <p className="leading-relaxed">
+                      <strong className="text-[#533afd]">Monsoon Context:</strong> {geminiExplanation.monsoon_context}
+                    </p>
+                    <div className="p-3 rounded-[4px] bg-white border border-[#e5edf5] flex items-start gap-2 text-xs">
+                      <AlertTriangle className="w-4 h-4 text-[#d97706] shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="block text-[#061b31]">Recommended Action:</strong>
+                        <span>{geminiExplanation.recommended_action}</span>
+                        <span className="block mt-1 text-[11px] text-[#533afd] font-medium">
+                          Suggested Detour: {geminiExplanation.alternative_route_tip}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-[#64748d]">Select a corridor to generate an explainable Gemini intelligence brief.</p>
                 )}
               </div>
-
-              {geminiExplanation ? (
-                <div className="text-xs text-slate-300 flex flex-col gap-2">
-                  <p className="leading-relaxed text-slate-200">
-                    <strong className="text-purple-300">Geomorphology:</strong> {geminiExplanation.geomorphology_factor}
-                  </p>
-                  <p className="leading-relaxed text-slate-300">
-                    <strong className="text-purple-300">Monsoon Context:</strong> {geminiExplanation.monsoon_context}
-                  </p>
-                  <div className="p-2.5 rounded-lg bg-purple-950/40 border border-purple-900/60 flex items-start gap-2 text-purple-200 mt-1">
-                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="block text-amber-300">Recommended Action:</strong>
-                      <span>{geminiExplanation.recommended_action}</span>
-                      <span className="block mt-1 text-[11px] text-purple-300 font-medium">
-                        Detour: {geminiExplanation.alternative_route_tip}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-xs text-slate-400">Select a corridor to generate an explainable Gemini intelligence brief.</p>
-              )}
             </div>
 
-            <div className="mt-4 pt-4 border-t border-slate-800 text-[10px] text-slate-500 flex flex-wrap justify-between items-center gap-2">
+            <div className="mt-4 pt-4 border-t border-[#f1f5f9] text-[10px] text-[#64748d] flex flex-wrap justify-between items-center gap-2">
               <span>Sources: {selectedAssessment.data_sources_used.join(' • ')}</span>
               <span>Updated: {new Date(selectedAssessment.calculated_at).toLocaleTimeString()}</span>
             </div>
-          </div>
+          </Card>
         )}
       </div>
 
       {/* Hotspots & Vulnerability Ranking */}
       {hotspots && (
-        <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                Mangaluru Drainage Convergence & Bottleneck Hotspots
-              </h3>
-              <p className="text-[11px] text-slate-400">
-                Historical monsoon vulnerability ranking calibrated from topographically constrained basins
-              </p>
-            </div>
-            <Compass className="w-4 h-4 text-cyan-400" />
-          </div>
-
+        <Card
+          className="p-5"
+          title="Mangaluru Drainage Convergence & Bottleneck Hotspots"
+          subtitle="Historical monsoon vulnerability ranking calibrated from topographically constrained basins"
+          headerAction={<Compass className="w-4 h-4 text-[#533afd]" />}
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {hotspots.vulnerability_analysis.slice(0, 3).map(h => (
-              <div key={h.corridor_id} className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+              <div key={h.corridor_id} className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white">{h.corridor_name}</span>
-                    <span className="text-[10px] font-mono text-rose-400 font-bold">
+                    <span className="text-xs font-semibold text-[#061b31]">{h.corridor_name}</span>
+                    <span className="text-[10px] font-mono text-[#dc2626] font-semibold">
                       Risk Index: {(h.historical_vulnerability_index * 100).toFixed(0)}
                     </span>
                   </div>
-                  <span className="text-[11px] text-slate-400 block mt-1">{h.ward}</span>
-                  <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                  <span className="text-[11px] text-[#64748d] block mt-1">{h.ward}</span>
+                  <p className="text-xs text-[#50617a] mt-2 leading-relaxed">
                     {h.typical_bottleneck_reason}
                   </p>
                 </div>
-                <div className="mt-3 pt-2 border-t border-slate-800 text-[10px] text-slate-500 flex justify-between">
+                <div className="mt-3 pt-2 border-t border-[#e5edf5] text-[10px] text-[#64748d] flex justify-between">
                   <span>Elevation: {h.elevation_msl_meters}m</span>
                   <span>Status: {h.current_status}</span>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Google Gemini Citizen Report Intelligence & Spam Detection Laboratory */}
-      <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Bot className="w-5 h-5 text-purple-400" />
-            <div>
-              <h3 className="text-sm font-bold text-white">Google Gemini AI • Citizen Report Analysis & Spam Detection</h3>
-              <p className="text-xs text-slate-400">
-                Live natural language processing for citizen flood descriptions, estimated depth, and false report detection
-              </p>
-            </div>
-          </div>
-          <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800">
-            Powered by Gemini 3.5 Flash Lite
+      <Card
+        className="p-6"
+        title="Google Gemini AI • Citizen Report Analysis & Spam Detection"
+        subtitle="Live natural language processing for citizen flood descriptions, estimated depth, and false report detection"
+        headerAction={
+          <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff]">
+            Gemini 3.5 Flash Lite
           </span>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
+        }
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
           {/* Input Box */}
-          <div className="flex flex-col gap-3">
+          <div className="space-y-3">
             <div>
-              <label className="text-xs font-medium text-slate-300 block mb-1">Location Context</label>
+              <label className="text-xs font-medium text-[#061b31] block mb-1">Location Context</label>
               <input
                 type="text"
                 value={testLocation}
                 onChange={(e) => setTestLocation(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
               />
             </div>
 
             <div>
-              <label className="text-xs font-medium text-slate-300 block mb-1">Citizen Narrative Description</label>
+              <label className="text-xs font-medium text-[#061b31] block mb-1">Citizen Narrative Description</label>
               <textarea
                 rows={3}
                 value={testDescription}
                 onChange={(e) => setTestDescription(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-purple-500 resize-none"
+                className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-3 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd] resize-none"
               />
             </div>
 
-            <button
+            <Button
               onClick={handleRunGeminiTest}
               disabled={loadingGeminiAnalysis}
-              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-purple-900/40"
+              size="md"
             >
-              {loadingGeminiAnalysis ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              {loadingGeminiAnalysis ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
               <span>Analyze with Gemini Intelligence</span>
-            </button>
+            </Button>
           </div>
 
           {/* Analysis Results Display */}
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+          <div className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] flex flex-col justify-between">
             {geminiAnalysis ? (
-              <div className="flex flex-col gap-2.5 text-xs">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-                  <span className="font-bold text-white">Gemini Classification:</span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800">
-                    {geminiAnalysis.category_suggestion}
-                  </span>
+              <div className="space-y-3 text-xs">
+                <div className="flex items-center justify-between pb-2 border-b border-[#e5edf5]">
+                  <span className="font-semibold text-[#061b31]">Gemini Classification:</span>
+                  <Badge status="CAUTION">{geminiAnalysis.category_suggestion}</Badge>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-[11px]">
                   <div>
-                    <span className="text-slate-500 block">Urgency Tier:</span>
-                    <span className="font-bold text-amber-300">{geminiAnalysis.urgency_tier}</span>
+                    <span className="text-[#64748d] block">Urgency Tier:</span>
+                    <span className="font-semibold text-[#d97706]">{geminiAnalysis.urgency_tier}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block">Estimated Water Depth:</span>
-                    <span className="font-bold text-white">
+                    <span className="text-[#64748d] block">Estimated Water Depth:</span>
+                    <span className="font-semibold text-[#061b31]">
                       {geminiAnalysis.estimated_water_depth_cm !== null ? `${geminiAnalysis.estimated_water_depth_cm} cm` : 'Not specified'}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <span className="text-[11px] text-slate-500 block mb-1">Passable Vehicle Classes:</span>
+                  <span className="text-[11px] text-[#64748d] block mb-1">Passable Vehicle Classes:</span>
                   <div className="flex gap-2">
-                    <span className={`px-2 py-0.5 rounded text-[10px] ${geminiAnalysis.passable_vehicles.two_wheelers ? 'bg-emerald-950 text-emerald-300' : 'bg-rose-950 text-rose-300'}`}>
+                    <span className={`px-2 py-0.5 rounded-[4px] text-[10px] ${geminiAnalysis.passable_vehicles.two_wheelers ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'}`}>
                       2-Wheelers: {geminiAnalysis.passable_vehicles.two_wheelers ? 'Yes' : 'No'}
                     </span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] ${geminiAnalysis.passable_vehicles.four_wheelers ? 'bg-emerald-950 text-emerald-300' : 'bg-rose-950 text-rose-300'}`}>
+                    <span className={`px-2 py-0.5 rounded-[4px] text-[10px] ${geminiAnalysis.passable_vehicles.four_wheelers ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'}`}>
                       4-Wheelers: {geminiAnalysis.passable_vehicles.four_wheelers ? 'Yes' : 'No'}
                     </span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] ${geminiAnalysis.passable_vehicles.emergency_vehicles ? 'bg-emerald-950 text-emerald-300' : 'bg-rose-950 text-rose-300'}`}>
+                    <span className={`px-2 py-0.5 rounded-[4px] text-[10px] ${geminiAnalysis.passable_vehicles.emergency_vehicles ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'}`}>
                       Emergency: {geminiAnalysis.passable_vehicles.emergency_vehicles ? 'Yes' : 'No'}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] text-slate-300">
-                  <strong className="block text-purple-300 mb-0.5">Tactical Dispatch Summary:</strong>
+                <div className="p-3 rounded-[4px] bg-white border border-[#e5edf5] text-xs">
+                  <strong className="block text-[#533afd] mb-0.5">Tactical Dispatch Summary:</strong>
                   {geminiAnalysis.tactical_summary}
                 </div>
 
-                <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1">
+                <div className="flex items-center justify-between text-[11px] text-[#64748d] pt-1">
                   <span>Confidence: {(geminiAnalysis.confidence_score * 100).toFixed(0)}%</span>
                   {geminiAnalysis.is_suspicious_or_spam ? (
-                    <span className="text-rose-400 font-bold flex items-center gap-1">
-                      <AlertTriangle className="w-3 h-3" /> Flagged Suspicious
+                    <span className="text-[#dc2626] font-semibold flex items-center gap-1">
+                      <AlertTriangle className="w-3.5 h-3.5" /> Flagged Suspicious
                     </span>
                   ) : (
-                    <span className="text-emerald-400 font-medium flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3" /> Verified Citizen Report Pattern
+                    <span className="text-[#059669] font-medium flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5" /> Verified Citizen Pattern
                     </span>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
-                <Bot className="w-8 h-8 text-slate-700 mb-2" />
+              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-[#64748d] space-y-2">
+                <Bot className="w-8 h-8 text-[#94a3b8]" />
                 <p className="text-xs">Click "Analyze with Gemini Intelligence" to test narrative parsing.</p>
               </div>
             )}
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

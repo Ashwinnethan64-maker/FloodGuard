@@ -1,192 +1,151 @@
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import {
-  Radio,
-  Map as MapIcon,
-  LayoutDashboard,
-  Send,
-  UserCheck,
-  Settings,
-  LogOut,
-  LogIn,
-  Menu,
-  X,
-  Cpu,
-  Navigation,
-  Truck,
-  Play
-} from 'lucide-react';
 import { useState } from 'react';
+import { Outlet, useLocation, Link } from 'react-router-dom';
+import { Sidebar, TopContentBar } from './Sidebar';
+import { Radio, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export const Layout = () => {
-  const { user, logout, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  // Minimal header for public landing page
+  const isLandingPage = location.pathname === '/';
 
-  const navItems = [
-    { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-    { name: 'Mangaluru GIS Map', to: '/map', icon: MapIcon },
-    { name: 'Flood Routes', to: '/routing', icon: Navigation },
-    { name: 'AI Intelligence', to: '/ai-engine', icon: Cpu },
-    { name: 'Live Demo', to: '/demo', icon: Play },
-    { name: 'Citizen Report', to: '/report', icon: Send },
-    { name: 'Responder Console', to: '/responder', icon: Truck, responderOnly: true },
-    { name: 'Admin Portal', to: '/admin', icon: UserCheck, adminOnly: true },
-    { name: 'Settings', to: '/settings', icon: Settings },
-  ];
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30">
-      {/* Top Banner Notice */}
-      <div className="bg-slate-900 border-b border-slate-800 text-[11px] px-4 py-1 text-center text-slate-400 flex items-center justify-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-        <span>
-          <strong className="text-cyan-300">DEMO ENVIRONMENT:</strong> Mangaluru Monsoon Flood Intelligence Grid Active. Commuter routes are advisory.
-        </span>
-      </div>
-
-      {/* Main Navigation Bar */}
-      <header className="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-4 sm:px-6 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center shadow-lg shadow-cyan-900/40">
-              <Radio className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-base tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-300">
-                  NEERPATH
-                </span>
-                <span className="text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">
-                  Mangaluru
+  if (isLandingPage) {
+    return (
+      <div className="min-h-screen bg-[#f8fafd] text-[#061b31] flex flex-col font-sans">
+        {/* Landing Top Minimal Navbar */}
+        <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#e5edf5] px-4 sm:px-8 py-3.5 transition-all">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="w-8 h-8 rounded-[4px] bg-[#533afd] flex items-center justify-center text-white shadow-xs transition-transform group-hover:scale-105">
+                <Radio className="w-4 h-4 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-sm tracking-tight text-[#061b31]">
+                    NEERPATH
+                  </span>
+                  <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-[4px] bg-[#e8e9ff] text-[#533afd]">
+                    Mangaluru
+                  </span>
+                </div>
+                <span className="text-[10px] text-[#64748d] leading-none">
+                  Know the road. Navigate the risk.
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 tracking-tight hidden sm:block">
-                Know the road. Navigate the risk.
-              </p>
-            </div>
-          </Link>
+            </Link>
 
-          {/* Desktop Nav Items */}
-          <nav className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => {
-              if (item.adminOnly && user?.role !== 'administrator') return null;
-              if (item.responderOnly && user?.role !== 'responder' && user?.role !== 'administrator') return null;
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      isActive
-                        ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-                    }`
-                  }
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.name}</span>
-                </NavLink>
-              );
-            })}
-          </nav>
+            <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-[#50617a]">
+              <a href="#problem" className="hover:text-[#533afd] transition-colors">Monsoon Challenge</a>
+              <a href="#how-it-works" className="hover:text-[#533afd] transition-colors">Architecture</a>
+              <a href="#gis-preview" className="hover:text-[#533afd] transition-colors">GIS Intelligence</a>
+              <a href="#ai-engine" className="hover:text-[#533afd] transition-colors">AI Modeling</a>
+              <a href="#routing" className="hover:text-[#533afd] transition-colors">Alternative Routes</a>
+            </nav>
 
-          {/* User Profile / Auth Actions */}
-          <div className="flex items-center gap-3">
-            {isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/settings"
-                  className="hidden sm:flex flex-col text-right hover:opacity-80 transition-opacity"
-                >
-                  <span className="text-xs font-semibold text-slate-200 leading-none">
-                    {user?.full_name}
-                  </span>
-                  <span className="text-[10px] uppercase tracking-wider text-cyan-400 font-bold mt-1">
-                    {user?.role}
-                  </span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  title="Sign out"
-                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 transition-colors border border-slate-700/60"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
+            <div className="flex items-center gap-3">
               <Link
                 to="/login"
-                className="flex items-center gap-1.5 text-xs font-semibold bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg transition-colors shadow-sm"
+                className="text-xs font-medium text-[#50617a] hover:text-[#061b31] px-3 py-1.5 rounded-[4px] transition-colors"
               >
-                <LogIn className="w-4 h-4" />
-                <span>Sign In</span>
+                Sign In
               </Link>
-            )}
-
-            {/* Mobile Hamburger Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+              <Link
+                to="/dashboard"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[4px] bg-[#533afd] hover:bg-[#7389ff] text-white text-xs font-medium transition-colors shadow-xs"
+              >
+                <span>Live Grid</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
-        </div>
+        </header>
 
-        {/* Mobile Nav dropdown */}
-        {mobileMenuOpen && (
-          <div className="md:hidden pt-3 pb-2 border-t border-slate-800 mt-3 flex flex-col gap-1">
-            {navItems.map((item) => {
-              if (item.adminOnly && user?.role !== 'administrator') return null;
-              if (item.responderOnly && user?.role !== 'responder' && user?.role !== 'administrator') return null;
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={({ isActive }) =>
-                    `flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium ${
-                      isActive
-                        ? 'bg-cyan-500/15 text-cyan-400'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-                    }`
-                  }
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.name}</span>
-                </NavLink>
-              );
-            })}
+        {/* Content */}
+        <main className="flex-1 flex flex-col">
+          <Outlet />
+        </main>
+
+        {/* Landing Page Footer */}
+        <footer className="bg-white border-t border-[#e5edf5] py-12 px-6">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-[4px] bg-[#533afd] flex items-center justify-center text-white">
+                  <Radio className="w-3.5 h-3.5" />
+                </div>
+                <span className="font-bold text-sm tracking-tight text-[#061b31]">NEERPATH</span>
+              </div>
+              <p className="text-xs text-[#64748d] leading-relaxed">
+                AI-powered road-level flood intelligence and emergency route management for Mangaluru.
+              </p>
+              <div className="text-[11px] text-[#50617a]">
+                Mangaluru Smart Monsoon Initiative — Horizon Hacks
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-xs font-semibold text-[#061b31] uppercase tracking-wider mb-3">Intelligence</h4>
+              <ul className="space-y-2 text-xs text-[#64748d]">
+                <li><Link to="/map" className="hover:text-[#533afd] transition-colors">Interactive GIS Map</Link></li>
+                <li><Link to="/routing" className="hover:text-[#533afd] transition-colors">Flood-Aware Routing</Link></li>
+                <li><Link to="/ai-engine" className="hover:text-[#533afd] transition-colors">Gemini AI Explanations</Link></li>
+                <li><Link to="/demo" className="hover:text-[#533afd] transition-colors">Interactive Simulation</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-xs font-semibold text-[#061b31] uppercase tracking-wider mb-3">Operations</h4>
+              <ul className="space-y-2 text-xs text-[#64748d]">
+                <li><Link to="/report" className="hover:text-[#533afd] transition-colors">Citizen Incident Reporting</Link></li>
+                <li><Link to="/responder" className="hover:text-[#533afd] transition-colors">Responder Dispatch Console</Link></li>
+                <li><Link to="/admin" className="hover:text-[#533afd] transition-colors">Disaster Cell Portal</Link></li>
+                <li><Link to="/settings" className="hover:text-[#533afd] transition-colors">Alert Preferences</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-xs font-semibold text-[#061b31] uppercase tracking-wider mb-3">Verification & Trust</h4>
+              <p className="text-xs text-[#64748d] leading-relaxed mb-3">
+                Strict separation between automated AWS telemetry, machine learning risk estimations, and human verified roadblock clearances.
+              </p>
+              <div className="flex items-center gap-1.5 text-[11px] text-[#059669]">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Zero Hallucinated Road States</span>
+              </div>
+            </div>
           </div>
-        )}
-      </header>
 
-      {/* Main Outlet */}
-      <main className="flex-1 flex flex-col">
-        <Outlet />
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-4 px-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>
-            NEERPATH – AI-Powered Road Intelligence | Mangaluru, Karnataka
-          </span>
-          <div className="flex items-center gap-3 text-[11px] text-slate-500">
-            <span>Horizon Hacks</span>
-            <span>•</span>
-            <span className="text-cyan-400">Team Leader: Ashwin Nethan</span>
+          <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-[#e5edf5] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748d]">
+            <span>© 2026 NEERPATH. Mangaluru Urban Road Flood Intelligence.</span>
+            <div className="flex items-center gap-4">
+              <span>Horizon Hacks</span>
+              <span>•</span>
+              <span className="text-[#061b31] font-medium">Ashwin Nethan</span>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
+    );
+  }
+
+  // Full authenticated application with left sidebar
+  return (
+    <div className="min-h-screen bg-[#f8fafd] text-[#061b31] flex flex-row font-sans">
+      <Sidebar
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed(!collapsed)}
+        mobileOpen={mobileOpen}
+        onCloseMobile={() => setMobileOpen(false)}
+      />
+
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <TopContentBar onOpenMobile={() => setMobileOpen(true)} />
+        <main className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

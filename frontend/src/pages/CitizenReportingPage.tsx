@@ -6,7 +6,6 @@ import { MangaluruMap } from '../components/map/MangaluruMap';
 import { 
   Send, 
   MapPin, 
-  ShieldAlert, 
   CheckCircle2, 
   AlertTriangle, 
   Info,
@@ -17,6 +16,7 @@ import {
   Clock,
   X
 } from 'lucide-react';
+import { Card, Button } from '../components/ui';
 
 export const CitizenReportingPage = () => {
   const navigate = useNavigate();
@@ -96,7 +96,6 @@ export const CitizenReportingPage = () => {
       setSubmitting(true);
       setError(null);
 
-      // 1. Upload photo if selected
       let finalImageUrl = uploadedImageUrl;
       if (imageFile && !finalImageUrl) {
         setUploadingImage(true);
@@ -106,7 +105,6 @@ export const CitizenReportingPage = () => {
         setUploadingImage(false);
       }
 
-      // 2. Submit citizen incident report
       await apiClient.submitIncident({
         location_name: locationName,
         incident_category: incidentCategory,
@@ -136,339 +134,349 @@ export const CitizenReportingPage = () => {
   };
 
   return (
-    <div className="max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
-      <div>
-        <div className="flex items-center gap-2">
-          <ShieldAlert className="w-5 h-5 text-cyan-400" />
-          <h1 className="text-xl font-bold text-white">Citizen Flood Incident Reporting</h1>
+    <div className="max-w-4xl w-full mx-auto space-y-6">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e5edf5]">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-light text-[#061b31] tracking-tight">
+              Citizen Flood Incident Reporting
+            </h1>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
+              Verification Triage
+            </span>
+          </div>
+          <p className="text-xs text-[#64748d] mt-1">
+            Report active road waterlogging, underpass inundation, or debris hazards across Mangaluru
+          </p>
         </div>
-        <p className="text-xs text-slate-400 mt-1">
-          Report active road waterlogging, underpass inundation, or debris hazards across Mangaluru
-        </p>
       </div>
 
       {/* Safety Notice Banner */}
-      <div className="p-4 rounded-xl bg-purple-950/30 border border-purple-800/60 text-xs text-purple-200 flex items-start gap-3">
-        <Info className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-        <div>
-          <strong className="text-purple-300">Safety & Verification Protocol:</strong> All citizen submissions are initially tagged as <span className="font-bold underline">PENDING</span> and <span className="font-bold underline">UNVERIFIED</span>. Automated spatial duplicate detection assists emergency dispatchers in grouping reports without discarding citizen inputs.
+      <div className="p-4 rounded-[4px] bg-white border border-[#e5edf5] text-xs text-[#50617a] flex items-start gap-3">
+        <Info className="w-4 h-4 text-[#533afd] shrink-0 mt-0.5" />
+        <div className="leading-relaxed">
+          <strong className="text-[#061b31]">Verification & Public Safety Protocol:</strong> All citizen submissions are initially recorded as <span className="font-semibold underline">PENDING</span> and <span className="font-semibold underline">UNVERIFIED</span>. Automated spatial duplicate detection groups reports for on-duty traffic patrols and the disaster control room.
         </div>
       </div>
 
       {success ? (
-        <div className="p-8 rounded-2xl bg-emerald-950/40 border border-emerald-800 text-center flex flex-col items-center gap-3">
-          <CheckCircle2 className="w-12 h-12 text-emerald-400 animate-bounce" />
-          <h2 className="text-lg font-bold text-white">Incident Reported Successfully!</h2>
-          <p className="text-xs text-slate-400">
-            Your report is queued for verification by Mangaluru emergency dispatchers. Redirecting to dashboard...
+        <Card className="p-10 text-center flex flex-col items-center gap-3">
+          <CheckCircle2 className="w-12 h-12 text-[#059669]" />
+          <h2 className="text-lg font-light text-[#061b31]">Incident Submitted Successfully</h2>
+          <p className="text-xs text-[#64748d] max-w-md">
+            Your report is queued for verification by Mangaluru emergency dispatchers and police patrol units. Redirecting to dashboard...
           </p>
-        </div>
+        </Card>
       ) : (
-        <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-5">
-          {error && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
-              <span>{error}</span>
-            </div>
-          )}
-
-          {/* Incident Category & Severity */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">
-                Incident Category *
-              </label>
-              <select
-                value={incidentCategory}
-                onChange={(e) => setIncidentCategory(e.target.value as IncidentCategory)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
-              >
-                <option value="ROAD_INUNDATION">Road Inundation / Surface Runoff</option>
-                <option value="UNDERPASS_FLOODING">Underpass / Flyover Flooding</option>
-                <option value="DRAIN_OVERFLOW">Stormwater Drain Overflow / Blockage</option>
-                <option value="LANDSLIDE_MUDSLIDE">Landslide / Mudslide Hazard</option>
-                <option value="TREE_FALL_HAZARD">Tree Fall / Road Obstruction</option>
-                <option value="RIVER_BACKFLOW">River Backflow (Gurupura / Nethravathi)</option>
-                <option value="GENERAL_WATERLOGGING">General Waterlogging</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">
-                Perceived Severity *
-              </label>
-              <select
-                value={severity}
-                onChange={(e) => setSeverity(e.target.value as SeverityLevel)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
-              >
-                <option value="LOW">Low (Slow traffic, shallow puddle)</option>
-                <option value="MEDIUM">Medium (Ankle to knee water, 2W cautioned)</option>
-                <option value="HIGH">High (Cars stalling, lane blocked)</option>
-                <option value="CRITICAL">Critical (Life hazard, fully submerged road)</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Quick Presets */}
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-2">
-              Select or Jump to Known Hotspots:
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {presetLocations.map(p => (
-                <button
-                  type="button"
-                  key={p.name}
-                  onClick={() => handlePresetSelect(p)}
-                  className={`text-xs px-2.5 py-1 rounded-lg border transition-all ${
-                    locationName === p.name
-                      ? 'bg-cyan-600 text-white border-cyan-500'
-                      : 'bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-600'
-                  }`}
-                >
-                  {p.name.split(' ')[0]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Location Name */}
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">
-              Location / Road Name *
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. NH-66 Kottara Chowki Flyover Underpass"
-              value={locationName}
-              onChange={(e) => setLocationName(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500"
-            />
-          </div>
-
-          {/* Coordinates & Map Picker Toggle */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-300">
-                Geographic Coordinates (WGS84)
-              </label>
-              <button
-                type="button"
-                onClick={() => setShowMapPicker(!showMapPicker)}
-                className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-semibold"
-              >
-                <MapPin className="w-3.5 h-3.5" />
-                <span>{showMapPicker ? 'Close Map Picker' : 'Pick Location on Map'}</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-[11px] text-slate-500 block mb-1">Latitude</label>
-                <input
-                  type="number"
-                  step="0.0001"
-                  value={latitude}
-                  onChange={(e) => setLatitude(parseFloat(e.target.value))}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] text-slate-500 block mb-1">Longitude</label>
-                <input
-                  type="number"
-                  step="0.0001"
-                  value={longitude}
-                  onChange={(e) => setLongitude(parseFloat(e.target.value))}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
-                />
-              </div>
-            </div>
-
-            {showMapPicker && (
-              <div className="mt-2 rounded-xl overflow-hidden border border-cyan-800">
-                <MangaluruMap
-                  roads={[]}
-                  incidents={[]}
-                  heightClass="h-[280px]"
-                  enableManualLocationPick={true}
-                  pickedLocation={{ lat: latitude, lon: longitude }}
-                  onLocationPicked={(lat, lon) => {
-                    setLatitude(lat);
-                    setLongitude(lon);
-                  }}
-                />
+        <Card className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="p-3 rounded-[4px] bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
               </div>
             )}
-          </div>
 
-          {/* Observed Time */}
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">
-              Time of Observation
-            </label>
-            <div className="relative">
-              <Clock className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+            {/* Category & Perceived Severity */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-medium text-[#061b31] block mb-1.5">
+                  Incident Category *
+                </label>
+                <select
+                  value={incidentCategory}
+                  onChange={(e) => setIncidentCategory(e.target.value as IncidentCategory)}
+                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
+                >
+                  <option value="ROAD_INUNDATION">Road Inundation / Surface Runoff</option>
+                  <option value="UNDERPASS_FLOODING">Underpass / Flyover Flooding</option>
+                  <option value="DRAIN_OVERFLOW">Stormwater Drain Overflow / Blockage</option>
+                  <option value="LANDSLIDE_MUDSLIDE">Landslide / Mudslide Hazard</option>
+                  <option value="TREE_FALL_HAZARD">Tree Fall / Road Obstruction</option>
+                  <option value="RIVER_BACKFLOW">River Backflow (Gurupura / Nethravathi)</option>
+                  <option value="GENERAL_WATERLOGGING">General Waterlogging</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-[#061b31] block mb-1.5">
+                  Perceived Severity *
+                </label>
+                <select
+                  value={severity}
+                  onChange={(e) => setSeverity(e.target.value as SeverityLevel)}
+                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
+                >
+                  <option value="LOW">Low (Slow traffic, shallow puddle)</option>
+                  <option value="MEDIUM">Medium (Ankle to knee water, 2W cautioned)</option>
+                  <option value="HIGH">High (Cars stalling, lane blocked)</option>
+                  <option value="CRITICAL">Critical (Life hazard, fully submerged road)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Known Hotspots Selector */}
+            <div>
+              <label className="text-xs font-medium text-[#061b31] block mb-2">
+                Quick Select Known Hotspots:
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {presetLocations.map(p => (
+                  <button
+                    type="button"
+                    key={p.name}
+                    onClick={() => handlePresetSelect(p)}
+                    className={`text-xs px-2.5 py-1 rounded-[4px] border transition-colors ${
+                      locationName === p.name
+                        ? 'bg-[#533afd] text-white border-[#533afd]'
+                        : 'bg-[#f8fafd] text-[#50617a] border-[#e5edf5] hover:bg-[#e8e9ff]'
+                    }`}
+                  >
+                    {p.name.split(' ')[0]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Location Name */}
+            <div>
+              <label className="text-xs font-medium text-[#061b31] block mb-1.5">
+                Location / Road Name *
+              </label>
               <input
-                type="datetime-local"
-                value={observedTime}
-                onChange={(e) => setObservedTime(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3.5 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
+                type="text"
+                required
+                placeholder="e.g. NH-66 Kottara Chowki Flyover Underpass"
+                value={locationName}
+                onChange={(e) => setLocationName(e.target.value)}
+                className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd]"
               />
             </div>
-          </div>
 
-          {/* Water Depth Level */}
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-2">
-              Observed Water Depth *
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              {[
-                { id: 'ANKLE_DEEP', label: 'Ankle Deep (~10cm)', sub: 'Caution for 2W' },
-                { id: 'KNEE_DEEP', label: 'Knee Deep (~35cm)', sub: 'Small cars stall' },
-                { id: 'WAIST_DEEP', label: 'Waist Deep (~70cm)', sub: 'Impassable' },
-                { id: 'SUBMERGED', label: 'Submerged (>1m)', sub: 'Severe danger' },
-              ].map(d => (
+            {/* Coordinates & Map Picker */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-medium text-[#061b31]">
+                  Geographic Coordinates (WGS84)
+                </label>
                 <button
                   type="button"
-                  key={d.id}
-                  onClick={() => setWaterDepth(d.id as WaterDepthCategory)}
-                  className={`p-2.5 rounded-xl border text-left flex flex-col justify-between transition-all ${
-                    waterDepth === d.id
-                      ? 'bg-cyan-950/60 border-cyan-500 text-cyan-300'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
-                  }`}
+                  onClick={() => setShowMapPicker(!showMapPicker)}
+                  className="text-xs text-[#533afd] hover:underline flex items-center gap-1 font-medium"
                 >
-                  <span className="text-xs font-bold block">{d.label}</span>
-                  <span className="text-[10px] text-slate-500 mt-1">{d.sub}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Vehicle Passability Toggles */}
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-2">
-              Vehicle Passability Assessment
-            </label>
-            <div className="grid grid-cols-3 gap-3">
-              <label className={`p-3 rounded-xl border flex flex-col items-center gap-2 cursor-pointer transition-all ${
-                passable2W ? 'bg-emerald-950/30 border-emerald-800 text-emerald-300' : 'bg-slate-950 border-slate-800 text-slate-500'
-              }`}>
-                <Bike className="w-5 h-5" />
-                <span className="text-xs font-semibold">2-Wheelers</span>
-                <input
-                  type="checkbox"
-                  checked={passable2W}
-                  onChange={(e) => setPassable2W(e.target.checked)}
-                  className="rounded accent-emerald-500"
-                />
-              </label>
-
-              <label className={`p-3 rounded-xl border flex flex-col items-center gap-2 cursor-pointer transition-all ${
-                passable4W ? 'bg-emerald-950/30 border-emerald-800 text-emerald-300' : 'bg-slate-950 border-slate-800 text-slate-500'
-              }`}>
-                <Car className="w-5 h-5" />
-                <span className="text-xs font-semibold">4-Wheelers</span>
-                <input
-                  type="checkbox"
-                  checked={passable4W}
-                  onChange={(e) => setPassable4W(e.target.checked)}
-                  className="rounded accent-emerald-500"
-                />
-              </label>
-
-              <label className={`p-3 rounded-xl border flex flex-col items-center gap-2 cursor-pointer transition-all ${
-                passableEmergency ? 'bg-emerald-950/30 border-emerald-800 text-emerald-300' : 'bg-slate-950 border-slate-800 text-slate-500'
-              }`}>
-                <Truck className="w-5 h-5" />
-                <span className="text-xs font-semibold">Ambulances</span>
-                <input
-                  type="checkbox"
-                  checked={passableEmergency}
-                  onChange={(e) => setPassableEmergency(e.target.checked)}
-                  className="rounded accent-emerald-500"
-                />
-              </label>
-            </div>
-          </div>
-
-          {/* Photograph Upload */}
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">
-              Photograph Verification (Optional, Max 10MB)
-            </label>
-            
-            {imagePreview ? (
-              <div className="relative rounded-xl overflow-hidden border border-slate-700 w-full sm:w-64 h-40 bg-slate-950">
-                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                <button
-                  type="button"
-                  onClick={removeImage}
-                  className="absolute top-2 right-2 p-1 bg-slate-900/80 rounded-full text-slate-300 hover:text-white"
-                >
-                  <X className="w-4 h-4" />
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>{showMapPicker ? 'Close Map Picker' : 'Pick Location on Map'}</span>
                 </button>
               </div>
-            ) : (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-slate-800 hover:border-cyan-500/50 rounded-xl p-4 text-center cursor-pointer transition-colors flex flex-col items-center gap-1.5 bg-slate-950/50"
-              >
-                <Upload className="w-6 h-6 text-slate-500" />
-                <span className="text-xs text-slate-300">Click to upload incident photo</span>
-                <span className="text-[10px] text-slate-500">JPG, PNG, WebP up to 10MB</span>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] text-[#64748d] block mb-1">Latitude</label>
+                  <input
+                    type="number"
+                    step="0.0001"
+                    value={latitude}
+                    onChange={(e) => setLatitude(parseFloat(e.target.value))}
+                    className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-1.5 text-xs text-[#061b31] font-mono focus:outline-none focus:border-[#533afd]"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-[#64748d] block mb-1">Longitude</label>
+                  <input
+                    type="number"
+                    step="0.0001"
+                    value={longitude}
+                    onChange={(e) => setLongitude(parseFloat(e.target.value))}
+                    className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-1.5 text-xs text-[#061b31] font-mono focus:outline-none focus:border-[#533afd]"
+                  />
+                </div>
               </div>
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </div>
 
-          {/* Description */}
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">
-              Incident Details / Visual Indicators
-            </label>
-            <textarea
-              rows={3}
-              placeholder="e.g. Storm drain blocked near underpass, small cars stalled in knee-deep water"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500"
-            />
-          </div>
+              {showMapPicker && (
+                <div className="mt-2 rounded-[4px] overflow-hidden border border-[#533afd]">
+                  <MangaluruMap
+                    roads={[]}
+                    incidents={[]}
+                    heightClass="h-[280px]"
+                    enableManualLocationPick={true}
+                    pickedLocation={{ lat: latitude, lon: longitude }}
+                    onLocationPicked={(lat, lon) => {
+                      setLatitude(lat);
+                      setLongitude(lon);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
 
-          {/* Reporter Identification (Privacy Conscious) */}
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">
-              Reporter Name / Call-sign (Optional)
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Local Citizen / Traffic Commuter"
-              value={reporterName}
-              onChange={(e) => setReporterName(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500"
-            />
-          </div>
+            {/* Observed Time */}
+            <div>
+              <label className="text-xs font-medium text-[#061b31] block mb-1.5">
+                Time of Observation
+              </label>
+              <div className="relative">
+                <Clock className="w-4 h-4 text-[#64748d] absolute left-3 top-2.5" />
+                <input
+                  type="datetime-local"
+                  value={observedTime}
+                  onChange={(e) => setObservedTime(e.target.value)}
+                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] pl-9 pr-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
+                />
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            disabled={submitting || uploadingImage}
-            className="w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-900/30 disabled:opacity-50"
-          >
-            <Send className="w-4 h-4" />
-            <span>{submitting || uploadingImage ? 'Submitting Report...' : 'Submit Incident to Emergency Dispatchers'}</span>
-          </button>
-        </form>
+            {/* Water Depth Level */}
+            <div>
+              <label className="text-xs font-medium text-[#061b31] block mb-2">
+                Observed Water Depth *
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {[
+                  { id: 'ANKLE_DEEP', label: 'Ankle Deep (~10cm)', sub: 'Caution for 2W' },
+                  { id: 'KNEE_DEEP', label: 'Knee Deep (~35cm)', sub: 'Small cars stall' },
+                  { id: 'WAIST_DEEP', label: 'Waist Deep (~70cm)', sub: 'Impassable' },
+                  { id: 'SUBMERGED', label: 'Submerged (>1m)', sub: 'Severe danger' },
+                ].map(d => (
+                  <button
+                    type="button"
+                    key={d.id}
+                    onClick={() => setWaterDepth(d.id as WaterDepthCategory)}
+                    className={`p-3 rounded-[4px] border text-left flex flex-col justify-between transition-colors ${
+                      waterDepth === d.id
+                        ? 'bg-[#e8e9ff] border-[#533afd] text-[#533afd]'
+                        : 'bg-white border-[#e5edf5] text-[#50617a] hover:bg-[#f8fafd]'
+                    }`}
+                  >
+                    <span className="text-xs font-semibold block">{d.label}</span>
+                    <span className="text-[10px] text-[#64748d] mt-1">{d.sub}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Vehicle Passability Toggles */}
+            <div>
+              <label className="text-xs font-medium text-[#061b31] block mb-2">
+                Vehicle Passability Assessment
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                <label className={`p-3 rounded-[4px] border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+                  passable2W ? 'bg-[#ecfdf5] border-[#a7f3d0] text-[#059669]' : 'bg-[#f8fafd] border-[#e5edf5] text-[#94a3b8]'
+                }`}>
+                  <Bike className="w-5 h-5" />
+                  <span className="text-xs font-semibold">2-Wheelers</span>
+                  <input
+                    type="checkbox"
+                    checked={passable2W}
+                    onChange={(e) => setPassable2W(e.target.checked)}
+                    className="rounded-[2px] accent-[#059669]"
+                  />
+                </label>
+
+                <label className={`p-3 rounded-[4px] border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+                  passable4W ? 'bg-[#ecfdf5] border-[#a7f3d0] text-[#059669]' : 'bg-[#f8fafd] border-[#e5edf5] text-[#94a3b8]'
+                }`}>
+                  <Car className="w-5 h-5" />
+                  <span className="text-xs font-semibold">4-Wheelers</span>
+                  <input
+                    type="checkbox"
+                    checked={passable4W}
+                    onChange={(e) => setPassable4W(e.target.checked)}
+                    className="rounded-[2px] accent-[#059669]"
+                  />
+                </label>
+
+                <label className={`p-3 rounded-[4px] border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+                  passableEmergency ? 'bg-[#ecfdf5] border-[#a7f3d0] text-[#059669]' : 'bg-[#f8fafd] border-[#e5edf5] text-[#94a3b8]'
+                }`}>
+                  <Truck className="w-5 h-5" />
+                  <span className="text-xs font-semibold">Ambulances</span>
+                  <input
+                    type="checkbox"
+                    checked={passableEmergency}
+                    onChange={(e) => setPassableEmergency(e.target.checked)}
+                    className="rounded-[2px] accent-[#059669]"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Photograph Upload */}
+            <div>
+              <label className="text-xs font-medium text-[#061b31] block mb-1.5">
+                Photograph Verification (Optional, Max 10MB)
+              </label>
+              
+              {imagePreview ? (
+                <div className="relative rounded-[4px] overflow-hidden border border-[#e5edf5] w-full sm:w-64 h-40 bg-[#f8fafd]">
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute top-2 right-2 p-1 bg-white/90 rounded-[4px] text-[#dc2626] hover:bg-white shadow-xs"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-2 border-dashed border-[#e5edf5] hover:border-[#533afd] rounded-[4px] p-6 text-center cursor-pointer transition-colors flex flex-col items-center gap-1.5 bg-[#f8fafd]"
+                >
+                  <Upload className="w-6 h-6 text-[#64748d]" />
+                  <span className="text-xs font-medium text-[#061b31]">Click to upload incident photo</span>
+                  <span className="text-[10px] text-[#64748d]">JPG, PNG, WebP up to 10MB</span>
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="text-xs font-medium text-[#061b31] block mb-1.5">
+                Incident Details / Visual Indicators
+              </label>
+              <textarea
+                rows={3}
+                placeholder="e.g. Storm drain blocked near underpass, small cars stalled in knee-deep water"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd]"
+              />
+            </div>
+
+            {/* Reporter Identification */}
+            <div>
+              <label className="text-xs font-medium text-[#061b31] block mb-1.5">
+                Reporter Name / Call-sign (Optional)
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Local Citizen / Traffic Commuter"
+                value={reporterName}
+                onChange={(e) => setReporterName(e.target.value)}
+                className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd]"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={submitting || uploadingImage}
+              size="lg"
+              className="w-full justify-center"
+            >
+              <Send className="w-4 h-4" />
+              <span>{submitting || uploadingImage ? 'Submitting Report...' : 'Submit Incident to Emergency Dispatchers'}</span>
+            </Button>
+          </form>
+        </Card>
       )}
     </div>
   );

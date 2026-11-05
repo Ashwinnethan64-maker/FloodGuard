@@ -399,34 +399,34 @@ export const MangaluruMap = ({
   };
 
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl">
+    <div className="relative w-full rounded-[4px] overflow-hidden border border-[#e5edf5] bg-[#f8fafd] shadow-xs">
       {/* Top Map Action Bar */}
       <div className="absolute top-3 left-3 z-10 flex flex-wrap items-center gap-2 max-w-[calc(100%-120px)]">
         {/* Quick Location Search */}
         <div className="relative">
-          <div className="flex items-center gap-2 bg-slate-900/90 backdrop-blur px-3 py-1.5 rounded-xl border border-slate-700/80 shadow-lg text-xs">
-            <Search className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="flex items-center gap-2 bg-white/95 backdrop-blur px-3 py-1.5 rounded-[4px] border border-[#e5edf5] shadow-xs text-xs text-[#061b31]">
+            <Search className="w-3.5 h-3.5 text-[#533afd]" />
             <input
               type="text"
               placeholder="Jump to corridor..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent text-white outline-none placeholder:text-slate-500 w-36 sm:w-44"
+              className="bg-transparent text-[#061b31] outline-none placeholder:text-[#94a3b8] w-36 sm:w-44"
             />
           </div>
 
           {searchQuery && (
-            <div className="absolute top-full left-0 mt-1.5 w-64 bg-slate-900/95 backdrop-blur border border-slate-700 rounded-xl shadow-2xl py-1 z-30 max-h-52 overflow-y-auto">
+            <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-[#e5edf5] rounded-[4px] shadow-lg py-1 z-30 max-h-52 overflow-y-auto">
               {keyLocations
                 .filter(l => l.name.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map(loc => (
                   <button
                     key={loc.name}
                     onClick={() => handleLocationSelect(loc.coords as [number, number])}
-                    className="w-full text-left px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-cyan-300 flex items-center justify-between"
+                    className="w-full text-left px-3 py-2 text-xs text-[#50617a] hover:bg-[#e8e9ff] hover:text-[#533afd] flex items-center justify-between transition-colors"
                   >
                     <span>{loc.name}</span>
-                    <Compass className="w-3 h-3 text-slate-500" />
+                    <Compass className="w-3 h-3 text-[#64748d]" />
                   </button>
                 ))}
             </div>
@@ -434,15 +434,15 @@ export const MangaluruMap = ({
         </div>
 
         {/* Verification Filter Selector */}
-        <div className="hidden sm:flex items-center gap-1 bg-slate-900/90 backdrop-blur p-1 rounded-xl border border-slate-700/80 text-[11px]">
+        <div className="hidden sm:flex items-center gap-1 bg-white/95 backdrop-blur p-1 rounded-[4px] border border-[#e5edf5] text-xs">
           {(['ALL', 'PENDING', 'VERIFIED', 'RESOLVED', 'REJECTED'] as const).map(vStatus => (
             <button
               key={vStatus}
               onClick={() => setVerificationFilter(vStatus)}
-              className={`px-2 py-0.5 rounded font-medium transition-all text-[10px] ${
+              className={`px-2 py-0.5 rounded-[2px] font-medium transition-colors text-[11px] ${
                 verificationFilter === vStatus
-                  ? 'bg-cyan-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#533afd] text-white shadow-2xs'
+                  : 'text-[#64748d] hover:text-[#061b31]'
               }`}
             >
               {vStatus}
@@ -452,7 +452,7 @@ export const MangaluruMap = ({
       </div>
 
       {enableManualLocationPick && (
-        <div className="absolute top-3 right-14 z-10 bg-cyan-950/90 backdrop-blur border border-cyan-700 text-cyan-300 px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 shadow-lg">
+        <div className="absolute top-3 right-14 z-10 bg-[#e8e9ff] border border-[#d8dbff] text-[#533afd] px-3 py-1.5 rounded-[4px] text-xs flex items-center gap-1.5 shadow-xs font-medium">
           <MapPin className="w-3.5 h-3.5 animate-pulse" />
           <span>Click on map to drop incident pin</span>
         </div>
@@ -463,41 +463,41 @@ export const MangaluruMap = ({
 
       {/* Bottom Map Legend */}
       <div className="absolute bottom-3 left-3 z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2">
-        <div className="bg-slate-900/90 backdrop-blur px-3 py-1.5 rounded-xl border border-slate-700/80 text-[11px] shadow-lg flex items-center gap-3">
+        <div className="bg-white/95 backdrop-blur px-3 py-1.5 rounded-[4px] border border-[#e5edf5] text-[11px] shadow-xs flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-600"></span>
-            <span className="text-slate-300">Verified</span>
+            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#dc2626]"></span>
+            <span className="text-[#061b31] font-medium">Verified</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-            <span className="text-slate-300">Pending</span>
+            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#d97706]"></span>
+            <span className="text-[#061b31] font-medium">Pending</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-            <span className="text-slate-300">Resolved</span>
+            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#059669]"></span>
+            <span className="text-[#061b31] font-medium">Resolved</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
-            <span className="text-slate-300">Rejected</span>
+            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#64748d]"></span>
+            <span className="text-[#061b31] font-medium">Rejected</span>
           </div>
         </div>
 
-        <div className="bg-slate-900/90 backdrop-blur px-3 py-1.5 rounded-xl border border-slate-700/80 text-[11px] shadow-lg flex items-center gap-3">
-          <label className="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
+        <div className="bg-white/95 backdrop-blur px-3 py-1.5 rounded-[4px] border border-[#e5edf5] text-[11px] shadow-xs flex items-center gap-3">
+          <label className="flex items-center gap-1.5 cursor-pointer text-[#50617a] hover:text-[#061b31]">
             <input
               type="checkbox"
               checked={showRoads}
               onChange={(e) => setShowRoads(e.target.checked)}
-              className="rounded accent-cyan-500"
+              className="rounded-[2px] accent-[#533afd]"
             />
-            <span>Roads</span>
+            <span>Corridors</span>
           </label>
-          <label className="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
+          <label className="flex items-center gap-1.5 cursor-pointer text-[#50617a] hover:text-[#061b31]">
             <input
               type="checkbox"
               checked={showIncidents}
               onChange={(e) => setShowIncidents(e.target.checked)}
-              className="rounded accent-cyan-500"
+              className="rounded-[2px] accent-[#533afd]"
             />
             <span>Incidents ({incidents.length})</span>
           </label>

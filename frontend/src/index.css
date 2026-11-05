@@ -2,18 +2,67 @@
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 6.9%;
-    --card-foreground: 210 40% 98%;
-    --primary: 199 89% 48%;
-    --primary-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
+    --primary-indigo: #533afd;
+    --hover-indigo: #7389ff;
+    --midnight-navy: #061b31;
+    --secondary-text: #64748d;
+    --muted-text: #50617a;
+    --white-canvas: #ffffff;
+    --light-bg: #f8fafd;
+    --borders: #e5edf5;
+    --lavender-surface: #e8e9ff;
+
+    /* Semantic Road & Flood tokens */
+    --status-open: #059669;
+    --status-open-bg: #ecfdf5;
+    --status-open-border: #a7f3d0;
+    --status-caution: #d97706;
+    --status-caution-bg: #fffbeb;
+    --status-caution-border: #fde68a;
+    --status-blocked: #dc2626;
+    --status-blocked-bg: #fef2f2;
+    --status-blocked-border: #fecaca;
+    --status-unverified: #6366f1;
+    --status-unverified-bg: #eef2ff;
+    --status-unverified-border: #c7d2fe;
   }
 
   body {
-    background-color: #0b0f19;
-    color: #f1f5f9;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--light-bg);
+    color: var(--midnight-navy);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* Thin subtle scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
   }
 }
+
+/* Design Tokens Utilities */
+.bg-canvas { background-color: #ffffff; }
+.bg-surface { background-color: #f8fafd; }
+.bg-surface-lavender { background-color: #e8e9ff; }
+.border-subtle { border-color: #e5edf5; }
+.text-navy { color: #061b31; }
+.text-secondary { color: #64748d; }
+.text-muted { color: #50617a; }
+.text-indigo-brand { color: #533afd; }
+.bg-indigo-brand { background-color: #533afd; }
+.hover\:bg-indigo-hover:hover { background-color: #7389ff; }
