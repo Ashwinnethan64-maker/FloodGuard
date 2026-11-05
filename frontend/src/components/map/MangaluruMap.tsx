@@ -1,281 +1,212 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import * as maplibregl from 'maplibre-gl';
-import type { Map, Marker } from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import { useEffect, useRef, useState } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import type { RoadSegment, FloodIncident, RoadStatus, VerificationStatus } from '../../types/api';
 import { 
   Search, 
   Compass, 
-  MapPin,
-  Layers,
-  AlertCircle
+  MapPin, 
+  Crosshair, 
+  RotateCcw
 } from 'lucide-react';
-import type { FeatureCollection } from 'geojson';
+
+// 1. Resolve Leaflet standard marker icon URL issues in Vite/Webpack
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
 
 interface MangaluruMapProps {
-  roads: RoadSegment[];
-  incidents: FloodIncident[];
+  roads?: RoadSegment[];
+  incidents?: FloodIncident[];
   selectedIncidentId?: string | null;
   onSelectIncident?: (id: string) => void;
   heightClass?: string;
   enableManualLocationPick?: boolean;
   onLocationPicked?: (lat: number, lon: number, address?: string) => void;
   pickedLocation?: { lat: number; lon: number } | null;
+  routeCoordinates?: [number, number][]; // Optional route polyline overlay [lat, lon]
 }
 
 export const MangaluruMap = ({
-  roads,
-  incidents,
+  roads = [],
+  incidents = [],
   selectedIncidentId,
   onSelectIncident,
-  heightClass = 'h-[540px]',
+  heightClass = 'h-[620px]',
   enableManualLocationPick = false,
   onLocationPicked,
-  pickedLocation
+  pickedLocation,
+  routeCoordinates,
 }: MangaluruMapProps) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<Map | null>(null);
-  const markersRef = useRef<Marker[]>([]);
-  const pickMarkerRef = useRef<Marker | null>(null);
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const roadLayerGroupRef = useRef<L.LayerGroup | null>(null);
+  const incidentLayerGroupRef = useRef<L.LayerGroup | null>(null);
+  const pickMarkerRef = useRef<L.Marker | null>(null);
+  const routePolylineRef = useRef<L.Polyline | null>(null);
+  const userLocationMarkerRef = useRef<L.CircleMarker | null>(null);
 
+  const [mapLoaded, setMapLoaded] = useState<boolean>(false);
   const [showRoads, setShowRoads] = useState<boolean>(true);
   const [showIncidents, setShowIncidents] = useState<boolean>(true);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedStatusFilter] = useState<RoadStatus | 'ALL'>('ALL');
   const [verificationFilter, setVerificationFilter] = useState<VerificationStatus | 'ALL'>('ALL');
-  const [mapLoaded, setMapLoaded] = useState<boolean>(false);
-  const [mapError, setMapError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [locatingUser, setLocatingUser] = useState<boolean>(false);
+
+  // Mangaluru Center Baseline Coordinates
+  const MANGALURU_CENTER: [number, number] = [12.9141, 74.8560];
+  const INITIAL_ZOOM = 13;
 
   const keyLocations = [
-    { name: 'Kottara Chowki (NH-66)', coords: [74.8445, 12.9050] as [number, number] },
-    { name: 'Pumpwell Circle (Mahaveera)', coords: [74.8695, 12.8625] as [number, number] },
-    { name: 'State Bank Service Bus Stand', coords: [74.8410, 12.8635] as [number, number] },
-    { name: 'Kadri Hills / Park', coords: [74.8630, 12.8870] as [number, number] },
-    { name: 'Baikampady Industrial Estate', coords: [74.8175, 12.9570] as [number, number] },
-    { name: 'Car Street (Venkataramana Temple)', coords: [74.8455, 12.8725] as [number, number] },
-    { name: 'KSRTC Bus Stand Bejai', coords: [74.8530, 12.8910] as [number, number] },
+    { name: 'Kottara Chowki (NH-66)', coords: [12.9050, 74.8445] as [number, number] },
+    { name: 'Pumpwell Circle (Mahaveera)', coords: [12.8625, 74.8695] as [number, number] },
+    { name: 'State Bank Service Bus Stand', coords: [12.8635, 74.8410] as [number, number] },
+    { name: 'Kadri Hills / Park', coords: [12.8870, 74.8630] as [number, number] },
+    { name: 'Baikampady Industrial Estate', coords: [12.9570, 74.8175] as [number, number] },
+    { name: 'Car Street (Temple)', coords: [12.8725, 74.8455] as [number, number] },
+    { name: 'KSRTC Bus Stand Bejai', coords: [12.8910, 74.8530] as [number, number] },
   ];
 
   const getStatusColor = (status: RoadStatus) => {
     switch (status) {
       case 'OPEN':
-        return '#10b981';
+        return '#059669'; // Emerald
       case 'CAUTION':
-        return '#f59e0b';
+        return '#d97706'; // Amber
       case 'BLOCKED':
-        return '#f43f5e';
+        return '#dc2626'; // Red / Submerged
       case 'UNVERIFIED':
-        return '#a855f7';
+        return '#7c3aed'; // Purple
       default:
         return '#64748b';
     }
   };
 
-  // Helper to attach/update GeoJSON road corridors in MapLibre
-  const renderRoadLayers = useCallback(() => {
-    if (!map.current || !map.current.isStyleLoaded()) return;
-
-    const geojsonData: FeatureCollection = {
-      type: 'FeatureCollection',
-      features: roads
-        .filter(r => selectedStatusFilter === 'ALL' || r.current_status === selectedStatusFilter)
-        .map(r => ({
-          type: 'Feature',
-          geometry: r.geometry,
-          properties: {
-            id: r.id,
-            name: r.name,
-            ward: r.ward,
-            status: r.current_status,
-            depth_cm: r.current_water_depth_cm,
-            elevation: r.elevation_meters,
-            source: r.last_source,
-            color: getStatusColor(r.current_status)
-          }
-        }))
-    };
-
-    const source = map.current.getSource('mangaluru-roads') as maplibregl.GeoJSONSource | undefined;
-    if (source) {
-      source.setData(geojsonData);
-    } else {
-      map.current.addSource('mangaluru-roads', {
-        type: 'geojson',
-        data: geojsonData
-      });
-
-      // Outer glow / flood casing
-      map.current.addLayer({
-        id: 'roads-casing',
-        type: 'line',
-        source: 'mangaluru-roads',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-          'visibility': showRoads ? 'visible' : 'none'
-        },
-        paint: {
-          'line-color': ['get', 'color'],
-          'line-width': 8,
-          'line-opacity': 0.35,
-          'line-blur': 2
-        }
-      });
-
-      // Inner road stroke
-      map.current.addLayer({
-        id: 'roads-inner',
-        type: 'line',
-        source: 'mangaluru-roads',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-          'visibility': showRoads ? 'visible' : 'none'
-        },
-        paint: {
-          'line-color': ['get', 'color'],
-          'line-width': 4.5
-        }
-      });
-
-      // Click inspector popup
-      map.current.on('click', 'roads-inner', (e) => {
-        if (!e.features || !e.features[0] || !map.current) return;
-        const props = e.features[0].properties as any;
-        const coordinates = (e.features[0].geometry as any).coordinates[0];
-
-        new maplibregl.Popup({ offset: 12, className: 'neerpath-map-popup' })
-          .setLngLat(coordinates)
-          .setHTML(`
-            <div style="font-family: sans-serif; padding: 4px; color: #0f172a; min-width: 170px;">
-              <div style="font-size: 11px; text-transform: uppercase; font-weight: bold; color: ${props.color}">
-                ● ${props.status}
-              </div>
-              <div style="font-weight: 700; font-size: 13px; margin: 2px 0;">${props.name}</div>
-              <div style="font-size: 11px; color: #475569;">${props.ward}</div>
-              <div style="margin-top: 6px; font-size: 11px; border-top: 1px solid #e2e8f0; padding-top: 4px;">
-                Water Depth: <strong>${props.depth_cm} cm</strong> | Elev: ${props.elevation}m
-              </div>
-              <div style="font-size: 9px; color: #64748b; margin-top: 2px;">
-                Source: ${props.source}
-              </div>
-            </div>
-          `)
-          .addTo(map.current);
-      });
-
-      map.current.on('mouseenter', 'roads-inner', () => {
-        if (map.current) map.current.getCanvas().style.cursor = 'pointer';
-      });
-      map.current.on('mouseleave', 'roads-inner', () => {
-        if (map.current) map.current.getCanvas().style.cursor = '';
-      });
-    }
-  }, [roads, selectedStatusFilter, showRoads]);
-
-  // 1. Initialize MapLibre with CARTO Vector GL Basemap
+  // 1. Initialize Leaflet Map with OpenStreetMap Basemap Tiles
   useEffect(() => {
-    if (!mapContainer.current || map.current) return;
+    if (!mapContainerRef.current || mapInstanceRef.current) return;
 
-    const cartoKey = import.meta.env.VITE_CARTO_BASEMAPS_API_KEY?.trim() || 'cb1_52fv_1_ae65d0f9ce5b90bb3899dcda';
-    
-    // Modern CARTO Voyager Vector GL style endpoint with api_key
-    const cartoStyleUrl = `https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json?api_key=${cartoKey}`;
-
-    const mapInstance = new maplibregl.Map({
-      container: mapContainer.current,
-      style: cartoStyleUrl,
-      center: [74.8560, 12.9141], // [Longitude, Latitude] in MapLibre
-      zoom: 12.3,
-      maxZoom: 18,
+    // Create Map Instance
+    const map = L.map(mapContainerRef.current, {
+      center: MANGALURU_CENTER,
+      zoom: INITIAL_ZOOM,
       minZoom: 10,
-      transformRequest: (url: string) => {
-        // Automatically inject CARTO key query parameter if fetching CARTO tiles, glyphs, or sprites
-        if (url.includes('cartocdn.com') && !url.includes('key=') && !url.includes('api_key=')) {
-          const separator = url.includes('?') ? '&' : '?';
-          return {
-            url: `${url}${separator}key=${cartoKey}`
-          };
-        }
-        return { url };
-      }
+      maxZoom: 19,
+      zoomControl: false, // We'll add zoomControl to top-right
+      attributionControl: true,
     });
 
-    map.current = mapInstance;
-
-    mapInstance.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
-    mapInstance.addControl(new maplibregl.FullscreenControl(), 'top-right');
-
-    mapInstance.on('style.load', () => {
-      setMapLoaded(true);
-      setMapError(null);
-      renderRoadLayers();
+    // Add OpenStreetMap Standard Raster Tile Layer
+    // Using official tile.openstreetmap.org endpoint per usage policy
+    const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors • FLOODGUARD GIS',
     });
+    osmLayer.addTo(map);
 
-    mapInstance.on('load', () => {
-      setMapLoaded(true);
-      renderRoadLayers();
-      mapInstance.resize();
+    // Zoom control in top-right
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    // Layer groups for dynamic toggling without full reinitialization
+    const roadGroup = L.layerGroup().addTo(map);
+    const incidentGroup = L.layerGroup().addTo(map);
+    roadLayerGroupRef.current = roadGroup;
+    incidentLayerGroupRef.current = incidentGroup;
+
+    mapInstanceRef.current = map;
+    setMapLoaded(true);
+
+    // Invalidate size on container layout stabilization
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+
+    // ResizeObserver to detect layout / sidebar collapse changes
+    const resizeObserver = new ResizeObserver(() => {
+      map.invalidateSize();
     });
-
-    mapInstance.on('error', (e: { error?: { message?: string } }) => {
-      const errMsg = e?.error?.message || '';
-      console.warn('[NEERPATH CARTO Map] Map event notice:', errMsg);
-      if (errMsg.includes('401') || errMsg.includes('403') || errMsg.includes('key')) {
-        setMapError('CARTO Basemaps API key authentication notice. Verify key validity.');
-      }
-    });
-
-    // ResizeObserver for smooth sidebar collapse / drawer toggle
-    if (window.ResizeObserver && mapContainer.current) {
-      resizeObserverRef.current = new ResizeObserver(() => {
-        mapInstance.resize();
-      });
-      resizeObserverRef.current.observe(mapContainer.current);
+    if (mapContainerRef.current) {
+      resizeObserver.observe(mapContainerRef.current);
     }
 
-    // Manual coordinate picker click listener
-    mapInstance.on('click', (e: maplibregl.MapMouseEvent) => {
+    // Manual location picker listener
+    map.on('click', (e: L.LeafletMouseEvent) => {
       if (enableManualLocationPick && onLocationPicked) {
-        const { lng, lat } = e.lngLat;
+        const { lat, lng } = e.latlng;
         onLocationPicked(Number(lat.toFixed(6)), Number(lng.toFixed(6)));
       }
     });
 
     return () => {
-      resizeObserverRef.current?.disconnect();
-      markersRef.current.forEach(m => m.remove());
-      pickMarkerRef.current?.remove();
-      map.current?.remove();
-      map.current = null;
+      clearTimeout(timer);
+      resizeObserver.disconnect();
+      map.remove();
+      mapInstanceRef.current = null;
     };
-  }, [renderRoadLayers, enableManualLocationPick, onLocationPicked]);
+  }, []);
 
-  // Sync road visibility and layers
+  // 2. Render Road Segments (PostGIS LineStrings)
   useEffect(() => {
-    if (map.current && map.current.isStyleLoaded()) {
-      renderRoadLayers();
-    }
-  }, [renderRoadLayers]);
+    if (!mapInstanceRef.current || !roadLayerGroupRef.current) return;
+    const roadGroup = roadLayerGroupRef.current;
+    roadGroup.clearLayers();
 
+    if (!showRoads) return;
+
+    roads.forEach(road => {
+      if (!road.geometry || !road.geometry.coordinates) return;
+
+      // Road geometry is GeoJSON [lon, lat] pairs. Leaflet expects [lat, lon]
+      const latLngs: [number, number][] = road.geometry.coordinates.map(pt => [pt[1], pt[0]]);
+      const strokeColor = getStatusColor(road.current_status);
+
+      // Background casing line for glow
+      const casing = L.polyline(latLngs, {
+        color: strokeColor,
+        weight: 8,
+        opacity: 0.35,
+        lineCap: 'round',
+        lineJoin: 'round',
+      });
+
+      // Foreground sharp corridor line
+      const line = L.polyline(latLngs, {
+        color: strokeColor,
+        weight: 4.5,
+        opacity: 0.95,
+        lineCap: 'round',
+        lineJoin: 'round',
+      });
+
+      // Interactive popup
+      const popupContent = `
+        <div style="font-family: inherit; font-size: 12px; color: #061b31; min-width: 180px; padding: 2px;">
+          <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: ${strokeColor}; margin-bottom: 2px;">
+            ● Road Corridor: ${road.current_status}
+          </div>
+          <div style="font-weight: 700; font-size: 13px; color: #061b31;">${road.name}</div>
+          <div style="font-size: 11px; color: #64748d; margin-top: 1px;">Ward: ${road.ward}</div>
+          <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #e5edf5; font-size: 11px;">
+            Water Depth: <strong>${road.current_water_depth_cm > 0 ? `${road.current_water_depth_cm} cm` : 'Dry'}</strong><br/>
+            Elevation: <strong>${road.elevation_meters}m</strong> | Source: <span style="font-family: monospace;">${road.last_source}</span>
+          </div>
+        </div>
+      `;
+      line.bindPopup(popupContent, { offset: [0, -4] });
+
+      casing.addTo(roadGroup);
+      line.addTo(roadGroup);
+    });
+  }, [roads, showRoads]);
+
+  // 3. Render Incident Markers
   useEffect(() => {
-    if (!map.current || !map.current.isStyleLoaded()) return;
-    const visibility = showRoads ? 'visible' : 'none';
-    if (map.current.getLayer('roads-inner')) {
-      map.current.setLayoutProperty('roads-inner', 'visibility', visibility);
-    }
-    if (map.current.getLayer('roads-casing')) {
-      map.current.setLayoutProperty('roads-casing', 'visibility', visibility);
-    }
-  }, [showRoads]);
-
-  // 2. Render Incident Markers
-  useEffect(() => {
-    if (!map.current) return;
-
-    markersRef.current.forEach(m => m.remove());
-    markersRef.current = [];
+    if (!mapInstanceRef.current || !incidentLayerGroupRef.current) return;
+    const incGroup = incidentLayerGroupRef.current;
+    incGroup.clearLayers();
 
     if (!showIncidents) return;
 
@@ -284,83 +215,102 @@ export const MangaluruMap = ({
     );
 
     filtered.forEach(inc => {
-      const el = document.createElement('div');
-      el.className = 'cursor-pointer transform hover:scale-125 transition-transform z-20';
-      
-      let badgeColor = 'bg-amber-500 ring-amber-400';
+      if (!inc.geometry || !inc.geometry.coordinates) return;
+      // inc.geometry.coordinates is [lon, lat]
+      const lat = inc.geometry.coordinates[1];
+      const lon = inc.geometry.coordinates[0];
+
+      let badgeBg = '#d97706'; // Amber / Pending
       let symbol = '?';
       let titleLabel = 'Pending Citizen Report';
 
       if (inc.verification_status === 'VERIFIED') {
-        badgeColor = 'bg-rose-600 ring-rose-400';
+        badgeBg = '#dc2626'; // Red
         symbol = '!';
-        titleLabel = 'Admin-Verified Flood Incident';
+        titleLabel = 'Verified Submerged Bottleneck';
       } else if (inc.verification_status === 'RESOLVED') {
-        badgeColor = 'bg-emerald-600 ring-emerald-400';
+        badgeBg = '#059669'; // Green
         symbol = '✓';
-        titleLabel = 'Resolved / Water Receded';
+        titleLabel = 'Resolved / Water Cleared';
       } else if (inc.verification_status === 'REJECTED') {
-        badgeColor = 'bg-slate-600 ring-slate-400 opacity-60';
+        badgeBg = '#64748d'; // Grey
         symbol = '✕';
-        titleLabel = 'Rejected / False Alarm';
+        titleLabel = 'Rejected Report';
       }
 
-      el.innerHTML = `
-        <div class="relative flex items-center justify-center w-7 h-7 rounded-full ${badgeColor} text-white shadow-xl ring-2 ring-offset-2 ring-offset-slate-900">
-          <span class="text-[11px] font-black">${symbol}</span>
-          ${inc.verification_status === 'VERIFIED' ? `
-            <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
-            </span>
-          ` : ''}
+      // Create high-contrast custom HTML circle divIcon
+      const customIcon = L.divIcon({
+        className: 'custom-flood-pin',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        html: `
+          <div style="
+            width: 28px;
+            height: 28px;
+            border-radius: 9999px;
+            background-color: ${badgeBg};
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+          ">
+            ${symbol}
+          </div>
+        `
+      });
+
+      const marker = L.marker([lat, lon], { icon: customIcon });
+
+      const popupContent = `
+        <div style="font-family: inherit; font-size: 12px; color: #061b31; max-width: 220px; padding: 2px;">
+          <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: ${badgeBg}; margin-bottom: 2px;">
+            ${titleLabel}
+          </div>
+          <div style="font-weight: 700; font-size: 13px; color: #061b31;">${inc.location_name}</div>
+          <div style="font-size: 11px; color: #533afd; font-weight: 600; margin-top: 1px;">Category: ${inc.incident_category}</div>
+          <p style="font-size: 11px; color: #64748d; margin: 4px 0;">${inc.description || 'No description provided.'}</p>
+          <div style="font-size: 10px; border-top: 1px solid #e5edf5; padding-top: 4px; color: #50617a;">
+            Water Depth: <strong>${inc.reported_water_depth}</strong> | 
+            4W: <strong style="color: ${inc.passable_four_wheelers ? '#059669' : '#dc2626'}">${inc.passable_four_wheelers ? 'Passable' : 'Submerged'}</strong>
+          </div>
+          <div style="font-size: 9px; color: #94a3b8; margin-top: 4px;">
+            Source: ${inc.source} • ${new Date(inc.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
         </div>
       `;
 
-      el.addEventListener('click', () => {
+      marker.bindPopup(popupContent, { offset: [0, -10] });
+
+      marker.on('click', () => {
         if (onSelectIncident) onSelectIncident(inc.id);
       });
 
-      const popup = new maplibregl.Popup({ offset: 18 }).setHTML(`
-        <div style="font-family: sans-serif; padding: 4px; color: #0f172a; max-width: 240px;">
-          <div style="font-size: 10px; font-weight: bold; text-transform: uppercase; color: #475569;">
-            ${titleLabel}
-          </div>
-          <div style="font-weight: 700; font-size: 13px; margin: 3px 0;">${inc.location_name}</div>
-          <div style="font-size: 11px; color: #0369a1; font-weight: 600;">Category: ${inc.incident_category}</div>
-          <p style="font-size: 11px; color: #475569; margin: 4px 0 6px;">${inc.description || 'No citizen description provided.'}</p>
-          <div style="font-size: 10px; border-top: 1px solid #e2e8f0; padding-top: 4px;">
-            <span>Depth: <strong>${inc.reported_water_depth}</strong></span> | 
-            <span>2W: <strong>${inc.passable_two_wheelers ? 'Passable' : 'Blocked'}</strong></span>
-          </div>
-          <div style="font-size: 9px; color: #64748b; margin-top: 4px;">
-            Provenance: ${inc.source} | ${new Date(inc.created_at).toLocaleTimeString()}
-          </div>
-        </div>
-      `);
-
-      const marker = new maplibregl.Marker({ element: el })
-        .setLngLat(inc.geometry.coordinates)
-        .setPopup(popup)
-        .addTo(map.current!);
-
-      markersRef.current.push(marker);
+      marker.addTo(incGroup);
     });
   }, [incidents, showIncidents, verificationFilter, onSelectIncident]);
 
-  // 3. Update Picked Location Pin
+  // 4. Update Manual Picked Location Marker
   useEffect(() => {
-    if (!map.current) return;
+    if (!mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+
     if (pickedLocation) {
       if (!pickMarkerRef.current) {
-        const el = document.createElement('div');
-        el.className = 'w-7 h-7 rounded-full bg-cyan-500 border-2 border-white flex items-center justify-center text-white shadow-xl animate-bounce';
-        el.innerHTML = '📍';
-        pickMarkerRef.current = new maplibregl.Marker({ element: el })
-          .setLngLat([pickedLocation.lon, pickedLocation.lat])
-          .addTo(map.current);
+        const pickIcon = L.divIcon({
+          className: 'pick-pin',
+          iconSize: [30, 30],
+          iconAnchor: [15, 30],
+          html: `<div style="font-size: 26px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📍</div>`
+        });
+        pickMarkerRef.current = L.marker([pickedLocation.lat, pickedLocation.lon], { icon: pickIcon }).addTo(map);
       } else {
-        pickMarkerRef.current.setLngLat([pickedLocation.lon, pickedLocation.lat]);
+        pickMarkerRef.current.setLatLng([pickedLocation.lat, pickedLocation.lon]);
       }
     } else {
       pickMarkerRef.current?.remove();
@@ -368,35 +318,98 @@ export const MangaluruMap = ({
     }
   }, [pickedLocation]);
 
-  // 4. Pan to selected incident
+  // 5. Update Optional Route Polyline
   useEffect(() => {
-    if (!selectedIncidentId || !map.current) return;
+    if (!mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+
+    if (routePolylineRef.current) {
+      routePolylineRef.current.remove();
+      routePolylineRef.current = null;
+    }
+
+    if (routeCoordinates && routeCoordinates.length > 1) {
+      const polyline = L.polyline(routeCoordinates, {
+        color: '#533afd',
+        weight: 6,
+        opacity: 0.9,
+        lineCap: 'round',
+        lineJoin: 'round',
+      }).addTo(map);
+
+      routePolylineRef.current = polyline;
+      map.fitBounds(polyline.getBounds(), { padding: [40, 40] });
+    }
+  }, [routeCoordinates]);
+
+  // 6. Pan to Selected Incident
+  useEffect(() => {
+    if (!selectedIncidentId || !mapInstanceRef.current) return;
     const target = incidents.find(i => i.id === selectedIncidentId);
-    if (target) {
-      map.current.flyTo({
-        center: target.geometry.coordinates,
-        zoom: 14.5,
-        essential: true,
-      });
+    if (target && target.geometry?.coordinates) {
+      mapInstanceRef.current.setView(
+        [target.geometry.coordinates[1], target.geometry.coordinates[0]],
+        15,
+        { animate: true }
+      );
     }
   }, [selectedIncidentId, incidents]);
 
-  // 5. Jump to key corridors
+  // Jump to Preset Corridor
   const handleLocationSelect = (coords: [number, number]) => {
-    if (!map.current) return;
-    map.current.flyTo({
-      center: coords,
-      zoom: 14.2,
-      essential: true,
-    });
+    if (!mapInstanceRef.current) return;
+    mapInstanceRef.current.setView(coords, 15, { animate: true });
     setSearchQuery('');
   };
 
+  // Reset to Mangaluru Center
+  const handleResetView = () => {
+    if (!mapInstanceRef.current) return;
+    mapInstanceRef.current.setView(MANGALURU_CENTER, INITIAL_ZOOM, { animate: true });
+  };
+
+  // Geolocation: Find User Location
+  const handleLocateMe = () => {
+    if (!navigator.geolocation || !mapInstanceRef.current) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    setLocatingUser(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setLocatingUser(false);
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.setView([latitude, longitude], 15, { animate: true });
+
+          if (userLocationMarkerRef.current) {
+            userLocationMarkerRef.current.setLatLng([latitude, longitude]);
+          } else {
+            userLocationMarkerRef.current = L.circleMarker([latitude, longitude], {
+              radius: 8,
+              fillColor: '#3b82f6',
+              color: '#ffffff',
+              weight: 2.5,
+              opacity: 1,
+              fillOpacity: 0.9,
+            }).addTo(mapInstanceRef.current);
+          }
+        }
+      },
+      (err) => {
+        setLocatingUser(false);
+        alert(`Location permission denied or unavailable: ${err.message}`);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
   return (
-    <div className="relative w-full rounded-[4px] overflow-hidden border border-[#e5edf5] bg-[#f8fafd] shadow-xs">
-      {/* Top Map Action Bar */}
-      <div className="absolute top-3 left-3 z-10 flex flex-wrap items-center gap-2 max-w-[calc(100%-120px)]">
-        {/* Quick Location Search */}
+    <div className="relative w-full rounded-[4px] overflow-hidden border border-[#e5edf5] bg-white shadow-xs">
+      {/* Top Map Control Bar */}
+      <div className="absolute top-3 left-3 z-[1000] flex flex-wrap items-center gap-2 max-w-[calc(100%-80px)]">
+        {/* Quick Corridor Search Dropdown */}
         <div className="relative">
           <div className="flex items-center gap-2 bg-white/95 backdrop-blur px-3 py-1.5 rounded-[4px] border border-[#e5edf5] shadow-xs text-xs text-[#061b31]">
             <Search className="w-3.5 h-3.5 text-[#533afd]" />
@@ -405,17 +418,18 @@ export const MangaluruMap = ({
               placeholder="Jump to corridor..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent text-[#061b31] outline-none placeholder:text-[#94a3b8] w-36 sm:w-44"
+              className="bg-transparent text-[#061b31] outline-none placeholder:text-[#94a3b8] w-32 sm:w-44"
             />
           </div>
 
           {searchQuery && (
-            <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-[#e5edf5] rounded-[4px] shadow-lg py-1 z-30 max-h-52 overflow-y-auto">
+            <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-[#e5edf5] rounded-[4px] shadow-lg py-1 z-[1100] max-h-52 overflow-y-auto">
               {keyLocations
                 .filter(l => l.name.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map(loc => (
                   <button
                     key={loc.name}
+                    type="button"
                     onClick={() => handleLocationSelect(loc.coords)}
                     className="w-full text-left px-3 py-2 text-xs text-[#50617a] hover:bg-[#e8e9ff] hover:text-[#533afd] flex items-center justify-between transition-colors"
                   >
@@ -428,10 +442,11 @@ export const MangaluruMap = ({
         </div>
 
         {/* Verification Filter Selector */}
-        <div className="hidden sm:flex items-center gap-1 bg-white/95 backdrop-blur p-1 rounded-[4px] border border-[#e5edf5] text-xs">
+        <div className="hidden sm:flex items-center gap-1 bg-white/95 backdrop-blur p-1 rounded-[4px] border border-[#e5edf5] text-xs shadow-xs">
           {(['ALL', 'PENDING', 'VERIFIED', 'RESOLVED', 'REJECTED'] as const).map(vStatus => (
             <button
               key={vStatus}
+              type="button"
               onClick={() => setVerificationFilter(vStatus)}
               className={`px-2 py-0.5 rounded-[2px] font-medium transition-colors text-[11px] ${
                 verificationFilter === vStatus
@@ -444,56 +459,68 @@ export const MangaluruMap = ({
           ))}
         </div>
 
-        {/* CARTO Vector Basemap Active Indicator */}
-        <div className="hidden md:flex items-center gap-1.5 bg-white/95 backdrop-blur px-2.5 py-1 rounded-[4px] border border-[#e5edf5] text-[11px] text-[#50617a]">
-          <Layers className="w-3 h-3 text-[#533afd]" />
-          <span>CARTO Voyager Vector</span>
+        {/* Action Controls: Recenter & Geolocation */}
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={handleResetView}
+            className="p-1.5 rounded-[4px] bg-white/95 backdrop-blur border border-[#e5edf5] text-[#533afd] hover:bg-[#e8e9ff] shadow-xs text-xs flex items-center gap-1"
+            title="Fit to Mangaluru Center"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">Mangaluru</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleLocateMe}
+            disabled={locatingUser}
+            className="p-1.5 rounded-[4px] bg-white/95 backdrop-blur border border-[#e5edf5] text-[#059669] hover:bg-[#ecfdf5] shadow-xs text-xs flex items-center gap-1 disabled:opacity-50"
+            title="Locate My Position"
+          >
+            <Crosshair className={`w-3.5 h-3.5 ${locatingUser ? 'animate-spin' : ''}`} />
+            <span className="hidden md:inline">{locatingUser ? 'Locating...' : 'My Location'}</span>
+          </button>
         </div>
       </div>
 
+      {/* Manual Pin Drop Indicator */}
       {enableManualLocationPick && (
-        <div className="absolute top-3 right-14 z-10 bg-[#e8e9ff] border border-[#d8dbff] text-[#533afd] px-3 py-1.5 rounded-[4px] text-xs flex items-center gap-1.5 shadow-xs font-medium">
+        <div className="absolute top-14 right-3 z-[1000] bg-[#e8e9ff] border border-[#d8dbff] text-[#533afd] px-3 py-1.5 rounded-[4px] text-xs flex items-center gap-1.5 shadow-xs font-medium">
           <MapPin className="w-3.5 h-3.5 animate-pulse" />
-          <span>Click on map to drop incident pin</span>
+          <span>Click on map to drop hazard coordinate</span>
         </div>
       )}
 
-      {mapError && (
-        <div className="absolute top-14 left-3 z-20 bg-amber-50 border border-amber-200 text-amber-900 px-3 py-1.5 rounded-[4px] text-xs flex items-center gap-2 shadow-sm max-w-md">
-          <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-          <span>{mapError}</span>
-        </div>
-      )}
-
-      {/* Loading Skeleton */}
+      {/* Loading Canvas Placeholder */}
       {!mapLoaded && (
         <div className="absolute inset-0 bg-[#f8fafd] flex flex-col items-center justify-center z-10 text-[#64748d] gap-2 pointer-events-none">
           <div className="w-6 h-6 border-2 border-[#533afd] border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-medium">Rendering CARTO Vector Basemap...</span>
+          <span className="text-xs font-medium">Loading OpenStreetMap raster basemap...</span>
         </div>
       )}
 
-      {/* Map Canvas */}
-      <div ref={mapContainer} className={`w-full ${heightClass}`} />
+      {/* Leaflet Map DOM Mount Node */}
+      <div 
+        ref={mapContainerRef} 
+        className={`w-full ${heightClass}`} 
+        style={{ minHeight: '520px' }}
+      />
 
-      {/* Bottom Map Legend */}
-      <div className="absolute bottom-3 left-3 z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+      {/* Bottom Floating Legend Bar */}
+      <div className="absolute bottom-3 left-3 z-[1000] flex flex-wrap items-center gap-2">
         <div className="bg-white/95 backdrop-blur px-3 py-1.5 rounded-[4px] border border-[#e5edf5] text-[11px] shadow-xs flex items-center gap-3">
-          <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#dc2626]"></span>
-            <span className="text-[#061b31] font-medium">Verified</span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#dc2626]" />
+            <span className="text-[#061b31] font-medium">Verified Submerged</span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#d97706]"></span>
-            <span className="text-[#061b31] font-medium">Pending</span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#d97706]" />
+            <span className="text-[#061b31] font-medium">Caution / Waterlogged</span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#059669]"></span>
-            <span className="text-[#061b31] font-medium">Resolved</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#64748d]"></span>
-            <span className="text-[#061b31] font-medium">Rejected</span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#059669]" />
+            <span className="text-[#061b31] font-medium">Passable Corridor</span>
           </div>
         </div>
 
@@ -505,7 +532,7 @@ export const MangaluruMap = ({
               onChange={(e) => setShowRoads(e.target.checked)}
               className="rounded-[2px] accent-[#533afd]"
             />
-            <span>Corridors</span>
+            <span>Corridors ({roads.length})</span>
           </label>
           <label className="flex items-center gap-1.5 cursor-pointer text-[#50617a] hover:text-[#061b31]">
             <input
@@ -514,7 +541,7 @@ export const MangaluruMap = ({
               onChange={(e) => setShowIncidents(e.target.checked)}
               className="rounded-[2px] accent-[#533afd]"
             />
-            <span>Incidents ({incidents.length})</span>
+            <span>Hazards ({incidents.length})</span>
           </label>
         </div>
       </div>

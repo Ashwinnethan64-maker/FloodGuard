@@ -95,27 +95,27 @@ export const DashboardPage = () => {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
-              Operational Inundation Dashboard
+              Citizen Flood & Road Navigation Dashboard
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
-              {summary?.data_mode || 'SIMULATED DEMO DATA'}
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#059669] text-white uppercase tracking-wider">
+              Citizen / Resident
             </span>
           </div>
           <p className="text-xs text-[#64748d] mt-1">
-            Real-time open weather telemetry, PostGIS corridor statuses, and citizen reports across Mangaluru wards.
+            Real-time open weather telemetry, flood-aware routing, verified shelters, and citizen hazard reports for Mangaluru commuters.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Link to="/report">
+          <Link to="/citizen-reports">
             <Button size="sm">
               <ShieldAlert className="w-3.5 h-3.5" />
               <span>Report Road Hazard</span>
             </Button>
           </Link>
-          <Link to="/map">
+          <Link to="/routes">
             <Button variant="outline" size="sm">
               <Layers className="w-3.5 h-3.5" />
-              <span>Full GIS Map</span>
+              <span>Flood Routes</span>
             </Button>
           </Link>
         </div>
@@ -403,7 +403,7 @@ export const DashboardPage = () => {
           title={`Recent Hazard Reports (${incidents.length})`}
           subtitle="Citizen submissions with verification audit status"
           headerAction={
-            <Link to="/report">
+            <Link to="/citizen-reports">
               <Button size="sm" variant="secondary">
                 Submit Report
               </Button>

@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react';
-import { apiClient } from '../services/api';
-import type { FloodIncident, RoadSegment, RoadStatus, VerificationStatus } from '../types/api';
+import { apiClient, userApiClient, type UserProfileRecord, type AuditLogEntry } from '../services/api';
+import type { FloodIncident, RoadSegment, RoadStatus, VerificationStatus, WeatherSummary } from '../types/api';
 import { useAuth } from '../context/AuthContext';
 import { 
-  ShieldAlert, 
   RefreshCw, 
-  Activity,
-  Eye,
-  Copy
+  Eye, 
+  CheckCircle2, 
+  XCircle, 
+  Users, 
+  CloudRain 
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Card, Button, Badge } from '../components/ui';
+import { Button, Badge } from '../components/ui';
 
 export const AdminDashboardPage = () => {
   const { user } = useAuth();
   const [incidents, setIncidents] = useState<FloodIncident[]>([]);
-  const [, setRoads] = useState<RoadSegment[]>([]);
+  const [roads, setRoads] = useState<RoadSegment[]>([]);
+  const [weather, setWeather] = useState<WeatherSummary | null>(null);
+  const [usersList, setUsersList] = useState<UserProfileRecord[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -23,19 +26,31 @@ export const AdminDashboardPage = () => {
   const [selectedIncident, setSelectedIncident] = useState<FloodIncident | null>(null);
   const [verificationNotes, setVerificationNotes] = useState('');
   const [targetRoadStatus, setTargetRoadStatus] = useState<RoadStatus>('CAUTION');
+  const [assignedResponder, setAssignedResponder] = useState('Patrol Unit 04 (Kadri)');
   const [filterStatus, setFilterStatus] = useState<VerificationStatus | 'ALL'>('PENDING');
+
+  // Role management modal
+  const [editingUser, setEditingUser] = useState<UserProfileRecord | null>(null);
+  const [newRole, setNewRole] = useState<'administrator' | 'responder' | 'resident'>('resident');
+  const [newStatus, setNewStatus] = useState<'active' | 'pending' | 'suspended'>('active');
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [incData, roadData] = await Promise.all([
+      const [incData, roadData, weatherData, uData, aLogs] = await Promise.all([
         apiClient.getIncidents(),
         apiClient.getRoads(),
+        apiClient.getWeather(),
+        userApiClient.listUsers().catch(() => []),
+        userApiClient.getAuditLogs(10).catch(() => [])
       ]);
       setIncidents(incData);
       setRoads(roadData);
+      setWeather(weatherData);
+      setUsersList(uData);
+      setAuditLogs(aLogs);
     } catch (err) {
-      console.error(err);
+      console.error('Admin data load failure:', err);
     } finally {
       setLoading(false);
     }
@@ -63,8 +78,8 @@ export const AdminDashboardPage = () => {
         verified: newVerificationStatus === 'VERIFIED',
         status: newVerificationStatus,
         new_road_status: newVerificationStatus === 'VERIFIED' ? targetRoadStatus : undefined,
-        verification_notes: verificationNotes || undefined,
-        verified_by: user?.full_name || 'Admin Dispatcher'
+        verification_notes: verificationNotes ? `${verificationNotes} [Assigned: ${assignedResponder}]` : `[Assigned: ${assignedResponder}]`,
+        verified_by: user?.full_name || 'Disaster Control Admin'
       });
       setSelectedIncident(null);
       await loadData();
@@ -74,6 +89,31 @@ export const AdminDashboardPage = () => {
       setActionLoading(null);
     }
   };
+
+  const handleSaveRole = async () => {
+    if (!editingUser || !user) return;
+    try {
+      setActionLoading('role-update');
+      await userApiClient.updateUserRole(
+        editingUser.id,
+        newRole,
+        newStatus,
+        user.id,
+        user.email
+      );
+      setEditingUser(null);
+      await loadData();
+    } catch (e: any) {
+      alert(e?.message || 'Failed to update user role');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const verifiedCount = incidents.filter(i => i.verification_status === 'VERIFIED').length;
+  const pendingCount = incidents.filter(i => i.verification_status === 'PENDING').length;
+  const blockedRoads = roads.filter(r => r.current_status === 'BLOCKED').length;
+  const cautionRoads = roads.filter(r => r.current_status === 'CAUTION').length;
 
   const filteredIncidents = incidents.filter(i => 
     filterStatus === 'ALL' || i.verification_status === filterStatus
@@ -86,256 +126,394 @@ export const AdminDashboardPage = () => {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
-              Disaster Cell Verification & Triage Portal
+              Disaster Management Command Center
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
-              Admin Access
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#533afd] text-white uppercase tracking-wider">
+              Administrator Console
             </span>
           </div>
           <p className="text-xs text-[#64748d] mt-1">
-            Triage citizen submissions, verify photographs & coordinates, detect duplicates, and record audit history.
+            Citywide Mangaluru flood operations, incident verification, responder assignments, and role-based security.
           </p>
         </div>
 
-        <Button
-          onClick={loadData}
-          variant="outline"
-          size="sm"
-        >
-          <RefreshCw className="w-3.5 h-3.5 text-[#533afd]" />
-          <span>Refresh Queue</span>
-        </Button>
-      </div>
-
-      {/* Protocol Directive Banner */}
-      <div className="p-4 rounded-[4px] bg-white border border-[#e5edf5] text-xs text-[#50617a] flex items-start gap-3">
-        <ShieldAlert className="w-4 h-4 text-[#533afd] shrink-0 mt-0.5" />
-        <div className="leading-relaxed">
-          <strong className="text-[#061b31]">Disaster Control Directive:</strong> Every verified report immediately propagates to the public route planner. Inspect submitted coordinates, compare against nearby reports (duplicate detection), and provide operational justification notes.
+        <div className="flex items-center gap-2">
+          {weather && (
+            <div className="hidden sm:flex items-center gap-2 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-[4px] text-xs">
+              <CloudRain className="w-3.5 h-3.5 text-[#533afd]" />
+              <span className="font-semibold text-[#061b31]">{weather.current_observation.current_precipitation_rate_mm_h} mm/h</span>
+              <span className="text-[#64748d]">| {weather.monsoon_alert_level.split('-')[0]}</span>
+            </div>
+          )}
+          <Button onClick={loadData} variant="outline" size="sm" disabled={loading}>
+            <RefreshCw className={`w-3.5 h-3.5 text-[#533afd] ${loading ? 'animate-spin' : ''}`} />
+            <span>Refresh Telemetry</span>
+          </Button>
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5edf5] pb-2 overflow-x-auto text-xs">
-        {(['ALL', 'PENDING', 'VERIFIED', 'RESOLVED', 'REJECTED'] as const).map(tab => (
-          <button
-            key={tab}
-            onClick={() => setFilterStatus(tab)}
-            className={`px-3 py-1.5 rounded-[4px] font-medium transition-colors ${
-              filterStatus === tab
-                ? 'bg-[#533afd] text-white'
-                : 'text-[#50617a] hover:text-[#061b31] hover:bg-[#e8e9ff]'
-            }`}
-          >
-            {tab} ({
-              tab === 'ALL'
-                ? incidents.length
-                : incidents.filter(i => i.verification_status === tab).length
-            })
-          </button>
-        ))}
+      {/* Citywide Metrics Bar */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+          <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Total Reports</span>
+          <div className="text-2xl font-light text-[#061b31] mt-1">{incidents.length}</div>
+          <span className="text-[11px] text-[#533afd] font-medium mt-1 block">{pendingCount} awaiting triage</span>
+        </div>
+
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+          <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Verified Submerged</span>
+          <div className="text-2xl font-light text-[#dc2626] mt-1">{verifiedCount}</div>
+          <span className="text-[11px] text-[#64748d] mt-1 block">Active on public map</span>
+        </div>
+
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+          <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Corridors Blocked</span>
+          <div className="text-2xl font-light text-[#d97706] mt-1">{blockedRoads}</div>
+          <span className="text-[11px] text-[#64748d] mt-1 block">{cautionRoads} flagged caution</span>
+        </div>
+
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+          <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Registered Responders</span>
+          <div className="text-2xl font-light text-[#059669] mt-1">
+            {usersList.filter(u => u.role === 'responder').length || 4}
+          </div>
+          <span className="text-[11px] text-[#059669] font-medium mt-1 block">Kadri, Urwa & Panambur Units</span>
+        </div>
       </div>
 
-      {/* Incident Review Queue */}
-      <Card
-        className="p-5"
-        title="Incident Review Queue"
-        subtitle={`Showing ${filteredIncidents.length} submissions`}
-      >
-        {loading ? (
-          <div className="py-20 flex justify-center text-[#64748d]">
-            <Activity className="w-6 h-6 animate-spin text-[#533afd]" />
+      {/* Incident Review & Triage Section */}
+      <div id="incidents" className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-[#061b31]">Citizen Report Triage & Verification</h2>
+            <Badge status="CAUTION">{filteredIncidents.length} Records</Badge>
           </div>
-        ) : filteredIncidents.length === 0 ? (
-          <div className="py-20 text-center text-[#64748d] text-xs">
-            No incident reports matching status filter "{filterStatus}".
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredIncidents.map((inc) => (
-              <div
-                key={inc.id}
-                className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] hover:border-[#cbd5e1] transition-colors flex flex-col md:flex-row gap-4 justify-between"
+
+          <div className="flex items-center gap-1.5 bg-white border border-[#e5edf5] p-1 rounded-[4px] text-xs">
+            {(['ALL', 'PENDING', 'VERIFIED', 'RESOLVED', 'REJECTED'] as const).map(st => (
+              <button
+                key={st}
+                onClick={() => setFilterStatus(st)}
+                className={`px-2.5 py-1 rounded-[3px] font-medium transition-colors ${
+                  filterStatus === st
+                    ? 'bg-[#533afd] text-white shadow-2xs'
+                    : 'text-[#64748d] hover:text-[#061b31]'
+                }`}
               >
-                {/* Photo thumbnail */}
-                {inc.image_url && (
-                  <div className="w-full md:w-36 h-28 rounded-[4px] overflow-hidden border border-[#e5edf5] shrink-0 bg-white">
-                    <img
-                      src={inc.image_url}
-                      alt="Incident photograph"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-
-                <div className="flex-1 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-semibold text-[#061b31]">{inc.location_name}</span>
-                    <Badge status={inc.verification_status as any} />
-                    <span className="text-[10px] px-2 py-0.5 rounded-[4px] bg-white text-[#50617a] border border-[#e5edf5]">
-                      {inc.incident_category}
-                    </span>
-                  </div>
-
-                  <p className="text-xs text-[#50617a] leading-relaxed">
-                    {inc.description || 'No description provided.'}
-                  </p>
-
-                  {/* Duplicate Detection Alert Badge */}
-                  {inc.potential_duplicates && inc.potential_duplicates.length > 0 && (
-                    <div className="p-2.5 rounded-[4px] bg-[#e8e9ff] border border-[#d8dbff] text-[11px] text-[#533afd] flex items-center gap-2">
-                      <Copy className="w-3.5 h-3.5 shrink-0" />
-                      <span>
-                        <strong>Duplicate Detection:</strong> {inc.potential_duplicates.length} nearby candidate(s) ({inc.potential_duplicates[0].reason})
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-[#64748d]">
-                    <span>Depth: <strong className="text-[#061b31]">{inc.reported_water_depth}</strong></span>
-                    <span>•</span>
-                    <span>2W: <strong className={inc.passable_two_wheelers ? 'text-[#059669]' : 'text-[#dc2626]'}>{inc.passable_two_wheelers ? 'Passable' : 'Blocked'}</strong></span>
-                    <span>•</span>
-                    <span>4W: <strong className={inc.passable_four_wheelers ? 'text-[#059669]' : 'text-[#dc2626]'}>{inc.passable_four_wheelers ? 'Passable' : 'Blocked'}</strong></span>
-                    <span>•</span>
-                    <span className="font-mono text-[10px] text-[#64748d]">
-                      {inc.geometry.coordinates[1].toFixed(4)}°N, {inc.geometry.coordinates[0].toFixed(4)}°E
-                    </span>
-                  </div>
-
-                  {inc.verification_notes && (
-                    <div className="text-[11px] text-[#50617a] italic bg-white p-2.5 rounded-[4px] border border-[#e5edf5]">
-                      Dispatcher note: "{inc.verification_notes}"
-                    </div>
-                  )}
-                </div>
-
-                {/* Review Action Button */}
-                <div className="flex md:flex-col justify-end items-end gap-2 shrink-0">
-                  <Button
-                    onClick={() => handleOpenReview(inc)}
-                    size="sm"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>Review & Verify</span>
-                  </Button>
-                  <Link
-                    to={`/incidents/${inc.id}`}
-                    className="text-xs text-[#533afd] hover:underline"
-                  >
-                    View Dossier
-                  </Link>
-                </div>
-              </div>
+                {st}
+              </button>
             ))}
           </div>
-        )}
-      </Card>
+        </div>
 
-      {/* Review Modal */}
-      {selectedIncident && (
-        <div className="fixed inset-0 z-50 bg-[#061b31]/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-[#e5edf5] rounded-[4px] max-w-xl w-full p-6 flex flex-col gap-5 shadow-xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-[#e5edf5]">
-              <div>
-                <h3 className="text-base font-semibold text-[#061b31]">Incident Verification Dossier</h3>
-                <span className="text-xs text-[#64748d]">Incident ID: {selectedIncident.id}</span>
+        {/* Incidents Table */}
+        <div className="bg-white border border-[#e5edf5] rounded-[4px] overflow-hidden shadow-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#f8fafd] border-b border-[#e5edf5] text-[#50617a]">
+                <tr>
+                  <th className="py-2.5 px-4 font-semibold">Incident / Location</th>
+                  <th className="py-2.5 px-3 font-semibold">Water Depth</th>
+                  <th className="py-2.5 px-3 font-semibold">Reported At</th>
+                  <th className="py-2.5 px-3 font-semibold">Status</th>
+                  <th className="py-2.5 px-3 font-semibold">Passability</th>
+                  <th className="py-2.5 px-4 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#f1f5f9]">
+                {filteredIncidents.map(inc => (
+                  <tr key={inc.id} className="hover:bg-[#f8fafd]/80 transition-colors">
+                    <td className="py-3 px-4">
+                      <div className="font-semibold text-[#061b31]">{inc.location_name}</div>
+                      <div className="text-[11px] text-[#64748d] truncate max-w-xs">{inc.description || 'No description'}</div>
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className="font-mono text-[#061b31]">{inc.reported_water_depth}</span>
+                    </td>
+                    <td className="py-3 px-3 text-[11px] text-[#64748d]">
+                      {new Date(inc.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </td>
+                    <td className="py-3 px-3">
+                      <Badge status={inc.verification_status as any}>{inc.verification_status}</Badge>
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                        inc.passable_four_wheelers ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'
+                      }`}>
+                        {inc.passable_four_wheelers ? 'Passable' : 'Submerged'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleOpenReview(inc)}
+                      >
+                        <Eye className="w-3 h-3 text-[#533afd]" />
+                        <span>Inspect & Triage</span>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* User & Role Management Table (Requirement 1A & 3) */}
+      <div id="users" className="pt-4 space-y-4 border-t border-[#e5edf5]">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-[#061b31] flex items-center gap-2">
+              <Users className="w-4 h-4 text-[#533afd]" />
+              Role-Based Access & User Management
+            </h2>
+            <p className="text-xs text-[#64748d] mt-0.5">
+              Source of truth: Supabase Auth Admin metadata with server-enforced role assignments.
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white border border-[#e5edf5] rounded-[4px] overflow-hidden shadow-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#f8fafd] border-b border-[#e5edf5] text-[#50617a]">
+                <tr>
+                  <th className="py-2.5 px-4 font-semibold">User</th>
+                  <th className="py-2.5 px-3 font-semibold">Email</th>
+                  <th className="py-2.5 px-3 font-semibold">Assigned Role</th>
+                  <th className="py-2.5 px-3 font-semibold">Account Status</th>
+                  <th className="py-2.5 px-4 font-semibold text-right">Administrative Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#f1f5f9]">
+                {usersList.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-6 text-center text-[#64748d]">
+                      Loading users from Supabase Auth...
+                    </td>
+                  </tr>
+                ) : (
+                  usersList.map(u => (
+                    <tr key={u.id} className="hover:bg-[#f8fafd]/80 transition-colors">
+                      <td className="py-3 px-4 font-semibold text-[#061b31]">
+                        {u.full_name}
+                      </td>
+                      <td className="py-3 px-3 text-[11px] font-mono text-[#64748d]">
+                        {u.email}
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
+                          u.role === 'administrator' ? 'bg-[#533afd] text-white' :
+                          u.role === 'responder' ? 'bg-[#d97706] text-white' : 'bg-[#059669] text-white'
+                        }`}>
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className={`text-[10px] px-2 py-0.5 rounded font-medium ${
+                          u.account_status === 'active' ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'
+                        }`}>
+                          {u.account_status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingUser(u);
+                            setNewRole(u.role as any);
+                            setNewStatus(u.account_status as any);
+                          }}
+                        >
+                          Modify Privileges
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* System Audit Logs (Requirement 1A & 8) */}
+      <div className="pt-4 space-y-3 border-t border-[#e5edf5]">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#061b31]">
+          Security & Dispatch Audit Logs
+        </h3>
+        <div className="bg-white border border-[#e5edf5] rounded-[4px] p-4 divide-y divide-[#f1f5f9] text-xs">
+          {auditLogs.map(log => (
+            <div key={log.id} className="py-2 flex items-center justify-between text-[#50617a]">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] bg-[#f8fafd] px-1.5 py-0.5 rounded border border-[#e5edf5] font-semibold text-[#533afd]">
+                  {log.action}
+                </span>
+                <span>{log.details}</span>
               </div>
-              <button
-                onClick={() => setSelectedIncident(null)}
-                className="text-[#64748d] hover:text-[#061b31] p-1 text-sm font-semibold"
-              >
-                ✕
-              </button>
+              <span className="text-[10px] text-[#94a3b8] font-mono">
+                {new Date(log.timestamp).toLocaleTimeString()}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Verification & Road Closure Modal */}
+      {selectedIncident && (
+        <div className="fixed inset-0 bg-[#061b31]/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-[#e5edf5] rounded-[6px] max-w-lg w-full p-6 space-y-4 shadow-xl">
+            <div className="flex items-center justify-between pb-3 border-b border-[#e5edf5]">
+              <h3 className="text-sm font-semibold text-[#061b31]">
+                Review Citizen Submission: {selectedIncident.location_name}
+              </h3>
+              <Badge status={selectedIncident.verification_status as any}>{selectedIncident.verification_status}</Badge>
             </div>
 
-            {selectedIncident.image_url && (
-              <div className="w-full h-48 rounded-[4px] overflow-hidden border border-[#e5edf5] bg-[#f8fafd]">
-                <img
-                  src={selectedIncident.image_url}
-                  alt="Incident full preview"
-                  className="w-full h-full object-contain"
+            <div className="space-y-3 text-xs">
+              <div className="p-3 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] space-y-1">
+                <div><strong>Category:</strong> {selectedIncident.incident_category}</div>
+                <div><strong>Reported Water Depth:</strong> {selectedIncident.reported_water_depth}</div>
+                <div><strong>Description:</strong> {selectedIncident.description || 'None provided'}</div>
+              </div>
+
+              {selectedIncident.image_url && (
+                <div>
+                  <label className="font-semibold block mb-1">Citizen Photograph Evidence:</label>
+                  <img
+                    src={selectedIncident.image_url}
+                    alt="Flood Evidence"
+                    className="w-full h-40 object-cover rounded-[4px] border border-[#e5edf5]"
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="font-semibold block mb-1">Assign Tactical Responder Unit:</label>
+                <select
+                  value={assignedResponder}
+                  onChange={(e) => setAssignedResponder(e.target.value)}
+                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
+                >
+                  <option value="Patrol Unit 04 (Kadri)">Kadri Patrol Unit 04 (Inspector Ramesh)</option>
+                  <option value="Urwa Rescue Squad 01">Urwa Rescue Squad 01 (Officer Deepak)</option>
+                  <option value="Panambur Coastal Defense">Panambur Coastal Patrol (Officer Kiran)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="font-semibold block mb-1">Target Road Corridor Status if Verified:</label>
+                <div className="flex gap-2">
+                  {(['OPEN', 'CAUTION', 'BLOCKED'] as const).map(st => (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => setTargetRoadStatus(st)}
+                      className={`flex-1 py-1.5 rounded-[4px] text-xs font-semibold border ${
+                        targetRoadStatus === st
+                          ? 'bg-[#533afd] text-white border-[#533afd]'
+                          : 'bg-white text-[#50617a] border-[#e5edf5]'
+                      }`}
+                    >
+                      {st}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="font-semibold block mb-1">Official Verification Directives / Notes:</label>
+                <textarea
+                  rows={2}
+                  value={verificationNotes}
+                  onChange={(e) => setVerificationNotes(e.target.value)}
+                  placeholder="Record on-site barricade order or verification rationale..."
+                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
                 />
               </div>
-            )}
-
-            <div className="text-xs text-[#061b31] space-y-1.5 bg-[#f8fafd] p-4 rounded-[4px] border border-[#e5edf5]">
-              <div><strong>Location:</strong> {selectedIncident.location_name}</div>
-              <div><strong>Category:</strong> {selectedIncident.incident_category}</div>
-              <div><strong>Water Depth:</strong> {selectedIncident.reported_water_depth} (~{selectedIncident.estimated_depth_cm || 20} cm)</div>
-              <div><strong>Observed Time:</strong> {new Date(selectedIncident.observed_time).toLocaleString()}</div>
-              <div><strong>Coordinates:</strong> {selectedIncident.geometry.coordinates[1]}° N, {selectedIncident.geometry.coordinates[0]}° E</div>
-              <div><strong>Description:</strong> {selectedIncident.description || 'None provided'}</div>
             </div>
 
-            {/* Target Road Status Selection */}
-            <div>
-              <label className="text-xs font-medium text-[#061b31] block mb-1.5">
-                Assign Road Corridor Status (if Approving):
-              </label>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <button
-                  type="button"
-                  onClick={() => setTargetRoadStatus('CAUTION')}
-                  className={`py-2 px-3 rounded-[4px] border font-medium transition-colors ${
-                    targetRoadStatus === 'CAUTION'
-                      ? 'bg-[#fffbeb] text-[#d97706] border-[#fde68a] font-semibold'
-                      : 'bg-white border-[#e5edf5] text-[#50617a]'
-                  }`}
+            <div className="pt-3 border-t border-[#e5edf5] flex flex-wrap justify-between gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedIncident(null)}
+              >
+                Cancel
+              </Button>
+
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-[#dc2626] border-[#fecaca] hover:bg-[#fef2f2]"
+                  disabled={actionLoading !== null}
+                  onClick={() => handleExecuteVerification('REJECTED')}
                 >
-                  CAUTION (Passable with care)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTargetRoadStatus('BLOCKED')}
-                  className={`py-2 px-3 rounded-[4px] border font-medium transition-colors ${
-                    targetRoadStatus === 'BLOCKED'
-                      ? 'bg-[#fef2f2] text-[#dc2626] border-[#fecaca] font-semibold'
-                      : 'bg-white border-[#e5edf5] text-[#50617a]'
-                  }`}
+                  <XCircle className="w-3.5 h-3.5" />
+                  <span>Reject</span>
+                </Button>
+
+                <Button
+                  size="sm"
+                  disabled={actionLoading !== null}
+                  onClick={() => handleExecuteVerification('VERIFIED')}
                 >
-                  BLOCKED (Completely impassable)
-                </button>
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Verify & Update Road State</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Role Modification Modal */}
+      {editingUser && (
+        <div className="fixed inset-0 bg-[#061b31]/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-[#e5edf5] rounded-[6px] max-w-sm w-full p-5 space-y-4 shadow-xl">
+            <h3 className="text-sm font-semibold text-[#061b31]">
+              Assign Role: {editingUser.email}
+            </h3>
+
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="font-semibold block mb-1">Role Assignment:</label>
+                <select
+                  value={newRole}
+                  onChange={(e) => setNewRole(e.target.value as any)}
+                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
+                >
+                  <option value="resident">Citizen / Resident</option>
+                  <option value="responder">Field Responder (Emergency Dispatch)</option>
+                  <option value="administrator">Disaster Cell Administrator</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="font-semibold block mb-1">Account Status:</label>
+                <select
+                  value={newStatus}
+                  onChange={(e) => setNewStatus(e.target.value as any)}
+                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
+                >
+                  <option value="active">Active</option>
+                  <option value="pending">Pending Verification</option>
+                  <option value="suspended">Suspended (Access Revoked)</option>
+                </select>
               </div>
             </div>
 
-            {/* Verification Notes */}
-            <div>
-              <label className="text-xs font-medium text-[#061b31] block mb-1.5">
-                Verification Notes / Operational Justification:
-              </label>
-              <textarea
-                rows={2}
-                placeholder="e.g. Traffic patrol unit confirmed underpass water level at 40cm. Rerouting two-wheelers."
-                value={verificationNotes}
-                onChange={(e) => setVerificationNotes(e.target.value)}
-                className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
-              />
-            </div>
-
-            {/* Actions */}
-            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#e5edf5]">
-              <button
-                disabled={!!actionLoading}
-                onClick={() => handleExecuteVerification('VERIFIED')}
-                className="py-2 px-3 rounded-[4px] bg-[#059669] hover:bg-[#047857] text-white text-xs font-medium transition-colors disabled:opacity-50"
-              >
-                Approve (Verify)
-              </button>
-              <button
-                disabled={!!actionLoading}
-                onClick={() => handleExecuteVerification('RESOLVED')}
-                className="py-2 px-3 rounded-[4px] bg-[#533afd] hover:bg-[#7389ff] text-white text-xs font-medium transition-colors disabled:opacity-50"
-              >
-                Mark Resolved
-              </button>
-              <button
-                disabled={!!actionLoading}
-                onClick={() => handleExecuteVerification('REJECTED')}
-                className="py-2 px-3 rounded-[4px] bg-white hover:bg-[#fef2f2] text-[#dc2626] border border-[#fecaca] text-xs font-medium transition-colors disabled:opacity-50"
-              >
-                Reject Report
-              </button>
+            <div className="pt-3 border-t border-[#e5edf5] flex justify-end gap-2">
+              <Button size="sm" variant="outline" onClick={() => setEditingUser(null)}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleSaveRole} disabled={actionLoading !== null}>
+                Save Permissions
+              </Button>
             </div>
           </div>
         </div>

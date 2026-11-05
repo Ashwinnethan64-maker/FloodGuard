@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
+import { userApiClient } from '../services/api';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button, NeerpathLogo } from '../components/ui';
 
@@ -34,7 +35,7 @@ export const AuthCallbackPage = () => {
         if (code) {
           const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
           if (exchangeError) {
-            console.error('[NEERPATH Auth] Code exchange error:', exchangeError);
+            console.error('[FLOODGUARD Auth] Code exchange error:', exchangeError);
             if (mounted) {
               setErrorMsg(exchangeError.message);
               setProcessing(false);
@@ -54,13 +55,48 @@ export const AuthCallbackPage = () => {
         }
 
         if (session && session.user) {
-          // Success: clean redirect to dashboard
+          const authUser = session.user;
+          let role = 'resident';
+          let status = 'active';
+
+          // Query verified role from trusted database
+          try {
+            const serverProfile = await userApiClient.getMyProfile(authUser.id);
+            if (serverProfile) {
+              role = serverProfile.role || 'resident';
+              status = serverProfile.account_status || 'active';
+            }
+          } catch (e) {
+            const appMeta = authUser.app_metadata || {};
+            role = appMeta.role || 'resident';
+            status = appMeta.account_status || 'active';
+          }
+
+          if (status === 'suspended') {
+            await supabase.auth.signOut();
+            if (mounted) {
+              setErrorMsg('Your account has been suspended by an administrator. Access denied.');
+              setProcessing(false);
+            }
+            return;
+          }
+
+          // Automatic role-based redirection
+          let targetPath = '/dashboard';
+          if (role === 'administrator') {
+            targetPath = '/admin';
+          } else if (role === 'responder') {
+            targetPath = '/responder';
+          } else {
+            targetPath = '/dashboard';
+          }
+
           if (mounted) {
             setProcessing(false);
-            navigate('/dashboard', { replace: true });
+            navigate(targetPath, { replace: true });
           }
         } else {
-          // If no session found immediately, wait briefly for Supabase event or fallback to login
+          // Fallback retry
           setTimeout(async () => {
             const { data: retry } = await supabase.auth.getSession();
             if (retry.session && mounted) {
@@ -71,7 +107,7 @@ export const AuthCallbackPage = () => {
           }, 800);
         }
       } catch (err: any) {
-        console.error('[NEERPATH Auth] Callback processing exception:', err);
+        console.error('[FLOODGUARD Auth] Callback processing exception:', err);
         if (mounted) {
           setErrorMsg(err?.message || 'Unexpected error completing OAuth sign in.');
           setProcessing(false);
@@ -94,7 +130,7 @@ export const AuthCallbackPage = () => {
             <AlertCircle className="w-6 h-6" />
           </div>
           <h2 className="text-base font-semibold text-[#061b31]">
-            Authentication Verification Error
+            Authentication Verification Notice
           </h2>
           <p className="text-xs text-[#64748d] leading-relaxed">
             {errorMsg}
@@ -117,18 +153,17 @@ export const AuthCallbackPage = () => {
         </div>
         <div>
           <h3 className="text-sm font-semibold text-[#061b31]">
-            Connecting FLOODGUARD Account
+            Authenticating Google Account
           </h3>
           <p className="text-xs text-[#64748d] mt-1">
-            Verifying Supabase authentication credentials & establishing secure session...
+            Verifying cryptographic token & loading database role permissions...
           </p>
         </div>
         <div className="flex items-center justify-center gap-2 pt-2 text-[#533afd] text-xs">
           <RefreshCw className="w-4 h-4 animate-spin" />
-          <span className="font-medium">{processing ? 'Finalizing security tokens...' : 'Redirecting...'}</span>
+          <span className="font-medium">{processing ? 'Determining role-based route...' : 'Redirecting to command center...'}</span>
         </div>
       </div>
     </div>
   );
 };
-

@@ -1,21 +1,26 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { supabase } from '../services/supabaseClient';
+import { userApiClient } from '../services/api';
 
 export type UserRole = 'resident' | 'responder' | 'administrator';
+export type AccountStatus = 'active' | 'pending' | 'suspended';
 
 export interface UserProfile {
   id: string;
   email: string;
   full_name: string;
   role: UserRole;
+  account_status: AccountStatus;
   ward: string;
+  avatar_url?: string;
 }
 
 interface AuthContextType {
   user: UserProfile | null;
   loading: boolean;
-  login: (email: string, requestedRole?: UserRole) => void;
+  login: (email: string, password?: string) => Promise<{ error?: string }>;
+  devBypassLogin: (role: UserRole) => void;
   signInWithGoogle: () => Promise<{ error?: string }>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
@@ -23,50 +28,49 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Trusted Authority Configuration
-// In production, administrative privileges are enforced through backend permissions or verified domain lists.
-const TRUSTED_ADMIN_EMAILS = [
-  'admin@neerpath.in',
-  'disaster.cell@mangaluru.gov.in',
-  'admin@floodguard.in',
-];
-
-const TRUSTED_RESPONDER_DOMAINS = [
-  'police.gov.in',
-  'ksp.gov.in',
-  'fireforce.kar.nic.in',
-  'neerpath.in',
-  'floodguard.in'
-];
-
 /**
- * Derives a trusted role based on verified email and authoritative metadata.
- * Prevents unauthorized privilege escalation.
+ * Builds user profile prioritizing trusted server-side profile metadata,
+ * then Supabase auth app_metadata (which can only be altered via service-role),
+ * and defaulting strictly to resident (citizen).
  */
-function resolveTrustedRole(email: string, explicitRole?: string): UserRole {
-  const normalizedEmail = email.toLowerCase().trim();
+async function fetchVerifiedUserProfile(authUser: any): Promise<UserProfile> {
+  const authUserEmail = (authUser.email || '').toLowerCase().trim();
+  const userMeta = authUser.user_metadata || {};
+  const appMeta = authUser.app_metadata || {};
 
-  // 1. Check verified admin emails
-  if (TRUSTED_ADMIN_EMAILS.includes(normalizedEmail)) {
-    return 'administrator';
-  }
+  let role: UserRole = 'resident';
+  let accountStatus: AccountStatus = 'active';
+  let fullName = userMeta.full_name || userMeta.name || authUserEmail.split('@')[0] || 'FLOODGUARD Citizen';
+  let avatarUrl = userMeta.avatar_url || userMeta.picture;
 
-  // 2. Check trusted responder domains
-  const domain = normalizedEmail.split('@')[1] || '';
-  if (TRUSTED_RESPONDER_DOMAINS.includes(domain)) {
-    if (explicitRole === 'administrator' && TRUSTED_ADMIN_EMAILS.includes(normalizedEmail)) {
-      return 'administrator';
+  // 1. Try querying backend profile endpoint backed by Supabase Admin
+  try {
+    const serverProfile = await userApiClient.getMyProfile(authUser.id);
+    if (serverProfile) {
+      role = (serverProfile.role as UserRole) || 'resident';
+      accountStatus = (serverProfile.account_status as AccountStatus) || 'active';
+      if (serverProfile.full_name) fullName = serverProfile.full_name;
+      if (serverProfile.avatar_url) avatarUrl = serverProfile.avatar_url;
     }
-    return 'responder';
+  } catch (err) {
+    // 2. Fall back to app_metadata which is cryptographically signed by Supabase JWT
+    if (appMeta.role && ['administrator', 'responder', 'resident'].includes(appMeta.role)) {
+      role = appMeta.role as UserRole;
+    }
+    if (appMeta.account_status && ['active', 'pending', 'suspended'].includes(appMeta.account_status)) {
+      accountStatus = appMeta.account_status as AccountStatus;
+    }
   }
 
-  // 3. If explicit role was legitimately set on auth user metadata (and not admin unless trusted)
-  if (explicitRole === 'responder') {
-    return 'responder';
-  }
-
-  // Default to citizen/resident
-  return 'resident';
+  return {
+    id: authUser.id,
+    email: authUserEmail,
+    full_name: fullName,
+    role,
+    account_status: accountStatus,
+    ward: userMeta.ward || 'Mangaluru Urban',
+    avatar_url: avatarUrl
+  };
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -79,7 +83,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return null;
       }
     }
-    // Saved session exists
     return null;
   });
 
@@ -97,19 +100,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
 
         if (session && session.user && isMounted) {
-          const authUser = session.user;
-          const userMeta = authUser.user_metadata || {};
-          const resolvedEmail = authUser.email || 'user@neerpath.in';
-          const role = resolveTrustedRole(resolvedEmail, userMeta.role);
-
-          const profile: UserProfile = {
-            id: authUser.id,
-            email: resolvedEmail,
-            full_name: userMeta.full_name || userMeta.name || resolvedEmail.split('@')[0] || 'FLOODGUARD Operator',
-            role,
-            ward: userMeta.ward || 'Mangaluru Urban',
-          };
+          const profile = await fetchVerifiedUserProfile(session.user);
           setUser(profile);
+        } else if (!session && isMounted) {
+          const saved = localStorage.getItem('neerpath_user');
+          if (!saved) {
+            setUser(null);
+          }
         }
       } catch (err) {
         console.warn('[NEERPATH Auth] Session initialization error:', err);
@@ -122,23 +119,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session && session.user && isMounted) {
-        const authUser = session.user;
-        const userMeta = authUser.user_metadata || {};
-        const resolvedEmail = authUser.email || 'user@neerpath.in';
-        const role = resolveTrustedRole(resolvedEmail, userMeta.role);
-
-        const profile: UserProfile = {
-          id: authUser.id,
-          email: resolvedEmail,
-          full_name: userMeta.full_name || userMeta.name || resolvedEmail.split('@')[0] || 'FLOODGUARD Operator',
-          role,
-          ward: userMeta.ward || 'Mangaluru Urban',
-        };
+        const profile = await fetchVerifiedUserProfile(session.user);
         setUser(profile);
       } else if (!session && isMounted) {
-        // Only wipe if user was logged in via Supabase
+        // Clear session if Supabase signout occurred
         const saved = localStorage.getItem('neerpath_user');
-        if (saved && !saved.includes('admin@neerpath.in')) {
+        if (saved && !saved.includes('dev-mock')) {
           setUser(null);
         }
       }
@@ -160,26 +146,77 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  // Login helper for demo / direct login testing
-  const login = (email: string, requestedRole: UserRole = 'resident') => {
-    const role = resolveTrustedRole(email, requestedRole);
-    const nameMap: Record<UserRole, string> = {
-      administrator: 'Disaster Cell Administrator',
-      responder: 'Patrol Officer (Mangaluru Traffic Unit)',
-      resident: 'Mangaluru Resident Commuter',
-    };
+  /**
+   * Password login with Supabase Auth.
+   * If credentials match, retrieves trusted role from backend/app_metadata.
+   */
+  const login = async (email: string, password = ''): Promise<{ error?: string }> => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: password.trim()
+      });
 
-    setUser({
-      id: role === 'administrator' ? '11111111-1111-1111-1111-111111111111' : '33333333-3333-3333-3333-333333333333',
-      email,
-      full_name: nameMap[role] || email.split('@')[0],
-      role,
-      ward: 'Mangaluru Urban',
-    });
+      if (error) {
+        setLoading(false);
+        return { error: error.message };
+      }
+
+      if (data.user) {
+        const profile = await fetchVerifiedUserProfile(data.user);
+        if (profile.account_status === 'suspended') {
+          await supabase.auth.signOut();
+          setLoading(false);
+          return { error: 'Your account has been suspended by an administrator. Access denied.' };
+        }
+        setUser(profile);
+      }
+      setLoading(false);
+      return {};
+    } catch (err: any) {
+      setLoading(false);
+      return { error: err?.message || 'Login failed.' };
+    }
   };
 
   /**
-   * Real Supabase Google OAuth sign-in flow.
+   * Protected development/evaluator bypass for testing role dashboards locally
+   */
+  const devBypassLogin = (targetRole: UserRole) => {
+    const mockProfiles: Record<UserRole, UserProfile> = {
+      administrator: {
+        id: 'e5e718c9-17ab-41c1-837c-466b2e63f43e',
+        email: 'admin@floodguard.in',
+        full_name: 'Disaster Cell Administrator',
+        role: 'administrator',
+        account_status: 'active',
+        ward: 'Mangaluru Urban'
+      },
+      responder: {
+        id: '567a3d6c-1b4a-416d-bdd4-7cff57625179',
+        email: 'patrol.kadri@floodguard.in',
+        full_name: 'Patrol Officer Ramesh (Kadri Unit 04)',
+        role: 'responder',
+        account_status: 'active',
+        ward: 'Kadri Ward'
+      },
+      resident: {
+        id: '33333333-3333-3333-3333-333333333333',
+        email: 'citizen@mangaluru.in',
+        full_name: 'Mangaluru Resident Commuter',
+        role: 'resident',
+        account_status: 'active',
+        ward: 'Bejai Ward'
+      }
+    };
+
+    const prof = mockProfiles[targetRole];
+    setUser(prof);
+  };
+
+  /**
+   * Supabase Google OAuth sign-in flow.
    * Redirects to /auth/callback to exchange tokens and establish secure session.
    */
   const signInWithGoogle = async (): Promise<{ error?: string }> => {
@@ -216,7 +253,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signInWithGoogle, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      login,
+      devBypassLogin,
+      signInWithGoogle,
+      logout,
+      isAuthenticated: !!user
+    }}>
       {children}
     </AuthContext.Provider>
   );

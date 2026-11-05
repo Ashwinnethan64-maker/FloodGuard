@@ -80,6 +80,15 @@ export const InteractiveMapPage = () => {
 
       {/* Filter Toolbar & Legend Bar */}
       <div className="bg-white border border-[#e5edf5] rounded-[4px] p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+        {/* Left: Map Engine Indicator */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] font-medium">
+            <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse" />
+            <span>Leaflet + OpenStreetMap GIS</span>
+          </div>
+        </div>
+
+        {/* Middle: Corridor Filter */}
         <div className="flex items-center gap-2">
           <Filter className="w-3.5 h-3.5 text-[#64748d]" />
           <span className="font-medium text-[#50617a]">Filter Corridors:</span>

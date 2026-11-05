@@ -312,3 +312,61 @@ export const demoApiClient = {
     return res.json();
   }
 };
+
+export interface UserProfileRecord {
+  id: string;
+  email: string;
+  full_name: string;
+  role: 'administrator' | 'responder' | 'resident';
+  account_status: 'active' | 'pending' | 'suspended';
+  avatar_url?: string;
+  created_at?: string;
+  last_sign_in_at?: string;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  action: string;
+  actor_id: string;
+  actor_email: string;
+  target_id?: string;
+  details: string;
+  timestamp: string;
+}
+
+export const userApiClient = {
+  async getMyProfile(userId: string): Promise<UserProfileRecord> {
+    const res = await fetch(`${API_BASE}/users/me/${userId}`);
+    if (!res.ok) throw new Error(`Failed to fetch user profile: ${res.statusText}`);
+    return res.json();
+  },
+
+  async listUsers(): Promise<UserProfileRecord[]> {
+    const res = await fetch(`${API_BASE}/users`);
+    if (!res.ok) throw new Error(`Failed to list users: ${res.statusText}`);
+    return res.json();
+  },
+
+  async updateUserRole(
+    userId: string,
+    role: 'administrator' | 'responder' | 'resident',
+    accountStatus: 'active' | 'pending' | 'suspended',
+    actorId: string,
+    actorEmail: string
+  ): Promise<any> {
+    const params = new URLSearchParams({ actor_id: actorId, actor_email: actorEmail });
+    const res = await fetch(`${API_BASE}/users/role?${params.toString()}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, role, account_status: accountStatus })
+    });
+    if (!res.ok) throw new Error(`Role update failed: ${res.statusText}`);
+    return res.json();
+  },
+
+  async getAuditLogs(limit = 50): Promise<AuditLogEntry[]> {
+    const res = await fetch(`${API_BASE}/audit/logs?limit=${limit}`);
+    if (!res.ok) throw new Error(`Failed to fetch audit logs: ${res.statusText}`);
+    return res.json();
+  }
+};

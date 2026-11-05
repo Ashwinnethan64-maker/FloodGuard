@@ -25,6 +25,7 @@ from app.ai.report_classifier import report_classifier, ClassifiedReportResult
 from app.ai.image_analyzer import image_analyzer, ImageAnalysisResult
 from app.ai.ml_pipeline import flood_ml_pipeline, ModelEvaluationMetrics
 from app.services.gemini_service import gemini_service, GeminiIncidentAnalysis, GeminiRiskExplanation
+from app.services.role_service import role_service, RoleUpdateRequest, UserProfileRecord, AuditLogEntry
 from app.core.config import settings
 from app.core.supabase import upload_incident_photo_to_storage, get_supabase_client
 import httpx
@@ -656,3 +657,40 @@ async def list_registered_iot_devices():
 async def ingest_iot_telemetry(payload: IoTTelemetryPayload):
     """Ingests real-time or simulated ESP32 ultrasonic water-depth and tipping-bucket telemetry."""
     return iot_telemetry_registry.ingest_telemetry(payload)
+
+# 15. User Roles, Security & Audit Logs
+@api_router.get("/users/me/{user_id}", response_model=Optional[UserProfileRecord], tags=["Roles & Security"])
+async def get_my_profile(user_id: str):
+    """Returns the verified profile and server-enforced role for the authenticated user."""
+    profile = role_service.get_user_profile(user_id)
+    if not profile:
+        raise HTTPException(status_code=404, detail="User profile not found in Supabase Auth.")
+    return profile
+
+@api_router.get("/users", response_model=List[UserProfileRecord], tags=["Roles & Security"])
+async def list_all_users():
+    """Lists all registered users and their assigned roles (Admin only)."""
+    return role_service.list_users()
+
+@api_router.put("/users/role", tags=["Roles & Security"])
+async def update_user_role(req: RoleUpdateRequest, actor_id: str = Query(...), actor_email: str = Query(...)):
+    """Assigns or modifies a user's role and account status."""
+    actor_profile = role_service.get_user_profile(actor_id)
+    if not actor_profile or actor_profile.role != "administrator":
+        raise HTTPException(status_code=403, detail="Only verified administrators can modify roles.")
+
+    success = role_service.update_user_role(
+        target_user_id=req.user_id,
+        new_role=req.role,
+        account_status=req.account_status or "active",
+        actor_id=actor_id,
+        actor_email=actor_email
+    )
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to update user role in Supabase.")
+    return {"status": "success", "message": f"User {req.user_id} updated to {req.role} ({req.account_status})"}
+
+@api_router.get("/audit/logs", response_model=List[AuditLogEntry], tags=["Roles & Security"])
+async def get_audit_logs(limit: int = 50):
+    """Returns persistent audit log entries for administrative oversight."""
+    return role_service.get_audit_logs(limit=limit)
