@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { supabase } from '../services/supabaseClient';
 import { userApiClient } from '../services/api';
 
@@ -117,7 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     syncSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event: AuthChangeEvent, session: Session | null) => {
       if (session && session.user && isMounted) {
         const profile = await fetchVerifiedUserProfile(session.user);
         setUser(profile);
