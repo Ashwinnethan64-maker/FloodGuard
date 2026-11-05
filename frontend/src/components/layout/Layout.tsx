@@ -23,7 +23,7 @@ export const Layout = () => {
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
                   <span className="font-bold text-sm tracking-tight text-[#061b31]">
-                    NEERPATH
+                    FLOODGUARD
                   </span>
                   <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-[4px] bg-[#e8e9ff] text-[#533afd]">
                     Mangaluru
@@ -72,7 +72,7 @@ export const Layout = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-2.5">
                 <NeerpathLogo size="sm" />
-                <span className="font-bold text-sm tracking-tight text-[#061b31]">NEERPATH</span>
+                <span className="font-bold text-sm tracking-tight text-[#061b31]">FLOODGUARD</span>
               </div>
               <p className="text-xs text-[#64748d] leading-relaxed">
                 AI-powered road-level flood intelligence and emergency route management for Mangaluru.
@@ -115,7 +115,7 @@ export const Layout = () => {
           </div>
 
           <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-[#e5edf5] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748d]">
-            <span>© 2026 NEERPATH. Mangaluru Urban Road Flood Intelligence.</span>
+            <span>© 2026 FLOODGUARD. Mangaluru Urban Road Flood Intelligence.</span>
             <div className="flex items-center gap-4">
               <span>Horizon Hacks</span>
               <span>•</span>

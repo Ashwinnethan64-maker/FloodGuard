@@ -86,7 +86,7 @@ export const Sidebar = ({
             <div className="flex flex-col truncate">
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-sm tracking-tight text-[#061b31]">
-                  NEERPATH
+                  FLOODGUARD
                 </span>
                 <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-[4px] bg-[#e8e9ff] text-[#533afd]">
                   Mangaluru
@@ -292,7 +292,7 @@ export const TopContentBar = ({
 
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5 text-[11px] text-[#64748d]">
-            <Link to="/" className="hover:text-[#533afd] transition-colors">NEERPATH</Link>
+            <Link to="/" className="hover:text-[#533afd] transition-colors">FLOODGUARD</Link>
             <span>/</span>
             <span className="text-[#061b31] font-medium">{pageInfo.breadcrumb}</span>
           </div>

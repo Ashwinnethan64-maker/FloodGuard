@@ -53,7 +53,7 @@ export const DashboardPage = () => {
       setIncidents(incData);
       setWeather(weatherData);
     } catch (err: any) {
-      setError(err.message || 'Error connecting to NEERPATH Backend API');
+      setError(err.message || 'Error connecting to FLOODGUARD Backend API');
     } finally {
       setLoading(false);
       setWeatherRefreshing(false);

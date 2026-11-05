@@ -4,7 +4,7 @@ from typing import List, Union, Optional
 import json
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "NEERPATH"
+    PROJECT_NAME: str = "FLOODGUARD"
     TAGLINE: str = "Know the road. Navigate the risk."
     VERSION: str = "1.0.0"
     ENVIRONMENT: str = "development"

@@ -36,7 +36,7 @@ try {
   messaging.onBackgroundMessage((payload) => {
     console.log('[firebase-messaging-sw.js] Background Push Received:', payload);
 
-    const notificationTitle = payload.notification?.title || 'NEERPATH Flood Alert';
+    const notificationTitle = payload.notification?.title || 'FLOODGUARD Flood Alert';
     const notificationOptions = {
       body: payload.notification?.body || 'Road condition update in Mangaluru.',
       icon: '/favicon.svg',

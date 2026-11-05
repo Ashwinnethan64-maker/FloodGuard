@@ -22,7 +22,7 @@ export const SettingsPage = () => {
       const res = await requestFCMToken();
       if (res.token) {
         await apiClient.registerPushDevice(res.token, 'Resident Browser');
-        setFcmStatus('Push alerts successfully registered with NEERPATH emergency grid.');
+        setFcmStatus('Push alerts successfully registered with FLOODGUARD emergency grid.');
       } else {
         setFcmError(res.error || 'Failed to acquire notification token.');
         if (res.errorDetails) {

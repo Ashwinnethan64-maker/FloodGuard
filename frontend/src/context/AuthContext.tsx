@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const profile: UserProfile = {
             id: authUser.id,
             email: resolvedEmail,
-            full_name: userMeta.full_name || userMeta.name || resolvedEmail.split('@')[0] || 'NEERPATH Operator',
+            full_name: userMeta.full_name || userMeta.name || resolvedEmail.split('@')[0] || 'FLOODGUARD Operator',
             role,
             ward: userMeta.ward || 'Mangaluru Urban',
           };
@@ -136,7 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const profile: UserProfile = {
           id: authUser.id,
           email: resolvedEmail,
-          full_name: userMeta.full_name || userMeta.name || resolvedEmail.split('@')[0] || 'NEERPATH Operator',
+          full_name: userMeta.full_name || userMeta.name || resolvedEmail.split('@')[0] || 'FLOODGUARD Operator',
           role,
           ward: userMeta.ward || 'Mangaluru Urban',
         };

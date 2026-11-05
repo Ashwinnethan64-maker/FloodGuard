@@ -60,7 +60,7 @@ export const LoginPage = () => {
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2.5 group">
             <NeerpathLogo size="lg" className="group-hover:scale-105" />
-            <span className="text-xl font-bold tracking-tight text-[#061b31]">NEERPATH</span>
+            <span className="text-xl font-bold tracking-tight text-[#061b31]">FLOODGUARD</span>
           </Link>
           <h2 className="text-xl font-semibold text-[#061b31] tracking-tight">
             Welcome back

@@ -17,7 +17,7 @@ const sizeMap = {
 export const NeerpathLogo = ({
   className,
   size = 'md',
-  alt = 'NEERPATH Logo',
+  alt = 'FLOODGUARD Logo',
 }: LogoProps) => {
   return (
     <img

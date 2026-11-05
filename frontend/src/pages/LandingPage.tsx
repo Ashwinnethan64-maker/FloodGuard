@@ -192,7 +192,7 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* 3. HOW NEERPATH WORKS */}
+      {/* 3. HOW FLOODGUARD WORKS */}
       <section id="how-it-works" className="py-20 border-b border-[#e5edf5] bg-[#f8fafd]">
         <div className="max-w-7xl mx-auto px-6 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
@@ -264,7 +264,7 @@ export const LandingPage = () => {
                 Accurate road-level geospatial intelligence for Mangaluru
               </h2>
               <p className="text-sm text-[#64748d] leading-relaxed">
-                Unlike city-wide storm warnings, NEERPATH tracks individual road segments. Each corridor is assigned an explicit operational status backed by real coordinates and elevation profiles.
+                Unlike city-wide storm warnings, FLOODGUARD tracks individual road segments. Each corridor is assigned an explicit operational status backed by real coordinates and elevation profiles.
               </p>
 
               <div className="space-y-3 pt-2">
@@ -406,7 +406,7 @@ export const LandingPage = () => {
                 Not a black box. Transparent, physics-informed AI assessments.
               </h2>
               <p className="text-sm text-[#64748d] leading-relaxed">
-                NEERPATH incorporates Google Gemini to synthesize rainfall telemetry, historical drainage patterns, and corridor elevations into plain-language operational rationales.
+                FLOODGUARD incorporates Google Gemini to synthesize rainfall telemetry, historical drainage patterns, and corridor elevations into plain-language operational rationales.
               </p>
               <div className="p-4 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] space-y-2">
                 <div className="flex items-center gap-2 text-xs font-semibold text-[#061b31]">
@@ -488,7 +488,7 @@ export const LandingPage = () => {
                 RECOMMENDED
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#533afd]">NEERPATH Flood-Safe Route</span>
+                <span className="text-xs font-semibold text-[#533afd]">FLOODGUARD Flood-Safe Route</span>
                 <span className="text-xs text-[#64748d]">Distance: 8.9 km • Est: 23 min</span>
               </div>
               <div className="p-3 bg-[#ecfdf5] border border-[#a7f3d0] rounded-[4px] text-xs text-[#059669]">
@@ -516,7 +516,7 @@ export const LandingPage = () => {
                 Dedicated consoles for Mangaluru Traffic Police & Fire Rescue
               </h2>
               <p className="text-sm text-[#64748d] leading-relaxed">
-                Emergency services cannot afford trial-and-error routing during medical evacuation. NEERPATH equips dispatchers with guaranteed clear corridors directly to tertiary medical centers.
+                Emergency services cannot afford trial-and-error routing during medical evacuation. FLOODGUARD equips dispatchers with guaranteed clear corridors directly to tertiary medical centers.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -571,7 +571,7 @@ export const LandingPage = () => {
               Absolute distinction between measured fact and predicted risk
             </h2>
             <p className="text-sm text-[#64748d] mt-3 leading-relaxed">
-              In public safety applications, misleading precision can be hazardous. NEERPATH maintains strict transparency across every metric displayed on the platform:
+              In public safety applications, misleading precision can be hazardous. FLOODGUARD maintains strict transparency across every metric displayed on the platform:
             </p>
           </div>
 

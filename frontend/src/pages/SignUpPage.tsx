@@ -89,7 +89,7 @@ export const SignUpPage = () => {
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2.5 group">
             <NeerpathLogo size="lg" className="group-hover:scale-105" />
-            <span className="text-xl font-bold tracking-tight text-[#061b31]">NEERPATH</span>
+            <span className="text-xl font-bold tracking-tight text-[#061b31]">FLOODGUARD</span>
           </Link>
           <h2 className="text-xl font-semibold text-[#061b31] tracking-tight">
             Create an account
@@ -203,7 +203,7 @@ export const SignUpPage = () => {
                   className="mt-0.5 w-3.5 h-3.5 rounded-[2px] border-[#e5edf5] text-[#533afd] focus:ring-[#533afd]"
                 />
                 <span className="text-[11px] leading-snug">
-                  I agree to the NEERPATH terms of service, civic privacy policy, and geospatial emergency advisory guidelines.
+                  I agree to the FLOODGUARD terms of service, civic privacy policy, and geospatial emergency advisory guidelines.
                 </span>
               </label>
             </div>

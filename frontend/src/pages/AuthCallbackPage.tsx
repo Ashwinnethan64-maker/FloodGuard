@@ -117,7 +117,7 @@ export const AuthCallbackPage = () => {
         </div>
         <div>
           <h3 className="text-sm font-semibold text-[#061b31]">
-            Connecting NEERPATH Account
+            Connecting FLOODGUARD Account
           </h3>
           <p className="text-xs text-[#64748d] mt-1">
             Verifying Supabase authentication credentials & establishing secure session...

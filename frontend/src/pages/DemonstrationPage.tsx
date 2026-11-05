@@ -84,7 +84,7 @@ export const DemonstrationPage = () => {
             </span>
           </div>
           <p className="text-xs text-[#64748d] mt-1">
-            End-to-end interactive simulation proving the full NEERPATH telemetry, verification, and dynamic routing cycle.
+            End-to-end interactive simulation proving the full FLOODGUARD telemetry, verification, and dynamic routing cycle.
           </p>
         </div>
 
@@ -289,7 +289,7 @@ export const DemonstrationPage = () => {
           </div>
 
           <div className="mt-4 pt-4 border-t border-[#f1f5f9] text-[10px] text-[#64748d]">
-            NEERPATH Automated Scenario Test Harness • Mangaluru (DK District)
+            FLOODGUARD Automated Scenario Test Harness • Mangaluru (DK District)
           </div>
         </Card>
       </div>
