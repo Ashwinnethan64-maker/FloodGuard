@@ -1,4 +1,4 @@
-import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard,
@@ -74,6 +74,7 @@ export const Sidebar = ({
 }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
@@ -180,6 +181,31 @@ export const Sidebar = ({
     resident: { label: 'Citizen', color: 'bg-[#059669] text-white' }
   }[userRole];
 
+  /**
+   * Deterministic active-route evaluator:
+   * Guarantees EXACTLY ONE item is active by comparing both path and hash.
+   */
+  const currentPath = location.pathname;
+  const currentHash = location.hash; // e.g. '#incidents' or empty ''
+
+  const isItemActive = (to: string): boolean => {
+    const [targetPath, targetHash] = to.split('#');
+    const normalizedTargetHash = targetHash ? `#${targetHash}` : '';
+
+    // If target has a specific hash (e.g. /admin#incidents)
+    if (normalizedTargetHash) {
+      return currentPath === targetPath && currentHash === normalizedTargetHash;
+    }
+
+    // If target has NO hash (e.g. /admin, /responder, /dashboard)
+    // Only active if the current URL has NO hash on that path
+    if (currentHash && currentHash !== '') {
+      return false;
+    }
+
+    return currentPath === targetPath;
+  };
+
   const sidebarContent = (
     <div className="flex flex-col h-full bg-white border-r border-[#e5edf5] select-none">
       {/* Brand Header */}
@@ -227,30 +253,30 @@ export const Sidebar = ({
             )}
             {group.items.map((item) => {
               const Icon = item.icon;
+              const active = isItemActive(item.to);
+
               return (
-                <NavLink
+                <Link
                   key={item.to}
                   to={item.to}
-                  end={item.to.includes('#') ? false : true}
                   onClick={onCloseMobile}
                   title={collapsed ? item.name : undefined}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center gap-3 px-3 py-2 rounded-[4px] text-xs font-medium transition-all group relative',
-                      isActive
-                        ? 'bg-[#533afd] text-white shadow-2xs font-semibold'
-                        : 'text-[#50617a] hover:bg-[#f8fafd] hover:text-[#061b31]'
-                    )
-                  }
+                  className={cn(
+                    'flex items-center gap-3 px-3 py-2 rounded-[4px] text-xs font-medium transition-all group relative',
+                    active
+                      ? 'bg-[#533afd] text-white shadow-2xs font-semibold'
+                      : 'text-[#50617a] hover:bg-[#e8e9ff]/50 hover:text-[#533afd]'
+                  )}
                 >
                   <Icon
                     className={cn(
                       'w-4 h-4 shrink-0 transition-colors',
+                      active ? 'text-white' : 'text-[#64748d] group-hover:text-[#533afd]',
                       collapsed && 'mx-auto'
                     )}
                   />
                   {!collapsed && <span className="truncate">{item.name}</span>}
-                </NavLink>
+                </Link>
               );
             })}
           </div>

@@ -13,9 +13,11 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card, Button, Badge } from '../components/ui';
+import { useHashScroll } from '../hooks/useHashScroll';
 
 export const ResponderDashboardPage = () => {
   const { user } = useAuth();
+  useHashScroll();
   const [, setTacticalSummary] = useState<ResponderTacticalSummary | null>(null);
   const [incidents, setIncidents] = useState<FloodIncident[]>([]);
   const [alerts, setAlerts] = useState<SystemAlert[]>([]);
@@ -227,6 +229,91 @@ export const ResponderDashboardPage = () => {
                 </Button>
               </div>
             </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Road Condition Updates Section */}
+      <div id="roads" className="pt-4 space-y-4 border-t border-[#e5edf5]">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-[#061b31] flex items-center gap-2">
+              <Navigation className="w-4 h-4 text-[#533afd]" />
+              Road Condition & Barricade Directives
+            </h2>
+            <p className="text-xs text-[#64748d] mt-0.5">
+              Field barrier status for monitored arterial road links.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-center justify-between">
+            <div>
+              <div className="font-semibold text-xs text-[#061b31]">Kottara Underpass</div>
+              <div className="text-[10px] text-[#dc2626] font-medium">Barricades Deployed</div>
+            </div>
+            <Badge status="BLOCKED">BLOCKED</Badge>
+          </div>
+          <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-center justify-between">
+            <div>
+              <div className="font-semibold text-xs text-[#061b31]">Pumpwell Flyover Descent</div>
+              <div className="text-[10px] text-[#d97706] font-medium">Speed Advisory 20km/h</div>
+            </div>
+            <Badge status="CAUTION">CAUTION</Badge>
+          </div>
+          <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-center justify-between">
+            <div>
+              <div className="font-semibold text-xs text-[#061b31]">Kadri Park Arterial</div>
+              <div className="text-[10px] text-[#059669] font-medium">Clear for Traffic</div>
+            </div>
+            <Badge status="OPEN">OPEN</Badge>
+          </div>
+        </div>
+      </div>
+
+      {/* Field Verification Section */}
+      <div id="verification" className="pt-4 space-y-4 border-t border-[#e5edf5]">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-[#061b31] flex items-center gap-2">
+              <FileCheck2 className="w-4 h-4 text-[#059669]" />
+              Field Evidence Verification Queue
+            </h2>
+            <p className="text-xs text-[#64748d] mt-0.5">
+              Inspect on-site water logging, mark vehicle clearance, and submit evidence.
+            </p>
+          </div>
+        </div>
+        <p className="text-xs text-[#64748d]">
+          Select any task above to record physical tape depth measurements and trigger roadblock advisories.
+        </p>
+      </div>
+
+      {/* Completed Tasks History Section */}
+      <div id="completed" className="pt-4 space-y-4 border-t border-[#e5edf5]">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-[#061b31] flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-[#059669]" />
+              Completed Verification History
+            </h2>
+            <p className="text-xs text-[#64748d] mt-0.5">
+              Archived tasks verified or resolved by on-duty patrol units.
+            </p>
+          </div>
+          <span className="text-xs font-mono text-[#50617a]">{completedTasks.length} Completed</span>
+        </div>
+
+        <div className="bg-white border border-[#e5edf5] rounded-[4px] divide-y divide-[#f1f5f9] text-xs">
+          {completedTasks.slice(0, 4).map(ct => (
+            <div key={ct.id} className="p-3 flex items-center justify-between">
+              <div>
+                <span className="font-semibold text-[#061b31]">{ct.location_name}</span>
+                <span className="text-[11px] text-[#64748d] block">{ct.verification_notes || 'Verified on site'}</span>
+              </div>
+              <Badge status={ct.verification_status as any}>{ct.verification_status}</Badge>
+            </div>
           ))}
         </div>
       </div>

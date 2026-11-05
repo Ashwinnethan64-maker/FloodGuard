@@ -8,12 +8,16 @@ import {
   CheckCircle2, 
   XCircle, 
   Users, 
-  CloudRain 
+  CloudRain,
+  Navigation,
+  Truck
 } from 'lucide-react';
 import { Button, Badge } from '../components/ui';
+import { useHashScroll } from '../hooks/useHashScroll';
 
 export const AdminDashboardPage = () => {
   const { user } = useAuth();
+  useHashScroll();
   const [incidents, setIncidents] = useState<FloodIncident[]>([]);
   const [roads, setRoads] = useState<RoadSegment[]>([]);
   const [weather, setWeather] = useState<WeatherSummary | null>(null);
@@ -257,6 +261,80 @@ export const AdminDashboardPage = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Road Closure & Reopening Management Section */}
+      <div id="roads" className="pt-4 space-y-4 border-t border-[#e5edf5]">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-[#061b31] flex items-center gap-2">
+              <Navigation className="w-4 h-4 text-[#533afd]" />
+              Road Corridor Clearance & Closure Directives
+            </h2>
+            <p className="text-xs text-[#64748d] mt-0.5">
+              Live PostGIS corridor statuses across Mangaluru urban arterial network.
+            </p>
+          </div>
+          <span className="text-xs font-mono text-[#50617a]">{roads.length} Monitored Segments</span>
+        </div>
+
+        <div className="bg-white border border-[#e5edf5] rounded-[4px] p-4 divide-y divide-[#f1f5f9]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-3">
+            {roads.slice(0, 6).map(r => (
+              <div key={r.id} className="p-3 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] flex items-center justify-between">
+                <div>
+                  <div className="font-semibold text-xs text-[#061b31]">{r.name}</div>
+                  <div className="text-[10px] text-[#64748d]">{r.ward} • {r.elevation_meters}m elev</div>
+                </div>
+                <Badge status={r.current_status as any}>{r.current_status}</Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Responder Unit Management Section */}
+      <div id="responders" className="pt-4 space-y-4 border-t border-[#e5edf5]">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-[#061b31] flex items-center gap-2">
+              <Truck className="w-4 h-4 text-[#d97706]" />
+              Responder Units & Tactical Field Stations
+            </h2>
+            <p className="text-xs text-[#64748d] mt-0.5">
+              Authorized emergency patrol squads stationed across critical Mangaluru bottleneck sectors.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#f1f5f9]">
+              <span className="font-semibold text-xs text-[#061b31]">Kadri Patrol Unit 04</span>
+              <span className="text-[10px] bg-[#ecfdf5] text-[#059669] font-semibold px-2 py-0.5 rounded">ON STATION</span>
+            </div>
+            <p className="text-xs text-[#64748d] mt-2">Station: Pumpwell / Mahaveera Circle</p>
+            <p className="text-[11px] text-[#50617a]">Lead: Inspector Ramesh (VHF Channel 4)</p>
+          </div>
+
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#f1f5f9]">
+              <span className="font-semibold text-xs text-[#061b31]">Urwa Rescue Squad 01</span>
+              <span className="text-[10px] bg-[#ecfdf5] text-[#059669] font-semibold px-2 py-0.5 rounded">EQUIPPED</span>
+            </div>
+            <p className="text-xs text-[#64748d] mt-2">Station: Kottara Chowki Underpass</p>
+            <p className="text-[11px] text-[#50617a]">Lead: Officer Deepak (VHF Channel 2)</p>
+          </div>
+
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#f1f5f9]">
+              <span className="font-semibold text-xs text-[#061b31]">Panambur Coastal Defense</span>
+              <span className="text-[10px] bg-[#ecfdf5] text-[#059669] font-semibold px-2 py-0.5 rounded">PATROL</span>
+            </div>
+            <p className="text-xs text-[#64748d] mt-2">Station: Baikampady Industrial Canal</p>
+            <p className="text-[11px] text-[#50617a]">Lead: Officer Kiran (VHF Channel 6)</p>
           </div>
         </div>
       </div>

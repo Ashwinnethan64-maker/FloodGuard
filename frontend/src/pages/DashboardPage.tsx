@@ -26,8 +26,10 @@ import {
 } from 'recharts';
 import { Link } from 'react-router-dom';
 import { Card, Button, Badge } from '../components/ui';
+import { useHashScroll } from '../hooks/useHashScroll';
 
 export const DashboardPage = () => {
+  useHashScroll();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [roads, setRoads] = useState<RoadSegment[]>([]);
   const [incidents, setIncidents] = useState<FloodIncident[]>([]);
@@ -442,6 +444,47 @@ export const DashboardPage = () => {
             ))}
           </div>
         </Card>
+      </div>
+
+      {/* Emergency Assistance & Verified Shelters Section */}
+      <div id="emergency" className="pt-4 space-y-4 border-t border-[#e5edf5]">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-[#061b31] flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-[#dc2626]" />
+              Emergency Assistance & Verified Relief Shelters
+            </h2>
+            <p className="text-xs text-[#64748d] mt-0.5">
+              Authorized municipal relief facilities, rescue dispatch contacts, and high-ground shelters in Mangaluru.
+            </p>
+          </div>
+          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#ecfdf5] text-[#059669] border border-[#a7f3d0]">
+            Emergency Helpdesk Active
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px] space-y-2">
+            <span className="text-[10px] font-bold text-[#533afd] uppercase tracking-wider block">Shelter 01 (Central)</span>
+            <h4 className="text-xs font-semibold text-[#061b31]">Town Hall Mangaluru / Hampankatta</h4>
+            <p className="text-[11px] text-[#64748d]">High elevation zone. Capacity: 350 persons. Equipped with clean drinking water and medical triage squad.</p>
+            <div className="text-[11px] font-mono text-[#059669] pt-1">Status: Ready & Dry</div>
+          </div>
+
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px] space-y-2">
+            <span className="text-[10px] font-bold text-[#533afd] uppercase tracking-wider block">Shelter 02 (Kadri)</span>
+            <h4 className="text-xs font-semibold text-[#061b31]">Kadri Manjunatha Community Hall</h4>
+            <p className="text-[11px] text-[#64748d]">Elevated ridge. Capacity: 500 persons. Co-located with Kadri Fire & Emergency Station.</p>
+            <div className="text-[11px] font-mono text-[#059669] pt-1">Status: Operational</div>
+          </div>
+
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px] space-y-2">
+            <span className="text-[10px] font-bold text-[#dc2626] uppercase tracking-wider block">24/7 Control Room</span>
+            <h4 className="text-xs font-semibold text-[#061b31]">Mangaluru Disaster Control Cell</h4>
+            <p className="text-[11px] text-[#64748d]">Toll-Free Helpline: 1077 / 0824-2220587. Immediate dispatch for stranded vehicles & medical evacuation.</p>
+            <div className="text-[11px] font-semibold text-[#dc2626] pt-1">Direct Hotline: 112</div>
+          </div>
+        </div>
       </div>
     </div>
   );
