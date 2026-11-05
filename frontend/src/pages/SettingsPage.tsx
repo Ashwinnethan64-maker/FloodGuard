@@ -93,7 +93,7 @@ export const SettingsPage = () => {
               <div className="flex items-center justify-between p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
                 <div>
                   <span className="text-xs font-semibold text-[#061b31] block">Auto-Sync Weather Station Telemetry</span>
-                  <span className="text-[11px] text-[#64748d]">Refreshes rainfall data every 5 minutes from Open-Meteo AWS</span>
+                  <span className="text-[11px] text-[#64748d]">Refreshes rainfall data every 5 minutes from Open-Meteo Weather Grid</span>
                 </div>
                 <input type="checkbox" defaultChecked className="accent-[#533afd] rounded-[2px]" />
               </div>

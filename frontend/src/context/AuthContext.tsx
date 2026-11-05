@@ -28,15 +28,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const TRUSTED_ADMIN_EMAILS = [
   'admin@neerpath.in',
   'disaster.cell@mangaluru.gov.in',
-  'ashwinnethan@gmail.com',
-  'ashwin@neerpath.in'
+  'admin@floodguard.in',
 ];
 
 const TRUSTED_RESPONDER_DOMAINS = [
   'police.gov.in',
   'ksp.gov.in',
   'fireforce.kar.nic.in',
-  'neerpath.in'
+  'neerpath.in',
+  'floodguard.in'
 ];
 
 /**
@@ -79,14 +79,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return null;
       }
     }
-    // Default demo session for immediate exploration
-    return {
-      id: '11111111-1111-1111-1111-111111111111',
-      email: 'admin@neerpath.in',
-      full_name: 'Ashwin Nethan',
-      role: 'administrator',
-      ward: 'Mangaluru Central',
-    };
+    // Saved session exists
+    return null;
   });
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -166,13 +160,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  // Demo / Email password login helper
+  // Login helper for demo / direct login testing
   const login = (email: string, requestedRole: UserRole = 'resident') => {
     const role = resolveTrustedRole(email, requestedRole);
     const nameMap: Record<UserRole, string> = {
-      administrator: 'Ashwin Nethan (Disaster Control Admin)',
-      responder: 'Officer Ramesh Rao (Patrol Unit)',
-      resident: 'Kavitha Shenoy (Mangaluru Citizen)',
+      administrator: 'Disaster Cell Administrator',
+      responder: 'Patrol Officer (Mangaluru Traffic Unit)',
+      resident: 'Mangaluru Resident Commuter',
     };
 
     setUser({

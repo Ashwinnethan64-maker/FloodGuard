@@ -78,7 +78,7 @@ export const Layout = () => {
                 AI-powered road-level flood intelligence and emergency route management for Mangaluru.
               </p>
               <div className="text-[11px] text-[#50617a]">
-                Mangaluru Smart Monsoon Initiative — Horizon Hacks
+                Mangaluru Smart Monsoon Initiative
               </div>
             </div>
 
@@ -86,16 +86,16 @@ export const Layout = () => {
               <h4 className="text-xs font-semibold text-[#061b31] uppercase tracking-wider mb-3">Intelligence</h4>
               <ul className="space-y-2 text-xs text-[#64748d]">
                 <li><Link to="/map" className="hover:text-[#533afd] transition-colors">Interactive GIS Map</Link></li>
-                <li><Link to="/routing" className="hover:text-[#533afd] transition-colors">Flood-Aware Routing</Link></li>
-                <li><Link to="/ai-engine" className="hover:text-[#533afd] transition-colors">Gemini AI Explanations</Link></li>
-                <li><Link to="/demo" className="hover:text-[#533afd] transition-colors">Interactive Simulation</Link></li>
+                <li><Link to="/routes" className="hover:text-[#533afd] transition-colors">Flood-Aware Routing</Link></li>
+                <li><Link to="/ai-intelligence" className="hover:text-[#533afd] transition-colors">FLOODGUARD AI Explanations</Link></li>
+                <li><Link to="/live-demo" className="hover:text-[#533afd] transition-colors">Interactive Simulation</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-xs font-semibold text-[#061b31] uppercase tracking-wider mb-3">Operations</h4>
               <ul className="space-y-2 text-xs text-[#64748d]">
-                <li><Link to="/report" className="hover:text-[#533afd] transition-colors">Citizen Incident Reporting</Link></li>
+                <li><Link to="/citizen-reports" className="hover:text-[#533afd] transition-colors">Citizen Incident Reporting</Link></li>
                 <li><Link to="/responder" className="hover:text-[#533afd] transition-colors">Responder Dispatch Console</Link></li>
                 <li><Link to="/admin" className="hover:text-[#533afd] transition-colors">Disaster Cell Portal</Link></li>
                 <li><Link to="/settings" className="hover:text-[#533afd] transition-colors">Alert Preferences</Link></li>
@@ -105,7 +105,7 @@ export const Layout = () => {
             <div>
               <h4 className="text-xs font-semibold text-[#061b31] uppercase tracking-wider mb-3">Verification & Trust</h4>
               <p className="text-xs text-[#64748d] leading-relaxed mb-3">
-                Strict separation between automated AWS telemetry, machine learning risk estimations, and human verified roadblock clearances.
+                Strict separation between automated meteorological data, machine learning risk estimations, and human verified roadblock clearances.
               </p>
               <div className="flex items-center gap-1.5 text-[11px] text-[#059669]">
                 <ShieldCheck className="w-3.5 h-3.5" />
@@ -117,9 +117,7 @@ export const Layout = () => {
           <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-[#e5edf5] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748d]">
             <span>© 2026 FLOODGUARD. Mangaluru Urban Road Flood Intelligence.</span>
             <div className="flex items-center gap-4">
-              <span>Horizon Hacks</span>
-              <span>•</span>
-              <span className="text-[#061b31] font-medium">Ashwin Nethan</span>
+              <span>Smart Disaster Resilience</span>
             </div>
           </div>
         </footer>

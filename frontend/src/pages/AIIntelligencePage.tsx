@@ -132,7 +132,7 @@ export const AIIntelligencePage = () => {
               AI Flood Intelligence & Explainability Engine
             </h1>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
-              Scikit-Learn + Gemini
+              Scikit-Learn + FLOODGUARD AI
             </span>
           </div>
           <p className="text-xs text-[#64748d] mt-1">
@@ -363,17 +363,17 @@ export const AIIntelligencePage = () => {
                 </div>
               </div>
 
-              {/* Google Gemini AI Risk Explanation Briefing */}
+              {/* FLOODGUARD AI Risk Explanation Briefing */}
               <div className="p-4 rounded-[4px] bg-[#e8e9ff]/40 border border-[#d8dbff] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Bot className="w-4 h-4 text-[#533afd]" />
-                    <span className="text-xs font-semibold text-[#533afd]">Google Gemini AI • Explainable Corridor Analysis</span>
+                    <span className="text-xs font-semibold text-[#533afd]">FLOODGUARD AI Assistant • Explainable Corridor Analysis</span>
                   </div>
                   {loadingGeminiRisk && (
                     <span className="flex items-center gap-1 text-[11px] text-[#533afd]">
                       <Loader2 className="w-3 h-3 animate-spin" />
-                      Consulting Gemini...
+                      Consulting FLOODGUARD AI...
                     </span>
                   )}
                 </div>
@@ -398,7 +398,7 @@ export const AIIntelligencePage = () => {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-[#64748d]">Select a corridor to generate an explainable Gemini intelligence brief.</p>
+                  <p className="text-xs text-[#64748d]">Select a corridor to generate an explainable FLOODGUARD AI intelligence brief.</p>
                 )}
               </div>
             </div>
@@ -444,14 +444,14 @@ export const AIIntelligencePage = () => {
         </Card>
       )}
 
-      {/* Google Gemini Citizen Report Intelligence & Spam Detection Laboratory */}
+      {/* FLOODGUARD AI Citizen Report Intelligence & Spam Detection Laboratory */}
       <Card
         className="p-6"
-        title="Google Gemini AI • Citizen Report Analysis & Spam Detection"
+        title="FLOODGUARD AI Assistant • Citizen Report Analysis & Spam Detection"
         subtitle="Live natural language processing for citizen flood descriptions, estimated depth, and false report detection"
         headerAction={
           <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff]">
-            Gemini 3.5 Flash Lite
+            FLOODGUARD AI Model
           </span>
         }
       >
@@ -484,7 +484,7 @@ export const AIIntelligencePage = () => {
               size="md"
             >
               {loadingGeminiAnalysis ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-              <span>Analyze with Gemini Intelligence</span>
+              <span>Analyze with FLOODGUARD AI</span>
             </Button>
           </div>
 
@@ -493,7 +493,7 @@ export const AIIntelligencePage = () => {
             {geminiAnalysis ? (
               <div className="space-y-3 text-xs">
                 <div className="flex items-center justify-between pb-2 border-b border-[#e5edf5]">
-                  <span className="font-semibold text-[#061b31]">Gemini Classification:</span>
+                  <span className="font-semibold text-[#061b31]">AI Classification:</span>
                   <Badge status="CAUTION">{geminiAnalysis.category_suggestion}</Badge>
                 </div>
 
@@ -546,7 +546,7 @@ export const AIIntelligencePage = () => {
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-center p-8 text-[#64748d] space-y-2">
                 <Bot className="w-8 h-8 text-[#94a3b8]" />
-                <p className="text-xs">Click "Analyze with Gemini Intelligence" to test narrative parsing.</p>
+                <p className="text-xs">Click "Analyze with FLOODGUARD AI" to test narrative parsing.</p>
               </div>
             )}
           </div>

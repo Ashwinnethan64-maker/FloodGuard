@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Lock, Mail, User, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import { Button, NeerpathLogo } from '../components/ui';
 
 export const SignUpPage = () => {
-  const { login, signInWithGoogle } = useAuth();
+  const { login, signInWithGoogle, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  // If already authenticated, redirect straight to dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');

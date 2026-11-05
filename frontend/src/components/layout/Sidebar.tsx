@@ -51,15 +51,15 @@ export const Sidebar = ({
       group: 'INTELLIGENCE',
       items: [
         { name: 'Mangaluru GIS Map', to: '/map', icon: MapIcon },
-        { name: 'Flood Routes', to: '/routing', icon: Navigation },
-        { name: 'AI Intelligence', to: '/ai-engine', icon: Cpu },
+        { name: 'Flood Routes', to: '/routes', icon: Navigation },
+        { name: 'AI Intelligence', to: '/ai-intelligence', icon: Cpu },
       ],
     },
     {
       group: 'OPERATIONS',
       items: [
-        { name: 'Live Demo', to: '/demo', icon: Play },
-        { name: 'Citizen Reports', to: '/report', icon: Send },
+        { name: 'Live Demo', to: '/live-demo', icon: Play },
+        { name: 'Citizen Reports', to: '/citizen-reports', icon: Send },
         { name: 'Responder Console', to: '/responder', icon: Truck, responderOnly: true },
         { name: 'Admin Portal', to: '/admin', icon: UserCheck, adminOnly: true },
       ],
@@ -67,7 +67,7 @@ export const Sidebar = ({
     {
       group: 'PREFERENCES',
       items: [
-        { name: 'Notifications', to: '/settings#notifications', icon: Bell },
+        { name: 'Notifications', to: '/notifications', icon: Bell },
         { name: 'Settings', to: '/settings', icon: Settings },
       ],
     },
@@ -133,6 +133,7 @@ export const Sidebar = ({
                   <NavLink
                     key={item.to}
                     to={item.to}
+                    end={true}
                     onClick={onCloseMobile}
                     title={collapsed ? item.name : undefined}
                     className={({ isActive }) =>

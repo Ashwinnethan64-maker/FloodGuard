@@ -28,7 +28,7 @@ export const LandingPage = () => {
               {/* Badge Identification */}
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] bg-[#e8e9ff] text-[#533afd] text-xs font-medium border border-[#d8dbff]">
                 <Radio className="w-3.5 h-3.5 animate-pulse text-[#533afd]" />
-                <span>Mangaluru Smart Monsoon Initiative — Horizon Hacks</span>
+                <span>Mangaluru Smart Monsoon Initiative</span>
               </div>
 
               {/* Refined Left-Aligned Headline */}
@@ -68,7 +68,7 @@ export const LandingPage = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-[#533afd]" />
-                  <span>Automated AWS Telemetry</span>
+                  <span>Automated Weather Forecast Grid</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-[#d97706]" />
@@ -211,8 +211,8 @@ export const LandingPage = () => {
             {[
               {
                 step: '01',
-                title: 'AWS Telemetry & IoT',
-                desc: 'Continuous real-time ingestion from automated weather stations in Bajpe, Panambur, and Kadri.',
+                title: 'Meteorological Forecast Telemetry',
+                desc: 'Continuous real-time ingestion from Open-Meteo weather models and localized Mangaluru precipitation grid.',
                 icon: CloudRain,
               },
               {
@@ -223,7 +223,7 @@ export const LandingPage = () => {
               },
               {
                 step: '03',
-                title: 'Gemini AI Assessment',
+                title: 'FLOODGUARD AI Assistant',
                 desc: 'Risk index computation factoring rainfall intensity, road elevation, catchment runoff, and past flood history.',
                 icon: Cpu,
               },
@@ -371,7 +371,7 @@ export const LandingPage = () => {
               </div>
               <h3 className="text-sm font-semibold text-[#061b31]">2. Patrol & Admin Triage</h3>
               <p className="text-xs text-[#64748d] mt-2 leading-relaxed">
-                Traffic police patrol units and the Municipal Disaster Control Room review incoming reports alongside AWS rainfall rate readings.
+                Traffic police patrol units and the Municipal Disaster Control Room review incoming reports alongside live meteorological observations.
               </p>
               <div className="mt-4 pt-3 border-t border-[#f1f5f9] text-[11px] text-[#d97706] font-medium">
                 Under Triage & Verification
@@ -406,7 +406,7 @@ export const LandingPage = () => {
                 Not a black box. Transparent, physics-informed AI assessments.
               </h2>
               <p className="text-sm text-[#64748d] leading-relaxed">
-                FLOODGUARD incorporates Google Gemini to synthesize rainfall telemetry, historical drainage patterns, and corridor elevations into plain-language operational rationales.
+                FLOODGUARD incorporates the FLOODGUARD AI Assistant to synthesize rainfall telemetry, historical drainage patterns, and corridor elevations into plain-language operational rationales.
               </p>
               <div className="p-4 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] space-y-2">
                 <div className="flex items-center gap-2 text-xs font-semibold text-[#061b31]">
@@ -580,9 +580,9 @@ export const LandingPage = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#059669] block mb-2">
                 MEASURED FACT
               </span>
-              <h3 className="text-sm font-semibold text-[#061b31]">AWS Gauge Observations</h3>
+              <h3 className="text-sm font-semibold text-[#061b31]">Open-Meteo Weather Model Data</h3>
               <p className="text-xs text-[#64748d] mt-2 leading-relaxed">
-                Physical millimeter rainfall amounts sourced directly from calibrated meteorological stations located in Bajpe and Panambur.
+                Physical millimeter precipitation amounts sourced directly from calibrated meteorological forecast models for Mangaluru coordinates.
               </p>
             </div>
 

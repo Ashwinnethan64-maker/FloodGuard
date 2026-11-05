@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth, type UserRole } from '../context/AuthContext';
 import { Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { Button, NeerpathLogo } from '../components/ui';
 
 export const LoginPage = () => {
-  const { login, signInWithGoogle } = useAuth();
+  const { login, signInWithGoogle, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // If already authenticated, redirect straight to dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      const from = (location.state as any)?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, location]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -128,13 +137,12 @@ export const LoginPage = () => {
                 <label className="block text-xs font-medium text-[#061b31]">
                   Password
                 </label>
-                <button
-                  type="button"
-                  onClick={() => alert('Password recovery flow initiates via email.')}
+                <Link
+                  to="/forgot-password"
                   className="text-[11px] text-[#533afd] hover:text-[#7389ff] transition-colors"
                 >
                   Forgot password?
-                </button>
+                </Link>
               </div>
               <div className="relative">
                 <Lock className="w-4 h-4 text-[#64748d] absolute left-3 top-2.5" />

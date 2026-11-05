@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { demoApiClient } from '../services/api';
-import type { DemoScenarioStatus, IoTDeviceRegistration } from '../types/api';
+import type { DemoScenarioStatus } from '../types/api';
 import { 
   Play, 
   RotateCcw, 
@@ -10,28 +10,21 @@ import {
   Navigation, 
   CheckCircle2, 
   AlertTriangle,
-  Wifi,
-  Battery,
   ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Card, Button, Badge } from '../components/ui';
+import { Card, Button } from '../components/ui';
 
 export const DemonstrationPage = () => {
   const [demoStatus, setDemoStatus] = useState<DemoScenarioStatus | null>(null);
-  const [iotDevices, setIoTDevices] = useState<IoTDeviceRegistration[]>([]);
   const [, setLoading] = useState(true);
   const [triggeringStep, setTriggeringStep] = useState<number | null>(null);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [status, devices] = await Promise.all([
-        demoApiClient.getStatus(),
-        demoApiClient.getIoTDevices(),
-      ]);
+      const status = await demoApiClient.getStatus();
       setDemoStatus(status);
-      setIoTDevices(devices);
     } catch (err) {
       console.error(err);
     } finally {
@@ -293,42 +286,6 @@ export const DemonstrationPage = () => {
           </div>
         </Card>
       </div>
-
-      {/* IoT Device Ingestion Grid */}
-      <Card
-        className="p-5 flex flex-col gap-3"
-        title="Optional IoT Telemetry Ingestion Mesh (ESP32 & Ultrasonic Sensors)"
-        subtitle="MQTT / REST Ingestion ready for municipal drainage deployment"
-        headerAction={<Wifi className="w-4 h-4 text-[#533afd]" />}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {iotDevices.map(d => (
-            <div key={d.device_id} className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#061b31]">{d.device_name}</span>
-                  <Badge status="OPEN">{d.status}</Badge>
-                </div>
-                <span className="text-[10px] text-[#64748d] font-mono mt-0.5 block">{d.device_id}</span>
-                <p className="text-xs text-[#50617a] mt-2">
-                  Sensor Type: <strong className="text-[#061b31]">{d.sensor_type}</strong>
-                </p>
-                <p className="text-[11px] text-[#64748d]">
-                  Ward: {d.ward}
-                </p>
-              </div>
-
-              <div className="mt-3 pt-2 border-t border-[#e5edf5] text-[10px] text-[#64748d] flex justify-between items-center">
-                <span className="flex items-center gap-1 text-[#059669] font-medium">
-                  <Battery className="w-3.5 h-3.5" />
-                  {d.battery_percentage}% battery
-                </span>
-                <span>Firmware: {d.firmware_version}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
     </div>
   );
 };

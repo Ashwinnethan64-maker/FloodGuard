@@ -79,7 +79,7 @@ class FloodRiskEngine:
         has_weather_station: bool = True
     ) -> RoadRiskAssessment:
         now = datetime.now(timezone.utc)
-        data_sources = ["Open-Meteo AWS Telemetry", "Mangaluru Corridors PostGIS Database"]
+        data_sources = ["Open-Meteo Weather Grid", "Mangaluru Corridors PostGIS Database"]
 
         # Check data completeness
         completeness = 100.0

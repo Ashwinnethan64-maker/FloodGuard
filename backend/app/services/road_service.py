@@ -161,7 +161,7 @@ INITIAL_INCIDENTS: List[Dict[str, Any]] = [
         "verification_history": [
             {
                 "id": "vlog-001",
-                "verified_by_user": "Ashwin Nethan (Disaster Control Admin)",
+                "verified_by_user": "Disaster Cell Control Officer",
                 "action": "VERIFIED",
                 "assigned_road_status": RoadStatus.BLOCKED,
                 "notes": "Verified severe standing water (>60cm). Marked road as BLOCKED.",
