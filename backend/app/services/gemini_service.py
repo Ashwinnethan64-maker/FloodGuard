@@ -9,6 +9,7 @@ Credentials are kept exclusively on the backend.
 """
 import json
 import logging
+import time
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 from app.core.config import settings
@@ -38,6 +39,9 @@ class GeminiService:
     def __init__(self):
         self._client = None
         self._initialized = False
+        # In-memory TTL cache for high-frequency queries: {cache_key: (result, timestamp)}
+        self._cache: Dict[str, tuple[Any, float]] = {}
+        self._cache_ttl_seconds = 180  # 3 minutes
 
     def _get_client(self):
         if self._initialized:
@@ -65,49 +69,54 @@ class GeminiService:
         reported_category: str = "ROAD_INUNDATION"
     ) -> GeminiIncidentAnalysis:
         """
-        Uses Gemini to parse citizen descriptions, extract depth, classify risk, and flag suspicious submissions.
+        Uses Gemini with optimized token limits and JSON mode for sub-2s responses.
         """
+        cache_key = f"inc:{location_name}:{reported_category}:{hash(description)}"
+        now = time.time()
+        if cache_key in self._cache:
+            res, ts = self._cache[cache_key]
+            if now - ts < self._cache_ttl_seconds:
+                return res
+
         client = self._get_client()
         if not client:
             return self._heuristic_report_fallback(description, location_name, reported_category)
 
-        prompt = f"""
-You are an expert AI flood intelligence analyst for NEERPATH operating in Mangaluru, Karnataka.
-Analyze this citizen flood report:
-- Location: {location_name}
-- Citizen Reported Category: {reported_category}
-- Citizen Description: "{description}"
+        prompt = f"""You are the NEERPATH flood AI for Mangaluru.
+Analyze this report:
+Location: {location_name}
+Category: {reported_category}
+Description: "{description}"
 
-Provide an accurate, safety-oriented assessment formatted strictly as valid JSON with these keys:
+Return JSON matching this schema:
 {{
   "category_suggestion": "ROAD_INUNDATION" | "UNDERPASS_FLOODING" | "DRAIN_OVERFLOW" | "LANDSLIDE_MUDSLIDE" | "TREE_FALL_HAZARD" | "RIVER_BACKFLOW" | "GENERAL_WATERLOGGING",
   "urgency_tier": "LOW" | "MEDIUM" | "HIGH" | "CRITICAL",
   "estimated_water_depth_cm": <float or null>,
-  "passable_vehicles": {{
-    "two_wheelers": <bool>,
-    "four_wheelers": <bool>,
-    "emergency_vehicles": <bool>
-  }},
-  "key_hazards": [<list of strings>],
+  "passable_vehicles": {{"two_wheelers": <bool>, "four_wheelers": <bool>, "emergency_vehicles": <bool>}},
+  "key_hazards": [<string>],
   "is_suspicious_or_spam": <bool>,
   "suspicion_reason": <string or null>,
-  "tactical_summary": "<concise 1-2 sentence emergency dispatch summary>",
+  "tactical_summary": "<concise 1-sentence dispatch summary>",
   "confidence_score": <float between 0.5 and 0.99>
-}}
-Do not include markdown backticks or commentary, only raw JSON.
-"""
+}}"""
         try:
+            from google.genai import types
+            config = types.GenerateContentConfig(
+                response_mime_type="application/json",
+                max_output_tokens=400,
+                temperature=0.1
+            )
             response = client.models.generate_content(
                 model=settings.GEMINI_MODEL,
-                contents=prompt
+                contents=prompt,
+                config=config
             )
             raw_text = response.text.strip()
-            if raw_text.startswith("```"):
-                raw_text = raw_text.split("```")[1]
-                if raw_text.startswith("json"):
-                    raw_text = raw_text[4:].strip()
             data = json.loads(raw_text)
-            return GeminiIncidentAnalysis(**data)
+            result = GeminiIncidentAnalysis(**data)
+            self._cache[cache_key] = (result, now)
+            return result
         except Exception as exc:
             logger.warning(f"Gemini API analysis failed: {exc}. Using heuristic fallback.")
             return self._heuristic_report_fallback(description, location_name, reported_category)
@@ -122,44 +131,55 @@ Do not include markdown backticks or commentary, only raw JSON.
         current_status: str
     ) -> GeminiRiskExplanation:
         """
-        Generates explainable, conversational flood-risk insights for a specific road corridor.
+        Generates explainable, conversational flood-risk insights with caching and low latency.
         """
+        # Quantize water depth to nearest 5cm for optimal cache hits
+        depth_bucket = round(water_depth_cm / 5.0) * 5.0
+        rain_bucket = round(rainfall_rate_mm_h / 5.0) * 5.0
+        cache_key = f"risk:{road_name}:{current_status}:{depth_bucket}:{rain_bucket}"
+        now = time.time()
+        if cache_key in self._cache:
+            res, ts = self._cache[cache_key]
+            if now - ts < self._cache_ttl_seconds:
+                return res
+
         client = self._get_client()
         if not client:
             return self._heuristic_risk_fallback(road_name, ward, elevation, rainfall_rate_mm_h, water_depth_cm, current_status)
 
-        prompt = f"""
-You are the NEERPATH AI Road Safety Advisor for Mangaluru coastal district.
-Explain the flood risk for this corridor:
-- Road Name: {road_name} ({ward})
-- Elevation: {elevation} meters above MSL
-- Current Rainfall Rate: {rainfall_rate_mm_h} mm/hr
-- Observed Water Depth: {water_depth_cm} cm
-- Road Status: {current_status}
+        prompt = f"""You are the NEERPATH AI Road Safety Advisor for Mangaluru coastal district.
+Corridor: {road_name} ({ward})
+Elevation: {elevation}m MSL
+Rainfall: {rainfall_rate_mm_h} mm/hr
+Observed Water Depth: {water_depth_cm} cm
+Status: {current_status}
 
-Provide an explainable monsoon safety brief strictly as valid JSON:
+Return JSON with concise advice:
 {{
   "corridor_name": "{road_name}",
   "flood_risk_level": "LOW" | "MODERATE" | "HIGH" | "CRITICAL",
-  "geomorphology_factor": "<brief explanation of elevation and terrain drainage>",
-  "monsoon_context": "<how current rain impacts this segment>",
-  "recommended_action": "<actionable advice for commuters and responders>",
-  "alternative_route_tip": "<suggested detour or elevated bypass corridor in Mangaluru>"
-}}
-Return raw JSON only.
-"""
+  "geomorphology_factor": "<1-sentence terrain context>",
+  "monsoon_context": "<1-sentence precipitation impact>",
+  "recommended_action": "<1-sentence action advice>",
+  "alternative_route_tip": "<1-sentence elevated bypass tip in Mangaluru>"
+}}"""
         try:
+            from google.genai import types
+            config = types.GenerateContentConfig(
+                response_mime_type="application/json",
+                max_output_tokens=300,
+                temperature=0.1
+            )
             response = client.models.generate_content(
                 model=settings.GEMINI_MODEL,
-                contents=prompt
+                contents=prompt,
+                config=config
             )
             raw_text = response.text.strip()
-            if raw_text.startswith("```"):
-                raw_text = raw_text.split("```")[1]
-                if raw_text.startswith("json"):
-                    raw_text = raw_text[4:].strip()
             data = json.loads(raw_text)
-            return GeminiRiskExplanation(**data)
+            result = GeminiRiskExplanation(**data)
+            self._cache[cache_key] = (result, now)
+            return result
         except Exception as exc:
             logger.warning(f"Gemini risk explanation failed: {exc}. Using fallback.")
             return self._heuristic_risk_fallback(road_name, ward, elevation, rainfall_rate_mm_h, water_depth_cm, current_status)

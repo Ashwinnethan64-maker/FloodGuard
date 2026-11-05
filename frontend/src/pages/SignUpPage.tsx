@@ -5,7 +5,7 @@ import { Radio, Lock, Mail, User, ShieldCheck, Eye, EyeOff } from 'lucide-react'
 import { Button } from '../components/ui';
 
 export const SignUpPage = () => {
-  const { login } = useAuth();
+  const { login, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const [fullName, setFullName] = useState('');
@@ -16,6 +16,7 @@ export const SignUpPage = () => {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   // Compute password strength
   const getPasswordStrength = (pass: string) => {
@@ -66,8 +67,19 @@ export const SignUpPage = () => {
     }, 400);
   };
 
-  const handleGoogleAuth = () => {
-    alert('Google OAuth provider integration is ready for connection with the designated OAuth client ID.');
+  const handleGoogleAuth = async () => {
+    setError(null);
+    setGoogleLoading(true);
+    const { error: authError } = await signInWithGoogle();
+    setGoogleLoading(false);
+
+    if (authError) {
+      if (authError.includes('Unsupported provider') || authError.includes('provider is not enabled')) {
+        setError('Supabase Google OAuth provider is not yet enabled in the project dashboard. Please enable Google in Supabase Auth > Providers.');
+      } else {
+        setError(`Google Sign-In Error: ${authError}`);
+      }
+    }
   };
 
   return (
@@ -219,8 +231,9 @@ export const SignUpPage = () => {
           {/* Google Button */}
           <button
             type="button"
+            disabled={googleLoading}
             onClick={handleGoogleAuth}
-            className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-[4px] border border-[#e5edf5] bg-white hover:bg-[#f8fafd] text-[#061b31] text-xs font-medium transition-colors shadow-2xs"
+            className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-[4px] border border-[#e5edf5] bg-white hover:bg-[#f8fafd] text-[#061b31] text-xs font-medium transition-colors shadow-2xs disabled:opacity-60"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -240,7 +253,7 @@ export const SignUpPage = () => {
                 d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
               />
             </svg>
-            <span>Continue with Google</span>
+            <span>{googleLoading ? 'Redirecting to Google...' : 'Continue with Google'}</span>
           </button>
 
           {/* Login Link */}

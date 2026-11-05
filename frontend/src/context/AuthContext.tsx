@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { supabase } from '../services/supabaseClient';
 
 export type UserRole = 'resident' | 'responder' | 'administrator';
 
@@ -14,7 +15,8 @@ export interface UserProfile {
 interface AuthContextType {
   user: UserProfile | null;
   login: (email: string, role: UserRole) => void;
-  logout: () => void;
+  signInWithGoogle: () => Promise<{ error?: string }>;
+  logout: () => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -40,6 +42,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   });
 
+  // Listen for Supabase OAuth redirect or session restoration
+  useEffect(() => {
+    const initSupabaseSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && session.user) {
+          const authUser = session.user;
+          const userMeta = authUser.user_metadata || {};
+          const profile: UserProfile = {
+            id: authUser.id,
+            email: authUser.email || 'user@neerpath.in',
+            full_name: userMeta.full_name || userMeta.name || authUser.email?.split('@')[0] || 'NEERPATH Operator',
+            role: (userMeta.role as UserRole) || 'resident',
+            ward: userMeta.ward || 'Mangaluru Urban',
+          };
+          setUser(profile);
+        }
+      } catch (err) {
+        console.warn('[NEERPATH Auth] Error reading Supabase session:', err);
+      }
+    };
+
+    initSupabaseSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && session.user) {
+        const authUser = session.user;
+        const userMeta = authUser.user_metadata || {};
+        setUser({
+          id: authUser.id,
+          email: authUser.email || 'user@neerpath.in',
+          full_name: userMeta.full_name || userMeta.name || authUser.email?.split('@')[0] || 'NEERPATH Operator',
+          role: (userMeta.role as UserRole) || 'resident',
+          ward: userMeta.ward || 'Mangaluru Urban',
+        });
+      }
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
+
   useEffect(() => {
     if (user) {
       localStorage.setItem('neerpath_user', JSON.stringify(user));
@@ -63,12 +108,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const logout = () => {
+  const signInWithGoogle = async (): Promise<{ error?: string }> => {
+    try {
+      const redirectUrl = `${window.location.origin}/dashboard`;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+      return {};
+    } catch (err: any) {
+      return { error: err?.message || 'Failed to initialize Google Sign-In with Supabase Auth.' };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn('[NEERPATH Auth] Supabase signOut warning:', err);
+    }
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, signInWithGoogle, logout, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );
