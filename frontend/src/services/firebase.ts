@@ -51,6 +51,51 @@ export async function isPushNotificationSupported(): Promise<boolean> {
 }
 
 /**
+ * Ensures the firebase-messaging-sw.js service worker is registered AND active.
+ * Resolves the "Subscription failed - no active Service Worker" browser exception.
+ */
+async function getOrRegisterActiveServiceWorker(): Promise<ServiceWorkerRegistration> {
+  if (!('serviceWorker' in navigator)) {
+    throw new Error('Service Workers are not supported in this browser environment.');
+  }
+
+  // 1. Check existing registrations first
+  const existingRegistrations = await navigator.serviceWorker.getRegistrations();
+  let registration = existingRegistrations.find(
+    r => r.scope === window.location.origin + '/' || r.active?.scriptURL.includes('firebase-messaging-sw.js')
+  );
+
+  // 2. If not registered, register it
+  if (!registration) {
+    registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+      scope: '/'
+    });
+  }
+
+  // 3. Ensure the service worker is active before requesting PushManager subscription
+  if (registration.installing) {
+    await new Promise<void>((resolve) => {
+      const sw = registration!.installing!;
+      sw.addEventListener('statechange', function onStateChange() {
+        if (sw.state === 'activated') {
+          sw.removeEventListener('statechange', onStateChange);
+          resolve();
+        }
+      });
+    });
+  }
+
+  if (registration.waiting) {
+    // If a service worker is waiting, trigger it to activate
+    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+  }
+
+  // 4. Await navigator.serviceWorker.ready to guarantee active status
+  const readyRegistration = await navigator.serviceWorker.ready;
+  return readyRegistration;
+}
+
+/**
  * Requests browser notification permission and retrieves an FCM registration token.
  * Uses VAPID public key from VITE_FIREBASE_VAPID_KEY.
  * Gracefully handles permission denial, unsupported browsers, or missing keys.
@@ -64,13 +109,13 @@ export async function requestFCMToken(): Promise<{ token: string | null; error?:
 
   const supported = await isPushNotificationSupported();
   if (!supported) {
-    return { token: null, error: 'Push notifications not supported by this browser.', permission: currentPermission };
+    return { token: null, error: 'Push notifications are not supported by this browser.', permission: currentPermission };
   }
 
   try {
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
-      return { token: null, error: 'Notification permission was not granted by the user.', permission };
+      return { token: null, error: 'Notification permission was not granted by the browser.', permission };
     }
 
     if (!firebaseApp) {
@@ -90,14 +135,12 @@ export async function requestFCMToken(): Promise<{ token: string | null; error?:
       };
     }
 
-    // Register service worker if not already registered
-    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-      scope: '/'
-    });
+    // Ensure the service worker is active to prevent 'Subscription failed - no active Service Worker'
+    const activeRegistration = await getOrRegisterActiveServiceWorker();
 
     const token = await getToken(messagingInstance, {
       vapidKey,
-      serviceWorkerRegistration: registration,
+      serviceWorkerRegistration: activeRegistration,
     });
 
     if (token) {
@@ -130,4 +173,3 @@ export function onForegroundMessage(callback: (payload: any) => void): (() => vo
     return null;
   }
 }
-
