@@ -21,7 +21,7 @@ export const ForgotPasswordPage = () => {
 
     try {
       setLoading(true);
-      const redirectTo = `${window.location.origin}/auth/callback?type=recovery`;
+      const redirectTo = new URL('/auth/callback?type=recovery', window.location.origin).toString();
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo,
       });
