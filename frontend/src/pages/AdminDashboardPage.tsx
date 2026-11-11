@@ -132,7 +132,7 @@ export const AdminDashboardPage = () => {
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
               Disaster Management Command Center
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#533afd] text-white uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#533afd] text-white uppercase tracking-wider">
               Administrator Console
             </span>
           </div>
@@ -143,7 +143,7 @@ export const AdminDashboardPage = () => {
 
         <div className="flex items-center gap-2">
           {weather && (
-            <div className="hidden sm:flex items-center gap-2 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-[4px] text-xs">
+            <div className="hidden sm:flex items-center gap-2 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-sm text-xs">
               <CloudRain className="w-3.5 h-3.5 text-[#533afd]" />
               <span className="font-semibold text-[#061b31]">{weather.current_observation.current_precipitation_rate_mm_h} mm/h</span>
               <span className="text-[#64748d]">| {weather.monsoon_alert_level.split('-')[0]}</span>
@@ -158,25 +158,25 @@ export const AdminDashboardPage = () => {
 
       {/* Citywide Metrics Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
           <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Total Reports</span>
           <div className="text-2xl font-light text-[#061b31] mt-1">{incidents.length}</div>
           <span className="text-[11px] text-[#533afd] font-medium mt-1 block">{pendingCount} awaiting triage</span>
         </div>
 
-        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
           <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Verified Submerged</span>
           <div className="text-2xl font-light text-[#dc2626] mt-1">{verifiedCount}</div>
           <span className="text-[11px] text-[#64748d] mt-1 block">Active on public map</span>
         </div>
 
-        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
           <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Corridors Blocked</span>
           <div className="text-2xl font-light text-[#d97706] mt-1">{blockedRoads}</div>
           <span className="text-[11px] text-[#64748d] mt-1 block">{cautionRoads} flagged caution</span>
         </div>
 
-        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
           <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Registered Responders</span>
           <div className="text-2xl font-light text-[#059669] mt-1">
             {usersList.filter(u => u.role === 'responder').length || 4}
@@ -193,7 +193,7 @@ export const AdminDashboardPage = () => {
             <Badge status="CAUTION">{filteredIncidents.length} Records</Badge>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-white border border-[#e5edf5] p-1 rounded-[4px] text-xs">
+          <div className="flex items-center gap-1.5 bg-white border border-[#e5edf5] p-1 rounded-sm text-xs">
             {(['ALL', 'PENDING', 'VERIFIED', 'RESOLVED', 'REJECTED'] as const).map(st => (
               <button
                 key={st}
@@ -211,7 +211,7 @@ export const AdminDashboardPage = () => {
         </div>
 
         {/* Incidents Table */}
-        <div className="bg-white border border-[#e5edf5] rounded-[4px] overflow-hidden shadow-xs">
+        <div className="bg-white border border-[#e5edf5] rounded-sm overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-[#f8fafd] border-b border-[#e5edf5] text-[#50617a]">
@@ -280,10 +280,10 @@ export const AdminDashboardPage = () => {
           <span className="text-xs font-mono text-[#50617a]">{roads.length} Monitored Segments</span>
         </div>
 
-        <div className="bg-white border border-[#e5edf5] rounded-[4px] p-4 divide-y divide-[#f1f5f9]">
+        <div className="bg-white border border-[#e5edf5] rounded-sm p-4 divide-y divide-[#f1f5f9]">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-3">
             {roads.slice(0, 6).map(r => (
-              <div key={r.id} className="p-3 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] flex items-center justify-between">
+              <div key={r.id} className="p-3 bg-[#f8fafd] border border-[#e5edf5] rounded-sm flex items-center justify-between">
                 <div>
                   <div className="font-semibold text-xs text-[#061b31]">{r.name}</div>
                   <div className="text-[10px] text-[#64748d]">{r.ward} • {r.elevation_meters}m elev</div>
@@ -310,7 +310,7 @@ export const AdminDashboardPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
             <div className="flex items-center justify-between pb-2 border-b border-[#f1f5f9]">
               <span className="font-semibold text-xs text-[#061b31]">Kadri Patrol Unit 04</span>
               <span className="text-[10px] bg-[#ecfdf5] text-[#059669] font-semibold px-2 py-0.5 rounded">ON STATION</span>
@@ -319,7 +319,7 @@ export const AdminDashboardPage = () => {
             <p className="text-[11px] text-[#50617a]">Lead: Inspector Ramesh (VHF Channel 4)</p>
           </div>
 
-          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
             <div className="flex items-center justify-between pb-2 border-b border-[#f1f5f9]">
               <span className="font-semibold text-xs text-[#061b31]">Urwa Rescue Squad 01</span>
               <span className="text-[10px] bg-[#ecfdf5] text-[#059669] font-semibold px-2 py-0.5 rounded">EQUIPPED</span>
@@ -328,7 +328,7 @@ export const AdminDashboardPage = () => {
             <p className="text-[11px] text-[#50617a]">Lead: Officer Deepak (VHF Channel 2)</p>
           </div>
 
-          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
             <div className="flex items-center justify-between pb-2 border-b border-[#f1f5f9]">
               <span className="font-semibold text-xs text-[#061b31]">Panambur Coastal Defense</span>
               <span className="text-[10px] bg-[#ecfdf5] text-[#059669] font-semibold px-2 py-0.5 rounded">PATROL</span>
@@ -353,7 +353,7 @@ export const AdminDashboardPage = () => {
           </div>
         </div>
 
-        <div className="bg-white border border-[#e5edf5] rounded-[4px] overflow-hidden shadow-xs">
+        <div className="bg-white border border-[#e5edf5] rounded-sm overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-[#f8fafd] border-b border-[#e5edf5] text-[#50617a]">
@@ -423,7 +423,7 @@ export const AdminDashboardPage = () => {
         <h3 className="text-xs font-semibold uppercase tracking-wider text-[#061b31]">
           Security & Dispatch Audit Logs
         </h3>
-        <div className="bg-white border border-[#e5edf5] rounded-[4px] p-4 divide-y divide-[#f1f5f9] text-xs">
+        <div className="bg-white border border-[#e5edf5] rounded-sm p-4 divide-y divide-[#f1f5f9] text-xs">
           {auditLogs.map(log => (
             <div key={log.id} className="py-2 flex items-center justify-between text-[#50617a]">
               <div className="flex items-center gap-2">
@@ -452,7 +452,7 @@ export const AdminDashboardPage = () => {
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="p-3 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] space-y-1">
+              <div className="p-3 bg-[#f8fafd] border border-[#e5edf5] rounded-sm space-y-1">
                 <div><strong>Category:</strong> {selectedIncident.incident_category}</div>
                 <div><strong>Reported Water Depth:</strong> {selectedIncident.reported_water_depth}</div>
                 <div><strong>Description:</strong> {selectedIncident.description || 'None provided'}</div>
@@ -464,7 +464,7 @@ export const AdminDashboardPage = () => {
                   <img
                     src={selectedIncident.image_url}
                     alt="Flood Evidence"
-                    className="w-full h-40 object-cover rounded-[4px] border border-[#e5edf5]"
+                    className="w-full h-40 object-cover rounded-sm border border-[#e5edf5]"
                   />
                 </div>
               )}
@@ -474,7 +474,7 @@ export const AdminDashboardPage = () => {
                 <select
                   value={assignedResponder}
                   onChange={(e) => setAssignedResponder(e.target.value)}
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm p-2 text-xs"
                 >
                   <option value="Patrol Unit 04 (Kadri)">Kadri Patrol Unit 04 (Inspector Ramesh)</option>
                   <option value="Urwa Rescue Squad 01">Urwa Rescue Squad 01 (Officer Deepak)</option>
@@ -490,7 +490,7 @@ export const AdminDashboardPage = () => {
                       key={st}
                       type="button"
                       onClick={() => setTargetRoadStatus(st)}
-                      className={`flex-1 py-1.5 rounded-[4px] text-xs font-semibold border ${
+                      className={`flex-1 py-1.5 rounded-sm text-xs font-semibold border ${
                         targetRoadStatus === st
                           ? 'bg-[#533afd] text-white border-[#533afd]'
                           : 'bg-white text-[#50617a] border-[#e5edf5]'
@@ -509,7 +509,7 @@ export const AdminDashboardPage = () => {
                   value={verificationNotes}
                   onChange={(e) => setVerificationNotes(e.target.value)}
                   placeholder="Record on-site barricade order or verification rationale..."
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm p-2 text-xs"
                 />
               </div>
             </div>
@@ -563,7 +563,7 @@ export const AdminDashboardPage = () => {
                 <select
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value as any)}
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm p-2 text-xs"
                 >
                   <option value="resident">Citizen / Resident</option>
                   <option value="responder">Field Responder (Emergency Dispatch)</option>
@@ -576,7 +576,7 @@ export const AdminDashboardPage = () => {
                 <select
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value as any)}
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm p-2 text-xs"
                 >
                   <option value="active">Active</option>
                   <option value="pending">Pending Verification</option>

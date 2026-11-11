@@ -10,7 +10,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', children, icon, disabled, ...props }, ref) => {
-    const baseClasses = 'inline-flex items-center justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#533afd]/20 disabled:opacity-50 disabled:pointer-events-none rounded-[4px] border cursor-pointer';
+    const baseClasses = 'inline-flex items-center justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#533afd]/20 disabled:opacity-50 disabled:pointer-events-none rounded-sm border cursor-pointer';
     
     const sizeClasses = {
       sm: 'text-xs px-2.5 py-1.5 gap-1.5',
@@ -52,7 +52,7 @@ export const Card = ({ className, title, subtitle, headerAction, children, ...pr
   return (
     <div
       className={cn(
-        'bg-white border border-[#e5edf5] rounded-[4px] p-6 transition-all shadow-xs',
+        'bg-white border border-[#e5edf5] rounded-sm p-6 transition-all shadow-xs',
         className
       )}
       {...props}
@@ -96,7 +96,7 @@ export const Badge = ({
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2 py-0.5 rounded-[4px] text-[11px] font-medium border uppercase tracking-wider',
+        'inline-flex items-center px-2 py-0.5 rounded-sm text-[11px] font-medium border uppercase tracking-wider',
         badgeStyle,
         className
       )}

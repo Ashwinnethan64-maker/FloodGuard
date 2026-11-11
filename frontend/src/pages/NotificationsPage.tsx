@@ -71,7 +71,7 @@ export const NotificationsPage = () => {
               Emergency Dispatch & Road Notifications
             </h1>
             {unreadCount > 0 && (
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#fef2f2] text-[#dc2626] border border-[#fecaca] uppercase tracking-wider">
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#fef2f2] text-[#dc2626] border border-[#fecaca] uppercase tracking-wider">
                 {unreadCount} Unread
               </span>
             )}
@@ -111,7 +111,7 @@ export const NotificationsPage = () => {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1 rounded-[4px] text-xs font-medium transition-colors ${
+              className={`px-3 py-1 rounded-sm text-xs font-medium transition-colors ${
                 filter === f
                   ? 'bg-[#533afd] text-white shadow-xs'
                   : 'bg-white border border-[#e5edf5] text-[#50617a] hover:bg-[#f8fafd]'
@@ -145,7 +145,7 @@ export const NotificationsPage = () => {
               return (
                 <div
                   key={alert.id}
-                  className={`p-4 rounded-[4px] border transition-all flex flex-col sm:flex-row sm:items-start justify-between gap-3 ${
+                  className={`p-4 rounded-sm border transition-all flex flex-col sm:flex-row sm:items-start justify-between gap-3 ${
                     !alert.is_read
                       ? isCritical
                         ? 'bg-[#fff5f5] border-[#fecaca]'

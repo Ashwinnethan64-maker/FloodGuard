@@ -55,9 +55,9 @@ export const ForgotPasswordPage = () => {
         </div>
 
         {/* Card Container */}
-        <div className="bg-white border border-[#e5edf5] rounded-[4px] p-6 sm:p-8 shadow-xs space-y-5">
+        <div className="bg-white border border-[#e5edf5] rounded-sm p-6 sm:p-8 shadow-xs space-y-5">
           {error && (
-            <div className="p-3 bg-[#fef2f2] border border-[#fecaca] rounded-[4px] text-xs text-[#dc2626] flex items-start gap-2">
+            <div className="p-3 bg-[#fef2f2] border border-[#fecaca] rounded-sm text-xs text-[#dc2626] flex items-start gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -65,7 +65,7 @@ export const ForgotPasswordPage = () => {
 
           {success ? (
             <div className="space-y-4">
-              <div className="p-4 bg-[#ecfdf5] border border-[#a7f3d0] rounded-[4px] text-xs text-[#059669] flex items-start gap-2.5">
+              <div className="p-4 bg-[#ecfdf5] border border-[#a7f3d0] rounded-sm text-xs text-[#059669] flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
                 <div>
                   <strong className="block font-semibold">Password reset link sent</strong>
@@ -92,7 +92,7 @@ export const ForgotPasswordPage = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@organization.in"
-                    className="w-full bg-white border border-[#e5edf5] rounded-[4px] pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
+                    className="w-full bg-white border border-[#e5edf5] rounded-sm pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
                   />
                 </div>
               </div>

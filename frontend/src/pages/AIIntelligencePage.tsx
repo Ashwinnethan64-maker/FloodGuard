@@ -131,7 +131,7 @@ export const AIIntelligencePage = () => {
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
               AI Flood Intelligence & Explainability Engine
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
               Scikit-Learn + FLOODGUARD AI
             </span>
           </div>
@@ -140,14 +140,14 @@ export const AIIntelligencePage = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto text-xs bg-white border border-[#e5edf5] px-3 py-1.5 rounded-[4px]">
+        <div className="flex items-center gap-2 self-start sm:self-auto text-xs bg-white border border-[#e5edf5] px-3 py-1.5 rounded-sm">
           <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse"></span>
           <span className="text-[#061b31] font-mono text-[11px]">Model: {assessments[0]?.model_version || 'v2.4-rf'}</span>
         </div>
       </div>
 
       {/* Assumptions & Scientific Rigor Banner */}
-      <div className="p-4 rounded-[4px] bg-white border border-[#e5edf5] text-xs text-[#50617a] flex items-start gap-3">
+      <div className="p-4 rounded-sm bg-white border border-[#e5edf5] text-xs text-[#50617a] flex items-start gap-3">
         <Info className="w-4 h-4 text-[#533afd] shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <strong className="text-[#061b31]">Explainable AI & Calibration Integrity:</strong> Thresholds reflect transparent empirical physics combining rainfall intensity (Open-Meteo), soil moisture saturation (24h accumulation), PostGIS elevation profiles, and verified ground incidents. Every calculated score exposes its exact mathematical factor contributions.
@@ -202,14 +202,14 @@ export const AIIntelligencePage = () => {
           title="ML Architecture & Held-Out Test Evaluation"
           subtitle={`${modelInfo?.model_name || 'Random Forest Classifier'} trained on historical calibrated monsoon records`}
           headerAction={
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#ecfdf5] text-[#059669] border border-[#a7f3d0]">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#ecfdf5] text-[#059669] border border-[#a7f3d0]">
               Validated Split
             </span>
           }
         >
           {modelInfo && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-3">
-              <div className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+              <div className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
                 <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Held-Out Accuracy</span>
                 <span className="text-xl font-light text-[#059669]">
                   {(modelInfo.test_accuracy * 100).toFixed(1)}%
@@ -217,7 +217,7 @@ export const AIIntelligencePage = () => {
                 <span className="text-[10px] text-[#64748d] block mt-0.5">25% test partition</span>
               </div>
 
-              <div className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+              <div className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
                 <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Macro F1 Score</span>
                 <span className="text-xl font-light text-[#061b31]">
                   {modelInfo.test_f1_macro.toFixed(2)}
@@ -225,7 +225,7 @@ export const AIIntelligencePage = () => {
                 <span className="text-[10px] text-[#64748d] block mt-0.5">Balanced Precision</span>
               </div>
 
-              <div className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+              <div className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
                 <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Training Samples</span>
                 <span className="text-xl font-light text-[#533afd]">
                   {modelInfo.training_samples_count}
@@ -233,7 +233,7 @@ export const AIIntelligencePage = () => {
                 <span className="text-[10px] text-[#64748d] block mt-0.5">Calibrated records</span>
               </div>
 
-              <div className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+              <div className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
                 <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Validation Split</span>
                 <span className="text-xl font-light text-[#061b31]">
                   {modelInfo.test_samples_count}
@@ -278,7 +278,7 @@ export const AIIntelligencePage = () => {
                   setSelectedAssessment(a);
                   fetchGeminiExplanation(a.road_id);
                 }}
-                className={`p-3 rounded-[4px] border transition-all cursor-pointer flex flex-col gap-2 ${
+                className={`p-3 rounded-sm border transition-all cursor-pointer flex flex-col gap-2 ${
                   selectedAssessment?.road_id === a.road_id
                     ? 'bg-[#e8e9ff]/50 border-[#533afd]'
                     : 'bg-[#f8fafd] border-[#e5edf5] hover:border-[#cbd5e1]'
@@ -323,7 +323,7 @@ export const AIIntelligencePage = () => {
               </div>
 
               {/* Natural Language Explanation Synthesis */}
-              <div className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] space-y-2">
+              <div className="p-4 rounded-sm bg-[#f8fafd] border border-[#e5edf5] space-y-2">
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-[#533afd]">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Explainable AI Risk Rationale</span>
@@ -331,7 +331,7 @@ export const AIIntelligencePage = () => {
                 <p className="text-xs text-[#061b31] leading-relaxed">
                   {selectedAssessment.plain_language_explanation}
                 </p>
-                <div className="p-2.5 rounded-[4px] bg-[#fffbeb] border border-[#fde68a] text-xs text-[#d97706] font-medium">
+                <div className="p-2.5 rounded-sm bg-[#fffbeb] border border-[#fde68a] text-xs text-[#d97706] font-medium">
                   Advisory: {selectedAssessment.mitigation_advisory}
                 </div>
               </div>
@@ -344,7 +344,7 @@ export const AIIntelligencePage = () => {
 
                 <div className="flex flex-col gap-2">
                   {selectedAssessment.contributing_factors.map(f => (
-                    <div key={f.factor_name} className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+                    <div key={f.factor_name} className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
                       <div className="flex justify-between items-center text-xs mb-1">
                         <span className="font-medium text-[#061b31]">{f.factor_name}</span>
                         <span className="font-mono text-[#533afd] font-semibold">
@@ -364,7 +364,7 @@ export const AIIntelligencePage = () => {
               </div>
 
               {/* FLOODGUARD AI Risk Explanation Briefing */}
-              <div className="p-4 rounded-[4px] bg-[#e8e9ff]/40 border border-[#d8dbff] space-y-3">
+              <div className="p-4 rounded-sm bg-[#e8e9ff]/40 border border-[#d8dbff] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Bot className="w-4 h-4 text-[#533afd]" />
@@ -386,7 +386,7 @@ export const AIIntelligencePage = () => {
                     <p className="leading-relaxed">
                       <strong className="text-[#533afd]">Monsoon Context:</strong> {geminiExplanation.monsoon_context}
                     </p>
-                    <div className="p-3 rounded-[4px] bg-white border border-[#e5edf5] flex items-start gap-2 text-xs">
+                    <div className="p-3 rounded-sm bg-white border border-[#e5edf5] flex items-start gap-2 text-xs">
                       <AlertTriangle className="w-4 h-4 text-[#d97706] shrink-0 mt-0.5" />
                       <div>
                         <strong className="block text-[#061b31]">Recommended Action:</strong>
@@ -421,7 +421,7 @@ export const AIIntelligencePage = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {hotspots.vulnerability_analysis.slice(0, 3).map(h => (
-              <div key={h.corridor_id} className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] flex flex-col justify-between">
+              <div key={h.corridor_id} className="p-4 rounded-sm bg-[#f8fafd] border border-[#e5edf5] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#061b31]">{h.corridor_name}</span>
@@ -450,7 +450,7 @@ export const AIIntelligencePage = () => {
         title="FLOODGUARD AI Assistant • Citizen Report Analysis & Spam Detection"
         subtitle="Live natural language processing for citizen flood descriptions, estimated depth, and false report detection"
         headerAction={
-          <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff]">
+          <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff]">
             FLOODGUARD AI Model
           </span>
         }
@@ -464,7 +464,7 @@ export const AIIntelligencePage = () => {
                 type="text"
                 value={testLocation}
                 onChange={(e) => setTestLocation(e.target.value)}
-                className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
+                className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
               />
             </div>
 
@@ -474,7 +474,7 @@ export const AIIntelligencePage = () => {
                 rows={3}
                 value={testDescription}
                 onChange={(e) => setTestDescription(e.target.value)}
-                className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-3 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd] resize-none"
+                className="w-full bg-white border border-[#e5edf5] rounded-sm p-3 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd] resize-none"
               />
             </div>
 
@@ -489,7 +489,7 @@ export const AIIntelligencePage = () => {
           </div>
 
           {/* Analysis Results Display */}
-          <div className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] flex flex-col justify-between">
+          <div className="p-4 rounded-sm bg-[#f8fafd] border border-[#e5edf5] flex flex-col justify-between">
             {geminiAnalysis ? (
               <div className="space-y-3 text-xs">
                 <div className="flex items-center justify-between pb-2 border-b border-[#e5edf5]">
@@ -513,19 +513,19 @@ export const AIIntelligencePage = () => {
                 <div>
                   <span className="text-[11px] text-[#64748d] block mb-1">Passable Vehicle Classes:</span>
                   <div className="flex gap-2">
-                    <span className={`px-2 py-0.5 rounded-[4px] text-[10px] ${geminiAnalysis.passable_vehicles.two_wheelers ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'}`}>
+                    <span className={`px-2 py-0.5 rounded-sm text-[10px] ${geminiAnalysis.passable_vehicles.two_wheelers ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'}`}>
                       2-Wheelers: {geminiAnalysis.passable_vehicles.two_wheelers ? 'Yes' : 'No'}
                     </span>
-                    <span className={`px-2 py-0.5 rounded-[4px] text-[10px] ${geminiAnalysis.passable_vehicles.four_wheelers ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'}`}>
+                    <span className={`px-2 py-0.5 rounded-sm text-[10px] ${geminiAnalysis.passable_vehicles.four_wheelers ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'}`}>
                       4-Wheelers: {geminiAnalysis.passable_vehicles.four_wheelers ? 'Yes' : 'No'}
                     </span>
-                    <span className={`px-2 py-0.5 rounded-[4px] text-[10px] ${geminiAnalysis.passable_vehicles.emergency_vehicles ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'}`}>
+                    <span className={`px-2 py-0.5 rounded-sm text-[10px] ${geminiAnalysis.passable_vehicles.emergency_vehicles ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fef2f2] text-[#dc2626]'}`}>
                       Emergency: {geminiAnalysis.passable_vehicles.emergency_vehicles ? 'Yes' : 'No'}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-[4px] bg-white border border-[#e5edf5] text-xs">
+                <div className="p-3 rounded-sm bg-white border border-[#e5edf5] text-xs">
                   <strong className="block text-[#533afd] mb-0.5">Tactical Dispatch Summary:</strong>
                   {geminiAnalysis.tactical_summary}
                 </div>

@@ -54,7 +54,7 @@ export const IncidentDetailsPage = () => {
     return (
       <div className="max-w-xl mx-auto p-6 mt-12 text-center">
         <Card className="p-8 text-center flex flex-col items-center gap-3">
-          <div className="p-3 rounded-[4px] bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs">
+          <div className="p-3 rounded-sm bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs">
             {error || 'Incident report not found in Mangaluru registry'}
           </div>
           <Link to="/dashboard" className="mt-2">
@@ -105,7 +105,7 @@ export const IncidentDetailsPage = () => {
 
         {/* Submitted Photograph Preview */}
         {incident.image_url && (
-          <div className="w-full max-h-80 rounded-[4px] overflow-hidden border border-[#e5edf5] bg-[#f8fafd] flex items-center justify-center p-2">
+          <div className="w-full max-h-80 rounded-sm overflow-hidden border border-[#e5edf5] bg-[#f8fafd] flex items-center justify-center p-2">
             <img
               src={incident.image_url}
               alt="Submitted flood photograph"
@@ -116,7 +116,7 @@ export const IncidentDetailsPage = () => {
 
         {/* Key Indicators */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="p-3.5 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+          <div className="p-3.5 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
             <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Water Depth</span>
             <span className="text-sm font-semibold text-[#061b31] mt-1 block">
               {incident.reported_water_depth}
@@ -124,7 +124,7 @@ export const IncidentDetailsPage = () => {
             <span className="text-[10px] text-[#533afd]">~{incident.estimated_depth_cm || 20} cm</span>
           </div>
 
-          <div className="p-3.5 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+          <div className="p-3.5 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
             <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Two-Wheelers</span>
             <span className={`text-sm font-semibold mt-1 block ${
               incident.passable_two_wheelers ? 'text-[#059669]' : 'text-[#dc2626]'
@@ -134,7 +134,7 @@ export const IncidentDetailsPage = () => {
             <span className="text-[10px] text-[#64748d]">Bikes & Scooters</span>
           </div>
 
-          <div className="p-3.5 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+          <div className="p-3.5 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
             <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Four-Wheelers</span>
             <span className={`text-sm font-semibold mt-1 block ${
               incident.passable_four_wheelers ? 'text-[#059669]' : 'text-[#dc2626]'
@@ -144,7 +144,7 @@ export const IncidentDetailsPage = () => {
             <span className="text-[10px] text-[#64748d]">Cars & Sedans</span>
           </div>
 
-          <div className="p-3.5 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+          <div className="p-3.5 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
             <span className="text-[10px] text-[#64748d] uppercase tracking-wider block">Emergency Access</span>
             <span className={`text-sm font-semibold mt-1 block ${
               incident.passable_emergency_vehicles ? 'text-[#059669]' : 'text-[#dc2626]'
@@ -157,14 +157,14 @@ export const IncidentDetailsPage = () => {
 
         {/* Potential Duplicates Section */}
         {incident.potential_duplicates && incident.potential_duplicates.length > 0 && (
-          <div className="p-4 rounded-[4px] bg-[#e8e9ff] border border-[#d8dbff]">
+          <div className="p-4 rounded-sm bg-[#e8e9ff] border border-[#d8dbff]">
             <div className="flex items-center gap-2 text-[#533afd] text-xs font-semibold mb-2">
               <Copy className="w-4 h-4" />
               <span>Duplicate Detection Candidates ({incident.potential_duplicates.length})</span>
             </div>
             <div className="space-y-2">
               {incident.potential_duplicates.map(dup => (
-                <div key={dup.incident_id} className="p-2.5 rounded-[4px] bg-white border border-[#e5edf5] text-xs flex justify-between items-center">
+                <div key={dup.incident_id} className="p-2.5 rounded-sm bg-white border border-[#e5edf5] text-xs flex justify-between items-center">
                   <div>
                     <span className="font-semibold text-[#061b31]">{dup.location_name}</span>
                     <span className="text-[#64748d] ml-2 text-[11px]">({dup.reason})</span>
@@ -180,14 +180,14 @@ export const IncidentDetailsPage = () => {
 
         {/* Verification History / Audit Trail */}
         {incident.verification_history && incident.verification_history.length > 0 && (
-          <div className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] space-y-3">
+          <div className="p-4 rounded-sm bg-[#f8fafd] border border-[#e5edf5] space-y-3">
             <div className="flex items-center gap-2 text-[#061b31] text-xs font-semibold">
               <History className="w-4 h-4 text-[#533afd]" />
               <span>Verification Audit Trail</span>
             </div>
             <div className="space-y-2">
               {incident.verification_history.map(log => (
-                <div key={log.id} className="p-2.5 rounded-[4px] bg-white border border-[#e5edf5] text-xs space-y-1">
+                <div key={log.id} className="p-2.5 rounded-sm bg-white border border-[#e5edf5] text-xs space-y-1">
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-[#059669]">{log.action}</span>
                     <span className="text-[#64748d] text-[10px]">
@@ -207,13 +207,13 @@ export const IncidentDetailsPage = () => {
           <h3 className="text-xs font-semibold text-[#061b31] uppercase tracking-wider mb-2">
             Incident Description & Commuter Notes
           </h3>
-          <p className="text-xs sm:text-sm text-[#061b31] bg-[#f8fafd] p-4 rounded-[4px] border border-[#e5edf5] leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#061b31] bg-[#f8fafd] p-4 rounded-sm border border-[#e5edf5] leading-relaxed">
             {incident.description || 'No detailed citizen notes provided.'}
           </p>
         </div>
 
         {/* Spatial Metadata */}
-        <div className="p-4 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] space-y-1.5 text-xs">
+        <div className="p-4 rounded-sm bg-[#f8fafd] border border-[#e5edf5] space-y-1.5 text-xs">
           <div className="flex justify-between text-[#64748d]">
             <span>WGS84 Coordinates:</span>
             <span className="font-mono text-[#061b31]">
@@ -236,7 +236,7 @@ export const IncidentDetailsPage = () => {
 
         {/* Road Association */}
         {road && (
-          <div className="p-4 rounded-[4px] bg-[#e8e9ff]/50 border border-[#d8dbff] flex items-center justify-between">
+          <div className="p-4 rounded-sm bg-[#e8e9ff]/50 border border-[#d8dbff] flex items-center justify-between">
             <div>
               <span className="text-[10px] text-[#533afd] uppercase tracking-wider block font-semibold">
                 Associated Monitored Corridor

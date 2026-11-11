@@ -96,9 +96,9 @@ export const LoginPage = () => {
         </div>
 
         {/* Auth Card */}
-        <div className="bg-white border border-[#e5edf5] rounded-[4px] p-8 shadow-xs space-y-5">
+        <div className="bg-white border border-[#e5edf5] rounded-sm p-8 shadow-xs space-y-5">
           {error && (
-            <div className="p-3 rounded-[4px] bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs leading-relaxed">
+            <div className="p-3 rounded-sm bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs leading-relaxed">
               {error}
             </div>
           )}
@@ -115,7 +115,7 @@ export const LoginPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@organization.in"
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
                 />
               </div>
             </div>
@@ -139,7 +139,7 @@ export const LoginPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your security password"
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] pl-9 pr-9 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm pl-9 pr-9 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
                 />
                 <button
                   type="button"
@@ -189,7 +189,7 @@ export const LoginPage = () => {
             type="button"
             onClick={handleGoogleAuth}
             disabled={googleLoading}
-            className="w-full py-2.5 px-4 bg-white border border-[#e5edf5] rounded-[4px] text-xs font-semibold text-[#061b31] hover:bg-[#f8fafd] hover:border-[#cbd5e1] transition-all flex items-center justify-center gap-2.5 shadow-2xs cursor-pointer disabled:opacity-50"
+            className="w-full py-2.5 px-4 bg-white border border-[#e5edf5] rounded-sm text-xs font-semibold text-[#061b31] hover:bg-[#f8fafd] hover:border-[#cbd5e1] transition-all flex items-center justify-center gap-2.5 shadow-2xs cursor-pointer disabled:opacity-50"
           >
             {googleLoading ? (
               <div className="w-4 h-4 border-2 border-[#533afd] border-t-transparent rounded-full animate-spin" />
@@ -231,7 +231,7 @@ export const LoginPage = () => {
             </button>
 
             {showDevPanel && (
-              <div className="mt-2 p-3 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] space-y-2 animate-in fade-in">
+              <div className="mt-2 p-3 bg-[#f8fafd] border border-[#e5edf5] rounded-sm space-y-2 animate-in fade-in">
                 <p className="text-[10px] text-[#64748d]">
                   Quick test environment to inspect role-gated dashboards without bypassing production Supabase checks:
                 </p>

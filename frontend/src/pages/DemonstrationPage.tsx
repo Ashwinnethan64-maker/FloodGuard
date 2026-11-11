@@ -72,7 +72,7 @@ export const DemonstrationPage = () => {
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
               Live Guided Demonstration Console
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#fffbeb] text-[#d97706] border border-[#fde68a] uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#fffbeb] text-[#d97706] border border-[#fde68a] uppercase tracking-wider">
               Simulation Mode
             </span>
           </div>
@@ -92,7 +92,7 @@ export const DemonstrationPage = () => {
       </div>
 
       {/* Prominent Provenance Disclaimer */}
-      <div className="p-4 rounded-[4px] bg-white border border-[#e5edf5] text-xs text-[#50617a] flex items-start gap-3">
+      <div className="p-4 rounded-sm bg-white border border-[#e5edf5] text-xs text-[#50617a] flex items-start gap-3">
         <AlertTriangle className="w-4 h-4 text-[#d97706] shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <strong className="text-[#061b31]">DEMONSTRATION INTEGRITY CLAUSE:</strong> All activities triggered on this page simulate a heavy cloudburst event over Mangaluru. Records are explicitly attributed as <span className="font-semibold underline">SIMULATED DEMO</span> to prevent confusion with genuine municipal weather states.
@@ -225,7 +225,7 @@ export const DemonstrationPage = () => {
           ) : (
             <div className="flex flex-col gap-2.5">
               {demoStatus?.steps_history.map(s => (
-                <div key={s.step_number} className="p-3.5 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] flex flex-col gap-1">
+                <div key={s.step_number} className="p-3.5 rounded-sm bg-[#f8fafd] border border-[#e5edf5] flex flex-col gap-1">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#061b31]">Stage {s.step_number}: {s.title}</span>
                     <span className="text-[10px] font-mono text-[#533afd]">
@@ -253,28 +253,28 @@ export const DemonstrationPage = () => {
           <div className="space-y-2 mt-2">
             <Link
               to="/routing"
-              className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] hover:border-[#533afd] text-xs font-medium text-[#061b31] flex items-center justify-between transition-colors"
+              className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5] hover:border-[#533afd] text-xs font-medium text-[#061b31] flex items-center justify-between transition-colors"
             >
               <span>Inspect Flood Routes</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#533afd]" />
             </Link>
             <Link
               to="/admin"
-              className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] hover:border-[#533afd] text-xs font-medium text-[#061b31] flex items-center justify-between transition-colors"
+              className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5] hover:border-[#533afd] text-xs font-medium text-[#061b31] flex items-center justify-between transition-colors"
             >
               <span>Inspect Admin Verification Queue</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#533afd]" />
             </Link>
             <Link
               to="/ai-engine"
-              className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] hover:border-[#533afd] text-xs font-medium text-[#061b31] flex items-center justify-between transition-colors"
+              className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5] hover:border-[#533afd] text-xs font-medium text-[#061b31] flex items-center justify-between transition-colors"
             >
               <span>Inspect AI Risk Factor Weights</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#533afd]" />
             </Link>
             <Link
               to="/responder"
-              className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] hover:border-[#533afd] text-xs font-medium text-[#061b31] flex items-center justify-between transition-colors"
+              className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5] hover:border-[#533afd] text-xs font-medium text-[#061b31] flex items-center justify-between transition-colors"
             >
               <span>Inspect Responder Tactical Console</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#533afd]" />

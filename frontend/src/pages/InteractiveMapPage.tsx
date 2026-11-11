@@ -57,7 +57,7 @@ export const InteractiveMapPage = () => {
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
               Mangaluru Interactive GIS Map
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
               PostGIS Linestring Layer
             </span>
           </div>
@@ -67,7 +67,7 @@ export const InteractiveMapPage = () => {
         </div>
 
         {weather && (
-          <div className="flex items-center gap-3 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-[4px] text-xs text-[#061b31]">
+          <div className="flex items-center gap-3 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-sm text-xs text-[#061b31]">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse"></span>
               <span className="font-semibold">{weather.current_observation.current_precipitation_rate_mm_h} mm/hr</span>
@@ -79,10 +79,10 @@ export const InteractiveMapPage = () => {
       </div>
 
       {/* Filter Toolbar & Legend Bar */}
-      <div className="bg-white border border-[#e5edf5] rounded-[4px] p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="bg-white border border-[#e5edf5] rounded-sm p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
         {/* Left: Map Engine Indicator */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] font-medium">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] font-medium">
             <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse" />
             <span>Leaflet + OpenStreetMap GIS</span>
           </div>
@@ -96,7 +96,7 @@ export const InteractiveMapPage = () => {
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
-              className={`px-2.5 py-1 rounded-[4px] text-xs font-medium border transition-colors ${
+              className={`px-2.5 py-1 rounded-sm text-xs font-medium border transition-colors ${
                 statusFilter === st
                   ? 'bg-[#533afd] text-white border-[#533afd]'
                   : 'bg-[#f8fafd] text-[#50617a] border-[#e5edf5] hover:bg-[#e8e9ff]'
@@ -128,12 +128,12 @@ export const InteractiveMapPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-3">
           {loading ? (
-            <div className="h-[600px] w-full rounded-[4px] bg-white border border-[#e5edf5] flex items-center justify-center text-[#64748d] gap-2">
+            <div className="h-[600px] w-full rounded-sm bg-white border border-[#e5edf5] flex items-center justify-center text-[#64748d] gap-2">
               <Activity className="w-6 h-6 animate-spin text-[#533afd]" />
               <span className="text-xs">Loading Mangaluru GIS Network Layers...</span>
             </div>
           ) : (
-            <div className="bg-white border border-[#e5edf5] rounded-[4px] overflow-hidden p-1">
+            <div className="bg-white border border-[#e5edf5] rounded-sm overflow-hidden p-1">
               <MangaluruMap
                 roads={filteredRoads}
                 incidents={incidents}
@@ -164,7 +164,7 @@ export const InteractiveMapPage = () => {
                   </p>
                 </div>
 
-                <div className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] text-xs space-y-2">
+                <div className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5] text-xs space-y-2">
                   <div className="flex justify-between">
                     <span className="text-[#64748d]">Reported Depth:</span>
                     <span className="font-semibold text-[#061b31]">{selectedIncident.reported_water_depth}</span>

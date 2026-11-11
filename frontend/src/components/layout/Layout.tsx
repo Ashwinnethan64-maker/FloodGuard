@@ -25,7 +25,7 @@ export const Layout = () => {
                   <span className="font-bold text-sm tracking-tight text-[#061b31]">
                     FLOODGUARD
                   </span>
-                  <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-[4px] bg-[#e8e9ff] text-[#533afd]">
+                  <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-sm bg-[#e8e9ff] text-[#533afd]">
                     Mangaluru
                   </span>
                 </div>
@@ -46,13 +46,13 @@ export const Layout = () => {
             <div className="flex items-center gap-3">
               <Link
                 to="/login"
-                className="text-xs font-medium text-[#50617a] hover:text-[#061b31] px-3 py-1.5 rounded-[4px] transition-colors"
+                className="text-xs font-medium text-[#50617a] hover:text-[#061b31] px-3 py-1.5 rounded-sm transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 to="/dashboard"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[4px] bg-[#533afd] hover:bg-[#7389ff] text-white text-xs font-medium transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-[#533afd] hover:bg-[#7389ff] text-white text-xs font-medium transition-colors shadow-xs"
               >
                 <span>Live Grid</span>
                 <ArrowRight className="w-3.5 h-3.5" />

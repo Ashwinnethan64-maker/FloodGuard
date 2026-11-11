@@ -102,7 +102,7 @@ export const ResponderDashboardPage = () => {
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
               Field Responder Dispatch Console
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#d97706] text-white uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#d97706] text-white uppercase tracking-wider">
               Authorized Responder Desk
             </span>
           </div>
@@ -112,7 +112,7 @@ export const ResponderDashboardPage = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] px-3 py-1.5 rounded-[4px] text-xs font-medium flex items-center gap-1.5">
+          <div className="bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] px-3 py-1.5 rounded-sm text-xs font-medium flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse" />
             <span>Unit Status: Active Patrol</span>
           </div>
@@ -125,19 +125,19 @@ export const ResponderDashboardPage = () => {
 
       {/* Responder Top Priority Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
           <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Assigned Tasks</span>
           <div className="text-2xl font-light text-[#d97706] mt-1">{assignedTasks.length}</div>
           <span className="text-[11px] text-[#64748d] mt-1 block">Awaiting field inspection</span>
         </div>
 
-        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
           <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Completed Verifications</span>
           <div className="text-2xl font-light text-[#059669] mt-1">{completedTasks.length}</div>
           <span className="text-[11px] text-[#64748d] mt-1 block">Corridors secured or cleared</span>
         </div>
 
-        <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px]">
+        <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
           <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Emergency Broadcasts</span>
           <div className="text-2xl font-light text-[#533afd] mt-1">{alerts.length}</div>
           <span className="text-[11px] text-[#64748d] mt-1 block">Active weather & road alerts</span>
@@ -146,7 +146,7 @@ export const ResponderDashboardPage = () => {
 
       {/* Emergency Broadcasts Ticker */}
       {alerts.length > 0 && (
-        <div className="p-3 rounded-[4px] bg-[#fffbeb] border border-[#fde68a] text-xs flex items-center justify-between gap-3">
+        <div className="p-3 rounded-sm bg-[#fffbeb] border border-[#fde68a] text-xs flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Radio className="w-4 h-4 text-[#d97706] animate-pulse shrink-0" />
             <span className="font-semibold text-[#92400e]">Emergency Broadcast:</span>
@@ -210,7 +210,7 @@ export const ResponderDashboardPage = () => {
                     <img
                       src={task.image_url}
                       alt="Incident scene"
-                      className="w-full h-32 object-cover rounded-[4px] border border-[#e5edf5]"
+                      className="w-full h-32 object-cover rounded-sm border border-[#e5edf5]"
                     />
                   </div>
                 )}
@@ -248,21 +248,21 @@ export const ResponderDashboardPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-center justify-between">
+          <div className="p-3 bg-white border border-[#e5edf5] rounded-sm flex items-center justify-between">
             <div>
               <div className="font-semibold text-xs text-[#061b31]">Kottara Underpass</div>
               <div className="text-[10px] text-[#dc2626] font-medium">Barricades Deployed</div>
             </div>
             <Badge status="BLOCKED">BLOCKED</Badge>
           </div>
-          <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-center justify-between">
+          <div className="p-3 bg-white border border-[#e5edf5] rounded-sm flex items-center justify-between">
             <div>
               <div className="font-semibold text-xs text-[#061b31]">Pumpwell Flyover Descent</div>
               <div className="text-[10px] text-[#d97706] font-medium">Speed Advisory 20km/h</div>
             </div>
             <Badge status="CAUTION">CAUTION</Badge>
           </div>
-          <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-center justify-between">
+          <div className="p-3 bg-white border border-[#e5edf5] rounded-sm flex items-center justify-between">
             <div>
               <div className="font-semibold text-xs text-[#061b31]">Kadri Park Arterial</div>
               <div className="text-[10px] text-[#059669] font-medium">Clear for Traffic</div>
@@ -305,7 +305,7 @@ export const ResponderDashboardPage = () => {
           <span className="text-xs font-mono text-[#50617a]">{completedTasks.length} Completed</span>
         </div>
 
-        <div className="bg-white border border-[#e5edf5] rounded-[4px] divide-y divide-[#f1f5f9] text-xs">
+        <div className="bg-white border border-[#e5edf5] rounded-sm divide-y divide-[#f1f5f9] text-xs">
           {completedTasks.slice(0, 4).map(ct => (
             <div key={ct.id} className="p-3 flex items-center justify-between">
               <div>
@@ -337,7 +337,7 @@ export const ResponderDashboardPage = () => {
                   value={observedDepth}
                   onChange={(e) => setObservedDepth(e.target.value)}
                   placeholder="e.g. 50 cm standing water"
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm p-2 text-xs"
                 />
               </div>
 
@@ -349,7 +349,7 @@ export const ResponderDashboardPage = () => {
                       key={st}
                       type="button"
                       onClick={() => setRoadRecommendation(st)}
-                      className={`flex-1 py-1.5 rounded-[4px] text-xs font-semibold border ${
+                      className={`flex-1 py-1.5 rounded-sm text-xs font-semibold border ${
                         roadRecommendation === st
                           ? 'bg-[#d97706] text-white border-[#d97706]'
                           : 'bg-white text-[#50617a] border-[#e5edf5]'
@@ -367,7 +367,7 @@ export const ResponderDashboardPage = () => {
                   rows={2}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] p-2 text-xs"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm p-2 text-xs"
                 />
               </div>
             </div>

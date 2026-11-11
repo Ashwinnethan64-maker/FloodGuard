@@ -107,9 +107,9 @@ export const SignUpPage = () => {
         </div>
 
         {/* Auth Card */}
-        <div className="bg-white border border-[#e5edf5] rounded-[4px] p-8 shadow-xs space-y-5">
+        <div className="bg-white border border-[#e5edf5] rounded-sm p-8 shadow-xs space-y-5">
           {error && (
-            <div className="p-3 rounded-[4px] bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs">
+            <div className="p-3 rounded-sm bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs">
               {error}
             </div>
           )}
@@ -126,7 +126,7 @@ export const SignUpPage = () => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Kavitha Shenoy"
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
                 />
               </div>
             </div>
@@ -142,7 +142,7 @@ export const SignUpPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
                 />
               </div>
             </div>
@@ -158,7 +158,7 @@ export const SignUpPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Create a strong password"
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] pl-9 pr-9 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm pl-9 pr-9 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
                 />
                 <button
                   type="button"
@@ -196,7 +196,7 @@ export const SignUpPage = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Repeat your password"
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm pl-9 pr-3.5 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd] focus:ring-1 focus:ring-[#533afd] transition-all"
                 />
               </div>
             </div>
@@ -238,7 +238,7 @@ export const SignUpPage = () => {
             type="button"
             disabled={googleLoading}
             onClick={handleGoogleAuth}
-            className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-[4px] border border-[#e5edf5] bg-white hover:bg-[#f8fafd] text-[#061b31] text-xs font-medium transition-colors shadow-2xs disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-sm border border-[#e5edf5] bg-white hover:bg-[#f8fafd] text-[#061b31] text-xs font-medium transition-colors shadow-2xs disabled:opacity-60"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path

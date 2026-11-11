@@ -406,12 +406,12 @@ export const MangaluruMap = ({
   };
 
   return (
-    <div className="relative w-full rounded-[4px] overflow-hidden border border-[#e5edf5] bg-white shadow-xs">
+    <div className="relative w-full rounded-sm overflow-hidden border border-[#e5edf5] bg-white shadow-xs">
       {/* Top Map Control Bar */}
       <div className="absolute top-3 left-3 z-[1000] flex flex-wrap items-center gap-2 max-w-[calc(100%-80px)]">
         {/* Quick Corridor Search Dropdown */}
         <div className="relative">
-          <div className="flex items-center gap-2 bg-white/95 backdrop-blur px-3 py-1.5 rounded-[4px] border border-[#e5edf5] shadow-xs text-xs text-[#061b31]">
+          <div className="flex items-center gap-2 bg-white/95 backdrop-blur px-3 py-1.5 rounded-sm border border-[#e5edf5] shadow-xs text-xs text-[#061b31]">
             <Search className="w-3.5 h-3.5 text-[#533afd]" />
             <input
               type="text"
@@ -423,7 +423,7 @@ export const MangaluruMap = ({
           </div>
 
           {searchQuery && (
-            <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-[#e5edf5] rounded-[4px] shadow-lg py-1 z-[1100] max-h-52 overflow-y-auto">
+            <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-[#e5edf5] rounded-sm shadow-lg py-1 z-[1100] max-h-52 overflow-y-auto">
               {keyLocations
                 .filter(l => l.name.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map(loc => (
@@ -442,7 +442,7 @@ export const MangaluruMap = ({
         </div>
 
         {/* Verification Filter Selector */}
-        <div className="hidden sm:flex items-center gap-1 bg-white/95 backdrop-blur p-1 rounded-[4px] border border-[#e5edf5] text-xs shadow-xs">
+        <div className="hidden sm:flex items-center gap-1 bg-white/95 backdrop-blur p-1 rounded-sm border border-[#e5edf5] text-xs shadow-xs">
           {(['ALL', 'PENDING', 'VERIFIED', 'RESOLVED', 'REJECTED'] as const).map(vStatus => (
             <button
               key={vStatus}
@@ -464,7 +464,7 @@ export const MangaluruMap = ({
           <button
             type="button"
             onClick={handleResetView}
-            className="p-1.5 rounded-[4px] bg-white/95 backdrop-blur border border-[#e5edf5] text-[#533afd] hover:bg-[#e8e9ff] shadow-xs text-xs flex items-center gap-1"
+            className="p-1.5 rounded-sm bg-white/95 backdrop-blur border border-[#e5edf5] text-[#533afd] hover:bg-[#e8e9ff] shadow-xs text-xs flex items-center gap-1"
             title="Fit to Mangaluru Center"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -475,7 +475,7 @@ export const MangaluruMap = ({
             type="button"
             onClick={handleLocateMe}
             disabled={locatingUser}
-            className="p-1.5 rounded-[4px] bg-white/95 backdrop-blur border border-[#e5edf5] text-[#059669] hover:bg-[#ecfdf5] shadow-xs text-xs flex items-center gap-1 disabled:opacity-50"
+            className="p-1.5 rounded-sm bg-white/95 backdrop-blur border border-[#e5edf5] text-[#059669] hover:bg-[#ecfdf5] shadow-xs text-xs flex items-center gap-1 disabled:opacity-50"
             title="Locate My Position"
           >
             <Crosshair className={`w-3.5 h-3.5 ${locatingUser ? 'animate-spin' : ''}`} />
@@ -486,7 +486,7 @@ export const MangaluruMap = ({
 
       {/* Manual Pin Drop Indicator */}
       {enableManualLocationPick && (
-        <div className="absolute top-14 right-3 z-[1000] bg-[#e8e9ff] border border-[#d8dbff] text-[#533afd] px-3 py-1.5 rounded-[4px] text-xs flex items-center gap-1.5 shadow-xs font-medium">
+        <div className="absolute top-14 right-3 z-[1000] bg-[#e8e9ff] border border-[#d8dbff] text-[#533afd] px-3 py-1.5 rounded-sm text-xs flex items-center gap-1.5 shadow-xs font-medium">
           <MapPin className="w-3.5 h-3.5 animate-pulse" />
           <span>Click on map to drop hazard coordinate</span>
         </div>
@@ -509,7 +509,7 @@ export const MangaluruMap = ({
 
       {/* Bottom Floating Legend Bar */}
       <div className="absolute bottom-3 left-3 z-[1000] flex flex-wrap items-center gap-2">
-        <div className="bg-white/95 backdrop-blur px-3 py-1.5 rounded-[4px] border border-[#e5edf5] text-[11px] shadow-xs flex items-center gap-3">
+        <div className="bg-white/95 backdrop-blur px-3 py-1.5 rounded-sm border border-[#e5edf5] text-[11px] shadow-xs flex items-center gap-3">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-[2px] bg-[#dc2626]" />
             <span className="text-[#061b31] font-medium">Verified Submerged</span>
@@ -524,7 +524,7 @@ export const MangaluruMap = ({
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur px-3 py-1.5 rounded-[4px] border border-[#e5edf5] text-[11px] shadow-xs flex items-center gap-3">
+        <div className="bg-white/95 backdrop-blur px-3 py-1.5 rounded-sm border border-[#e5edf5] text-[11px] shadow-xs flex items-center gap-3">
           <label className="flex items-center gap-1.5 cursor-pointer text-[#50617a] hover:text-[#061b31]">
             <input
               type="checkbox"

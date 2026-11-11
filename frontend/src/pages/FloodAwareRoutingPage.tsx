@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { routingApiClient } from '../services/api';
 import type { RoutePlanResponse, EvaluatedRoute } from '../types/api';
 import { 
@@ -25,20 +25,7 @@ export const FloodAwareRoutingPage = () => {
   const [selectedRoute, setSelectedRoute] = useState<EvaluatedRoute | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function loadPresets() {
-      try {
-        const data = await routingApiClient.getPresets();
-        setLocations(data.locations);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    loadPresets();
-    handleCalculateRoute();
-  }, []);
-
-  const handleCalculateRoute = async () => {
+  const handleCalculateRoute = useCallback(async () => {
     try {
       setLoading(true);
       const res = await routingApiClient.planRoute(
@@ -59,7 +46,20 @@ export const FloodAwareRoutingPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [originCoords, destCoords, originName, destName, profile]);
+
+  useEffect(() => {
+    async function loadPresets() {
+      try {
+        const data = await routingApiClient.getPresets();
+        setLocations(data.locations);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadPresets();
+    handleCalculateRoute();
+  }, [handleCalculateRoute]);
 
   const handleOriginChange = (locName: string) => {
     const found = locations.find(l => l.name === locName);
@@ -86,7 +86,7 @@ export const FloodAwareRoutingPage = () => {
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
               Flood-Aware Alternative Route Engine
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
               Dijkstra + Inundation Cost
             </span>
           </div>
@@ -95,14 +95,14 @@ export const FloodAwareRoutingPage = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-[4px] text-xs text-[#061b31]">
+        <div className="flex items-center gap-2 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-sm text-xs text-[#061b31]">
           <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse"></span>
           <span className="text-[#50617a]">PostGIS Geometric Exclusion Grid</span>
         </div>
       </div>
 
       {/* Safety Notice */}
-      <div className="p-4 rounded-[4px] bg-[#fffbeb] border border-[#fde68a] text-xs text-[#92400e] flex items-start gap-3">
+      <div className="p-4 rounded-sm bg-[#fffbeb] border border-[#fde68a] text-xs text-[#92400e] flex items-start gap-3">
         <AlertTriangle className="w-4 h-4 text-[#d97706] shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <strong className="text-[#78350f]">Transit Safety Advisory:</strong> Recommended routes reflect empirical depth sensors and citizen incident reports. <span className="font-semibold underline">Safety cannot be unconditionally guaranteed.</span> Never attempt to drive through fast-moving runoff or submerged dips.
@@ -119,7 +119,7 @@ export const FloodAwareRoutingPage = () => {
             <select
               value={originName}
               onChange={(e) => handleOriginChange(e.target.value)}
-              className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
+              className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
             >
               {locations.map(l => (
                 <option key={`origin-${l.name}`} value={l.name}>{l.name}</option>
@@ -134,7 +134,7 @@ export const FloodAwareRoutingPage = () => {
             <select
               value={destName}
               onChange={(e) => handleDestChange(e.target.value)}
-              className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
+              className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
             >
               {locations.map(l => (
                 <option key={`dest-${l.name}`} value={l.name}>{l.name}</option>
@@ -150,7 +150,7 @@ export const FloodAwareRoutingPage = () => {
               <button
                 type="button"
                 onClick={() => setProfile('driving-car')}
-                className={`py-2 px-2.5 rounded-[4px] border text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
+                className={`py-2 px-2.5 rounded-sm border text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
                   profile === 'driving-car'
                     ? 'bg-[#533afd] text-white border-[#533afd]'
                     : 'bg-[#f8fafd] text-[#50617a] border-[#e5edf5] hover:bg-[#e8e9ff]'
@@ -162,7 +162,7 @@ export const FloodAwareRoutingPage = () => {
               <button
                 type="button"
                 onClick={() => setProfile('foot-walking')}
-                className={`py-2 px-2.5 rounded-[4px] border text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
+                className={`py-2 px-2.5 rounded-sm border text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
                   profile === 'foot-walking'
                     ? 'bg-[#533afd] text-white border-[#533afd]'
                     : 'bg-[#f8fafd] text-[#50617a] border-[#e5edf5] hover:bg-[#e8e9ff]'
@@ -199,7 +199,7 @@ export const FloodAwareRoutingPage = () => {
               <Activity className="w-6 h-6 animate-spin text-[#533afd]" />
             </div>
           ) : routePlan?.no_viable_route_found ? (
-            <div className="p-4 rounded-[4px] bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs text-center flex flex-col items-center gap-2">
+            <div className="p-4 rounded-sm bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs text-center flex flex-col items-center gap-2">
               <XCircle className="w-7 h-7 text-[#dc2626]" />
               <span className="font-semibold">No sufficiently reliable corridor exists.</span>
               <p className="text-[11px] text-[#64748d]">
@@ -211,7 +211,7 @@ export const FloodAwareRoutingPage = () => {
               <div
                 key={r.route_id}
                 onClick={() => setSelectedRoute(r)}
-                className={`p-3.5 rounded-[4px] border transition-all cursor-pointer flex flex-col gap-2 ${
+                className={`p-3.5 rounded-sm border transition-all cursor-pointer flex flex-col gap-2 ${
                   selectedRoute?.route_id === r.route_id
                     ? 'bg-[#e8e9ff]/50 border-[#533afd]'
                     : 'bg-[#f8fafd] border-[#e5edf5] hover:border-[#cbd5e1]'
@@ -219,7 +219,7 @@ export const FloodAwareRoutingPage = () => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-[4px] bg-[#e5edf5] text-[#061b31] font-semibold text-[10px] flex items-center justify-center">
+                    <span className="w-5 h-5 rounded-sm bg-[#e5edf5] text-[#061b31] font-semibold text-[10px] flex items-center justify-center">
                       #{r.rank}
                     </span>
                     <span className="text-xs font-semibold text-[#061b31] line-clamp-1">{r.label}</span>
@@ -294,7 +294,7 @@ export const FloodAwareRoutingPage = () => {
                   {selectedRoute.evaluated_segments.map(seg => (
                     <div
                       key={seg.segment_id}
-                      className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
+                      className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
                     >
                       <div>
                         <div className="flex items-center gap-2">
@@ -322,7 +322,7 @@ export const FloodAwareRoutingPage = () => {
               </div>
 
               {/* Route Explanation Rationale */}
-              <div className="p-3.5 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] text-xs">
+              <div className="p-3.5 rounded-sm bg-[#f8fafd] border border-[#e5edf5] text-xs">
                 <span className="font-semibold text-[#533afd] block mb-1">Route Engine Decision Rationale:</span>
                 <p className="text-[#50617a] leading-relaxed text-[11px]">
                   {selectedRoute.summary_explanation}

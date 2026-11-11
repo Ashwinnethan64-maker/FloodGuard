@@ -125,7 +125,7 @@ export const AuthCallbackPage = () => {
   if (errorMsg) {
     return (
       <div className="flex-1 min-h-[60vh] flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white border border-[#fecaca] rounded-[4px] p-6 text-center space-y-4 shadow-xs">
+        <div className="max-w-md w-full bg-white border border-[#fecaca] rounded-sm p-6 text-center space-y-4 shadow-xs">
           <div className="w-12 h-12 rounded-full bg-[#fef2f2] text-[#dc2626] mx-auto flex items-center justify-center">
             <AlertCircle className="w-6 h-6" />
           </div>
@@ -147,7 +147,7 @@ export const AuthCallbackPage = () => {
 
   return (
     <div className="flex-1 min-h-[60vh] flex items-center justify-center p-4">
-      <div className="max-w-sm w-full bg-white border border-[#e5edf5] rounded-[4px] p-8 text-center space-y-4 shadow-xs">
+      <div className="max-w-sm w-full bg-white border border-[#e5edf5] rounded-sm p-8 text-center space-y-4 shadow-xs">
         <div className="flex justify-center">
           <NeerpathLogo size="lg" />
         </div>

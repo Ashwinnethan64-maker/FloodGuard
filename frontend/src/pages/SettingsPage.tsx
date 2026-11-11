@@ -45,7 +45,7 @@ export const SettingsPage = () => {
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
               Profile & System Preferences
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
               Workstation Settings
             </span>
           </div>
@@ -58,7 +58,7 @@ export const SettingsPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Profile Card */}
         <Card className="p-6 flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-[4px] bg-[#e8e9ff] border border-[#d8dbff] text-[#533afd] flex items-center justify-center text-xl font-bold mb-3">
+          <div className="w-16 h-16 rounded-sm bg-[#e8e9ff] border border-[#d8dbff] text-[#533afd] flex items-center justify-center text-xl font-bold mb-3">
             {user?.full_name ? user.full_name[0] : 'U'}
           </div>
           <h2 className="text-sm font-semibold text-[#061b31]">{user?.full_name || 'Guest User'}</h2>
@@ -90,7 +90,7 @@ export const SettingsPage = () => {
             subtitle="Configure automatic sync and audio indicators"
           >
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+              <div className="flex items-center justify-between p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
                 <div>
                   <span className="text-xs font-semibold text-[#061b31] block">Auto-Sync Weather Station Telemetry</span>
                   <span className="text-[11px] text-[#64748d]">Refreshes rainfall data every 5 minutes from Open-Meteo Weather Grid</span>
@@ -98,7 +98,7 @@ export const SettingsPage = () => {
                 <input type="checkbox" defaultChecked className="accent-[#533afd] rounded-[2px]" />
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+              <div className="flex items-center justify-between p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
                 <div>
                   <span className="text-xs font-semibold text-[#061b31] block">Emergency Dispatch Audio Chimes</span>
                   <span className="text-[11px] text-[#64748d]">Play tone when a corridor is marked BLOCKED by admin patrol</span>
@@ -106,7 +106,7 @@ export const SettingsPage = () => {
                 <input type="checkbox" defaultChecked className="accent-[#533afd] rounded-[2px]" />
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+              <div className="flex items-center justify-between p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
                 <div>
                   <span className="text-xs font-semibold text-[#061b31] block">High Contrast GIS Cartography</span>
                   <span className="text-[11px] text-[#64748d]">Enhanced road line casing for night & heavy storm visibility</span>
@@ -139,14 +139,14 @@ export const SettingsPage = () => {
             </Button>
 
             {fcmStatus && (
-              <div className="flex items-center gap-2 text-xs text-[#059669] bg-[#ecfdf5] border border-[#a7f3d0] p-2.5 rounded-[4px]">
+              <div className="flex items-center gap-2 text-xs text-[#059669] bg-[#ecfdf5] border border-[#a7f3d0] p-2.5 rounded-sm">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>{fcmStatus}</span>
               </div>
             )}
 
             {fcmError && (
-              <div className="space-y-1.5 bg-[#fef2f2] border border-[#fecaca] p-3 rounded-[4px]">
+              <div className="space-y-1.5 bg-[#fef2f2] border border-[#fecaca] p-3 rounded-sm">
                 <div className="flex items-start gap-2 text-xs text-[#dc2626]">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                   <span className="font-medium">{fcmError}</span>

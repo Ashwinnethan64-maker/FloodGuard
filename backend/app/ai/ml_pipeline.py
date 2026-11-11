@@ -6,14 +6,19 @@ Strict Transparency Rule:
 - Does NOT claim real-world model accuracy using synthetic data.
 - Provides model metadata, training evaluation scores, and feature importances.
 """
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List, Tuple, Optional
 from pydantic import BaseModel
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score, f1_score
-import xgboost as xgb
+
+try:
+    import xgboost as xgb
+    HAS_XGBOOST = True
+except ImportError:
+    HAS_XGBOOST = False
 
 class ModelEvaluationMetrics(BaseModel):
     model_name: str

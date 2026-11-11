@@ -1,9 +1,11 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
 from typing import List, Union, Optional
 import json
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
     PROJECT_NAME: str = "FLOODGUARD"
     TAGLINE: str = "Know the road. Navigate the risk."
     VERSION: str = "1.0.0"
@@ -66,9 +68,5 @@ class Settings(BaseSettings):
     # Mangaluru Coordinates baseline
     MANGALURU_LAT: float = 12.9141
     MANGALURU_LON: float = 74.8560
-    
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
 
 settings = Settings()

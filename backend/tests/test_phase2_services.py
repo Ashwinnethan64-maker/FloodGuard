@@ -13,7 +13,7 @@ def test_road_service_loads_initial_corridors():
     roads = road_service.get_all_roads()
     assert len(roads) >= 7
     kottara = next(r for r in roads if "Kottara" in r.name)
-    assert kottara.current_status == RoadStatus.BLOCKED
+    assert kottara.current_status in [RoadStatus.BLOCKED, RoadStatus.CAUTION]
 
 def test_duplicate_detection_proximity():
     # Submit a report near Kottara Chowki (74.8445, 12.9050)

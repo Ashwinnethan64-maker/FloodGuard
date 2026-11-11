@@ -15,7 +15,7 @@ export const AuthLayout = () => {
                 <span className="font-bold text-sm tracking-tight text-[#061b31]">
                   FLOODGUARD
                 </span>
-                <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-[4px] bg-[#e8e9ff] text-[#533afd]">
+                <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-sm bg-[#e8e9ff] text-[#533afd]">
                   Mangaluru
                 </span>
               </div>

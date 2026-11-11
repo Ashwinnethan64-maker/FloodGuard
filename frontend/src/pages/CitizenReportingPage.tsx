@@ -26,7 +26,7 @@ export const CitizenReportingPage = () => {
   const [description, setDescription] = useState('');
   const [waterDepth, setWaterDepth] = useState<WaterDepthCategory>('ANKLE_DEEP');
   const [severity, setSeverity] = useState<SeverityLevel>('MEDIUM');
-  const [observedTime, setObservedTime] = useState(new Date().toISOString().slice(0, 16));
+  const [observedTime, setObservedTime] = useState(() => new Date().toISOString().slice(0, 16));
   const [passable2W, setPassable2W] = useState(true);
   const [passable4W, setPassable4W] = useState(true);
   const [passableEmergency, setPassableEmergency] = useState(true);
@@ -142,7 +142,7 @@ export const CitizenReportingPage = () => {
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
               Citizen Flood Incident Reporting
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
               Verification Triage
             </span>
           </div>
@@ -153,7 +153,7 @@ export const CitizenReportingPage = () => {
       </div>
 
       {/* Safety Notice Banner */}
-      <div className="p-4 rounded-[4px] bg-white border border-[#e5edf5] text-xs text-[#50617a] flex items-start gap-3">
+      <div className="p-4 rounded-sm bg-white border border-[#e5edf5] text-xs text-[#50617a] flex items-start gap-3">
         <Info className="w-4 h-4 text-[#533afd] shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <strong className="text-[#061b31]">Verification & Public Safety Protocol:</strong> All citizen submissions are initially recorded as <span className="font-semibold underline">PENDING</span> and <span className="font-semibold underline">UNVERIFIED</span>. Automated spatial duplicate detection groups reports for on-duty traffic patrols and the disaster control room.
@@ -172,7 +172,7 @@ export const CitizenReportingPage = () => {
         <Card className="p-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="p-3 rounded-[4px] bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs flex items-center gap-2">
+              <div className="p-3 rounded-sm bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -187,7 +187,7 @@ export const CitizenReportingPage = () => {
                 <select
                   value={incidentCategory}
                   onChange={(e) => setIncidentCategory(e.target.value as IncidentCategory)}
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
                 >
                   <option value="ROAD_INUNDATION">Road Inundation / Surface Runoff</option>
                   <option value="UNDERPASS_FLOODING">Underpass / Flyover Flooding</option>
@@ -206,7 +206,7 @@ export const CitizenReportingPage = () => {
                 <select
                   value={severity}
                   onChange={(e) => setSeverity(e.target.value as SeverityLevel)}
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
                 >
                   <option value="LOW">Low (Slow traffic, shallow puddle)</option>
                   <option value="MEDIUM">Medium (Ankle to knee water, 2W cautioned)</option>
@@ -227,7 +227,7 @@ export const CitizenReportingPage = () => {
                     type="button"
                     key={p.name}
                     onClick={() => handlePresetSelect(p)}
-                    className={`text-xs px-2.5 py-1 rounded-[4px] border transition-colors ${
+                    className={`text-xs px-2.5 py-1 rounded-sm border transition-colors ${
                       locationName === p.name
                         ? 'bg-[#533afd] text-white border-[#533afd]'
                         : 'bg-[#f8fafd] text-[#50617a] border-[#e5edf5] hover:bg-[#e8e9ff]'
@@ -250,7 +250,7 @@ export const CitizenReportingPage = () => {
                 placeholder="e.g. NH-66 Kottara Chowki Flyover Underpass"
                 value={locationName}
                 onChange={(e) => setLocationName(e.target.value)}
-                className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd]"
+                className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd]"
               />
             </div>
 
@@ -278,7 +278,7 @@ export const CitizenReportingPage = () => {
                     step="0.0001"
                     value={latitude}
                     onChange={(e) => setLatitude(parseFloat(e.target.value))}
-                    className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-1.5 text-xs text-[#061b31] font-mono focus:outline-none focus:border-[#533afd]"
+                    className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-1.5 text-xs text-[#061b31] font-mono focus:outline-none focus:border-[#533afd]"
                   />
                 </div>
                 <div>
@@ -288,13 +288,13 @@ export const CitizenReportingPage = () => {
                     step="0.0001"
                     value={longitude}
                     onChange={(e) => setLongitude(parseFloat(e.target.value))}
-                    className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-1.5 text-xs text-[#061b31] font-mono focus:outline-none focus:border-[#533afd]"
+                    className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-1.5 text-xs text-[#061b31] font-mono focus:outline-none focus:border-[#533afd]"
                   />
                 </div>
               </div>
 
               {showMapPicker && (
-                <div className="mt-2 rounded-[4px] overflow-hidden border border-[#533afd]">
+                <div className="mt-2 rounded-sm overflow-hidden border border-[#533afd]">
                   <MangaluruMap
                     roads={[]}
                     incidents={[]}
@@ -321,7 +321,7 @@ export const CitizenReportingPage = () => {
                   type="datetime-local"
                   value={observedTime}
                   onChange={(e) => setObservedTime(e.target.value)}
-                  className="w-full bg-white border border-[#e5edf5] rounded-[4px] pl-9 pr-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
+                  className="w-full bg-white border border-[#e5edf5] rounded-sm pl-9 pr-3 py-2 text-xs text-[#061b31] focus:outline-none focus:border-[#533afd]"
                 />
               </div>
             </div>
@@ -342,7 +342,7 @@ export const CitizenReportingPage = () => {
                     type="button"
                     key={d.id}
                     onClick={() => setWaterDepth(d.id as WaterDepthCategory)}
-                    className={`p-3 rounded-[4px] border text-left flex flex-col justify-between transition-colors ${
+                    className={`p-3 rounded-sm border text-left flex flex-col justify-between transition-colors ${
                       waterDepth === d.id
                         ? 'bg-[#e8e9ff] border-[#533afd] text-[#533afd]'
                         : 'bg-white border-[#e5edf5] text-[#50617a] hover:bg-[#f8fafd]'
@@ -361,7 +361,7 @@ export const CitizenReportingPage = () => {
                 Vehicle Passability Assessment
               </label>
               <div className="grid grid-cols-3 gap-3">
-                <label className={`p-3 rounded-[4px] border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+                <label className={`p-3 rounded-sm border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
                   passable2W ? 'bg-[#ecfdf5] border-[#a7f3d0] text-[#059669]' : 'bg-[#f8fafd] border-[#e5edf5] text-[#94a3b8]'
                 }`}>
                   <Bike className="w-5 h-5" />
@@ -374,7 +374,7 @@ export const CitizenReportingPage = () => {
                   />
                 </label>
 
-                <label className={`p-3 rounded-[4px] border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+                <label className={`p-3 rounded-sm border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
                   passable4W ? 'bg-[#ecfdf5] border-[#a7f3d0] text-[#059669]' : 'bg-[#f8fafd] border-[#e5edf5] text-[#94a3b8]'
                 }`}>
                   <Car className="w-5 h-5" />
@@ -387,7 +387,7 @@ export const CitizenReportingPage = () => {
                   />
                 </label>
 
-                <label className={`p-3 rounded-[4px] border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+                <label className={`p-3 rounded-sm border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
                   passableEmergency ? 'bg-[#ecfdf5] border-[#a7f3d0] text-[#059669]' : 'bg-[#f8fafd] border-[#e5edf5] text-[#94a3b8]'
                 }`}>
                   <Truck className="w-5 h-5" />
@@ -409,12 +409,12 @@ export const CitizenReportingPage = () => {
               </label>
               
               {imagePreview ? (
-                <div className="relative rounded-[4px] overflow-hidden border border-[#e5edf5] w-full sm:w-64 h-40 bg-[#f8fafd]">
+                <div className="relative rounded-sm overflow-hidden border border-[#e5edf5] w-full sm:w-64 h-40 bg-[#f8fafd]">
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
                     onClick={removeImage}
-                    className="absolute top-2 right-2 p-1 bg-white/90 rounded-[4px] text-[#dc2626] hover:bg-white shadow-xs"
+                    className="absolute top-2 right-2 p-1 bg-white/90 rounded-sm text-[#dc2626] hover:bg-white shadow-xs"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -422,7 +422,7 @@ export const CitizenReportingPage = () => {
               ) : (
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-[#e5edf5] hover:border-[#533afd] rounded-[4px] p-6 text-center cursor-pointer transition-colors flex flex-col items-center gap-1.5 bg-[#f8fafd]"
+                  className="border-2 border-dashed border-[#e5edf5] hover:border-[#533afd] rounded-sm p-6 text-center cursor-pointer transition-colors flex flex-col items-center gap-1.5 bg-[#f8fafd]"
                 >
                   <Upload className="w-6 h-6 text-[#64748d]" />
                   <span className="text-xs font-medium text-[#061b31]">Click to upload incident photo</span>
@@ -448,7 +448,7 @@ export const CitizenReportingPage = () => {
                 placeholder="e.g. Storm drain blocked near underpass, small cars stalled in knee-deep water"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd]"
+                className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd]"
               />
             </div>
 
@@ -462,7 +462,7 @@ export const CitizenReportingPage = () => {
                 placeholder="e.g. Local Citizen / Traffic Commuter"
                 value={reporterName}
                 onChange={(e) => setReporterName(e.target.value)}
-                className="w-full bg-white border border-[#e5edf5] rounded-[4px] px-3 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd]"
+                className="w-full bg-white border border-[#e5edf5] rounded-sm px-3 py-2 text-xs text-[#061b31] placeholder:text-[#94a3b8] focus:outline-none focus:border-[#533afd]"
               />
             </div>
 

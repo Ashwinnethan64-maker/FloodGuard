@@ -80,7 +80,7 @@ export const DashboardPage = () => {
   if (error) {
     return (
       <div className="p-6">
-        <div className="p-4 rounded-[4px] bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs flex items-center justify-between">
+        <div className="p-4 rounded-sm bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] text-xs flex items-center justify-between">
           <span>{error}</span>
           <Button variant="danger" size="sm" onClick={() => loadData()}>
             Retry Connection
@@ -99,7 +99,7 @@ export const DashboardPage = () => {
             <h1 className="text-xl font-light text-[#061b31] tracking-tight">
               Citizen Flood & Road Navigation Dashboard
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-[4px] bg-[#059669] text-white uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#059669] text-white uppercase tracking-wider">
               Citizen / Resident
             </span>
           </div>
@@ -202,7 +202,7 @@ export const DashboardPage = () => {
               <button
                 onClick={() => loadData(true)}
                 disabled={weatherRefreshing}
-                className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-[4px] bg-[#f8fafd] hover:bg-[#e8e9ff] text-[#533afd] border border-[#e5edf5] transition-colors"
+                className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-sm bg-[#f8fafd] hover:bg-[#e8e9ff] text-[#533afd] border border-[#e5edf5] transition-colors"
                 title="Refresh Open-Meteo observation"
               >
                 <RefreshCw className={`w-3 h-3 ${weatherRefreshing ? 'animate-spin' : ''}`} />
@@ -252,7 +252,7 @@ export const DashboardPage = () => {
             </div>
 
             <div className="mt-4 pt-3 border-t border-[#f1f5f9] space-y-2">
-              <div className="p-2.5 rounded-[4px] bg-[#fffbeb] border border-[#fde68a] text-[#d97706] text-[11px] font-medium flex items-center gap-2">
+              <div className="p-2.5 rounded-sm bg-[#fffbeb] border border-[#fde68a] text-[#d97706] text-[11px] font-medium flex items-center gap-2">
                 <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                 <span>{weather.monsoon_alert_level}</span>
               </div>
@@ -269,7 +269,7 @@ export const DashboardPage = () => {
             title="Precipitation Forecast Trend (Next 12 Hours)"
             subtitle="Probabilistic rainfall projection calibrated for Mangaluru coastal terrain"
             headerAction={
-              <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-[4px] bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff]">
+              <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff]">
                 ECMWF Model Forecast
               </span>
             }
@@ -317,7 +317,7 @@ export const DashboardPage = () => {
                 </div>
                 <div className="grid grid-cols-7 gap-1.5 text-center">
                   {weather.daily_forecast.map((df) => (
-                    <div key={df.date} className="p-2 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5]">
+                    <div key={df.date} className="p-2 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
                       <span className="block text-[10px] text-[#64748d] font-mono">
                         {df.date.split('-').slice(1).join('/')}
                       </span>
@@ -372,7 +372,7 @@ export const DashboardPage = () => {
             {roads.map((road) => (
               <div
                 key={road.id}
-                className="p-3 rounded-[4px] bg-[#f8fafd] border border-[#e5edf5] hover:border-[#cbd5e1] transition-all flex items-center justify-between gap-3"
+                className="p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5] hover:border-[#cbd5e1] transition-all flex items-center justify-between gap-3"
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -417,7 +417,7 @@ export const DashboardPage = () => {
               <div
                 key={inc.id}
                 onClick={() => setSelectedIncidentId(inc.id)}
-                className={`p-3 rounded-[4px] border transition-all cursor-pointer ${
+                className={`p-3 rounded-sm border transition-all cursor-pointer ${
                   selectedIncidentId === inc.id
                     ? 'bg-[#e8e9ff]/50 border-[#533afd]'
                     : 'bg-[#f8fafd] border-[#e5edf5] hover:border-[#cbd5e1]'
@@ -464,21 +464,21 @@ export const DashboardPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px] space-y-2">
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-sm space-y-2">
             <span className="text-[10px] font-bold text-[#533afd] uppercase tracking-wider block">Shelter 01 (Central)</span>
             <h4 className="text-xs font-semibold text-[#061b31]">Town Hall Mangaluru / Hampankatta</h4>
             <p className="text-[11px] text-[#64748d]">High elevation zone. Capacity: 350 persons. Equipped with clean drinking water and medical triage squad.</p>
             <div className="text-[11px] font-mono text-[#059669] pt-1">Status: Ready & Dry</div>
           </div>
 
-          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px] space-y-2">
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-sm space-y-2">
             <span className="text-[10px] font-bold text-[#533afd] uppercase tracking-wider block">Shelter 02 (Kadri)</span>
             <h4 className="text-xs font-semibold text-[#061b31]">Kadri Manjunatha Community Hall</h4>
             <p className="text-[11px] text-[#64748d]">Elevated ridge. Capacity: 500 persons. Co-located with Kadri Fire & Emergency Station.</p>
             <div className="text-[11px] font-mono text-[#059669] pt-1">Status: Operational</div>
           </div>
 
-          <div className="p-4 bg-white border border-[#e5edf5] rounded-[4px] space-y-2">
+          <div className="p-4 bg-white border border-[#e5edf5] rounded-sm space-y-2">
             <span className="text-[10px] font-bold text-[#dc2626] uppercase tracking-wider block">24/7 Control Room</span>
             <h4 className="text-xs font-semibold text-[#061b31]">Mangaluru Disaster Control Cell</h4>
             <p className="text-[11px] text-[#64748d]">Toll-Free Helpline: 1077 / 0824-2220587. Immediate dispatch for stranded vehicles & medical evacuation.</p>

@@ -39,7 +39,7 @@ export const TopContentBar = ({ onOpenMobile }: { onOpenMobile: () => void }) =>
       <div className="flex items-center gap-3">
         <button
           onClick={onOpenMobile}
-          className="p-1.5 rounded-[4px] hover:bg-[#f8fafd] text-[#64748d] hover:text-[#061b31] border border-[#e5edf5] md:hidden"
+          className="p-1.5 rounded-sm hover:bg-[#f8fafd] text-[#64748d] hover:text-[#061b31] border border-[#e5edf5] md:hidden"
         >
           <Menu className="w-4 h-4" />
         </button>
@@ -52,7 +52,7 @@ export const TopContentBar = ({ onOpenMobile }: { onOpenMobile: () => void }) =>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#50617a] bg-[#f8fafd] border border-[#e5edf5] px-2.5 py-1 rounded-[4px]">
+        <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#50617a] bg-[#f8fafd] border border-[#e5edf5] px-2.5 py-1 rounded-sm">
           <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse"></span>
           <span className="font-mono text-[11px]">{user?.email || 'Public'}</span>
         </div>
@@ -235,7 +235,7 @@ export const Sidebar = ({
         {/* Desktop collapse button */}
         <button
           onClick={onToggleCollapse}
-          className="hidden md:flex p-1.5 rounded-[4px] hover:bg-[#f8fafd] text-[#64748d] hover:text-[#061b31] border border-transparent hover:border-[#e5edf5] transition-colors"
+          className="hidden md:flex p-1.5 rounded-sm hover:bg-[#f8fafd] text-[#64748d] hover:text-[#061b31] border border-transparent hover:border-[#e5edf5] transition-colors"
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -262,7 +262,7 @@ export const Sidebar = ({
                   onClick={onCloseMobile}
                   title={collapsed ? item.name : undefined}
                   className={cn(
-                    'flex items-center gap-3 px-3 py-2 rounded-[4px] text-xs font-medium transition-all group relative',
+                    'flex items-center gap-3 px-3 py-2 rounded-sm text-xs font-medium transition-all group relative',
                     active
                       ? 'bg-[#533afd] text-white shadow-2xs font-semibold'
                       : 'text-[#50617a] hover:bg-[#e8e9ff]/50 hover:text-[#533afd]'
@@ -303,7 +303,7 @@ export const Sidebar = ({
 
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-[4px] bg-white border border-[#e5edf5] text-xs font-medium text-[#dc2626] hover:bg-[#fef2f2] hover:border-[#fecaca] transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-sm bg-white border border-[#e5edf5] text-xs font-medium text-[#dc2626] hover:bg-[#fef2f2] hover:border-[#fecaca] transition-colors"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>
@@ -312,7 +312,7 @@ export const Sidebar = ({
         ) : (
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center p-2 rounded-[4px] text-[#dc2626] hover:bg-[#fef2f2] transition-colors"
+            className="w-full flex items-center justify-center p-2 rounded-sm text-[#dc2626] hover:bg-[#fef2f2] transition-colors"
             title="Sign Out"
           >
             <LogOut className="w-4 h-4" />

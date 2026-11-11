@@ -26,7 +26,7 @@ export const LandingPage = () => {
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6">
               {/* Badge Identification */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] bg-[#e8e9ff] text-[#533afd] text-xs font-medium border border-[#d8dbff]">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#e8e9ff] text-[#533afd] text-xs font-medium border border-[#d8dbff]">
                 <Radio className="w-3.5 h-3.5 animate-pulse text-[#533afd]" />
                 <span>Mangaluru Smart Monsoon Initiative</span>
               </div>
@@ -79,7 +79,7 @@ export const LandingPage = () => {
 
             {/* Right Product Preview Mockup */}
             <div className="lg:col-span-5">
-              <div className="bg-white border border-[#e5edf5] rounded-[4px] shadow-sm overflow-hidden">
+              <div className="bg-white border border-[#e5edf5] rounded-sm shadow-sm overflow-hidden">
                 {/* Header bar of preview */}
                 <div className="px-4 py-3 bg-[#f8fafd] border-b border-[#e5edf5] flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -88,14 +88,14 @@ export const LandingPage = () => {
                     <div className="w-2.5 h-2.5 rounded-full bg-[#059669]" />
                     <span className="text-[11px] font-mono text-[#64748d] ml-2">mangaluru-telemetry.postgis</span>
                   </div>
-                  <span className="text-[10px] uppercase font-semibold text-[#059669] bg-[#ecfdf5] px-2 py-0.5 rounded-[4px] border border-[#a7f3d0]">
+                  <span className="text-[10px] uppercase font-semibold text-[#059669] bg-[#ecfdf5] px-2 py-0.5 rounded-sm border border-[#a7f3d0]">
                     LIVE SYNC
                   </span>
                 </div>
 
                 {/* Simulated Real Map Preview Area */}
                 <div className="p-4 space-y-3 bg-[#f8fafd]">
-                  <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-start justify-between">
+                  <div className="p-3 bg-white border border-[#e5edf5] rounded-sm flex items-start justify-between">
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-[#dc2626]" />
@@ -106,7 +106,7 @@ export const LandingPage = () => {
                     <Badge status="BLOCKED">Inundated</Badge>
                   </div>
 
-                  <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-start justify-between">
+                  <div className="p-3 bg-white border border-[#e5edf5] rounded-sm flex items-start justify-between">
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-[#d97706]" />
@@ -117,7 +117,7 @@ export const LandingPage = () => {
                     <Badge status="CAUTION">Caution</Badge>
                   </div>
 
-                  <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-start justify-between">
+                  <div className="p-3 bg-white border border-[#e5edf5] rounded-sm flex items-start justify-between">
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-[#059669]" />
@@ -159,8 +159,8 @@ export const LandingPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px]">
-              <div className="w-8 h-8 rounded-[4px] bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] flex items-center justify-center mb-4">
+            <div className="p-6 bg-[#f8fafd] border border-[#e5edf5] rounded-sm">
+              <div className="w-8 h-8 rounded-sm bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] flex items-center justify-center mb-4">
                 <AlertTriangle className="w-4 h-4" />
               </div>
               <h3 className="text-sm font-semibold text-[#061b31]">Topographical Bottlenecks</h3>
@@ -169,8 +169,8 @@ export const LandingPage = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px]">
-              <div className="w-8 h-8 rounded-[4px] bg-[#fffbeb] border border-[#fde68a] text-[#d97706] flex items-center justify-center mb-4">
+            <div className="p-6 bg-[#f8fafd] border border-[#e5edf5] rounded-sm">
+              <div className="w-8 h-8 rounded-sm bg-[#fffbeb] border border-[#fde68a] text-[#d97706] flex items-center justify-center mb-4">
                 <CloudRain className="w-4 h-4" />
               </div>
               <h3 className="text-sm font-semibold text-[#061b31]">Lack of Depth Telemetry</h3>
@@ -179,8 +179,8 @@ export const LandingPage = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px]">
-              <div className="w-8 h-8 rounded-[4px] bg-[#e8e9ff] border border-[#d8dbff] text-[#533afd] flex items-center justify-center mb-4">
+            <div className="p-6 bg-[#f8fafd] border border-[#e5edf5] rounded-sm">
+              <div className="w-8 h-8 rounded-sm bg-[#e8e9ff] border border-[#d8dbff] text-[#533afd] flex items-center justify-center mb-4">
                 <Truck className="w-4 h-4" />
               </div>
               <h3 className="text-sm font-semibold text-[#061b31]">Delayed Emergency Dispatch</h3>
@@ -236,11 +236,11 @@ export const LandingPage = () => {
             ].map((s) => {
               const Icon = s.icon;
               return (
-                <div key={s.step} className="p-6 bg-white border border-[#e5edf5] rounded-[4px] relative">
+                <div key={s.step} className="p-6 bg-white border border-[#e5edf5] rounded-sm relative">
                   <span className="text-[10px] font-mono font-bold text-[#533afd] uppercase tracking-wider block mb-3">
                     LAYER {s.step}
                   </span>
-                  <div className="w-8 h-8 rounded-[4px] bg-[#e8e9ff] text-[#533afd] flex items-center justify-center mb-4">
+                  <div className="w-8 h-8 rounded-sm bg-[#e8e9ff] text-[#533afd] flex items-center justify-center mb-4">
                     <Icon className="w-4 h-4" />
                   </div>
                   <h3 className="text-sm font-semibold text-[#061b31] mb-2">{s.title}</h3>
@@ -269,7 +269,7 @@ export const LandingPage = () => {
 
               <div className="space-y-3 pt-2">
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-[4px] bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-5 h-5 rounded-sm bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] flex items-center justify-center shrink-0 mt-0.5">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                   </div>
                   <div>
@@ -279,7 +279,7 @@ export const LandingPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-[4px] bg-[#fffbeb] border border-[#fde68a] text-[#d97706] flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-5 h-5 rounded-sm bg-[#fffbeb] border border-[#fde68a] text-[#d97706] flex items-center justify-center shrink-0 mt-0.5">
                     <AlertTriangle className="w-3.5 h-3.5" />
                   </div>
                   <div>
@@ -289,7 +289,7 @@ export const LandingPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-[4px] bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-5 h-5 rounded-sm bg-[#fef2f2] border border-[#fecaca] text-[#dc2626] flex items-center justify-center shrink-0 mt-0.5">
                     <AlertTriangle className="w-3.5 h-3.5" />
                   </div>
                   <div>
@@ -309,7 +309,7 @@ export const LandingPage = () => {
               </div>
             </div>
 
-            <div className="lg:col-span-6 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] p-6 space-y-4">
+            <div className="lg:col-span-6 bg-[#f8fafd] border border-[#e5edf5] rounded-sm p-6 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#e5edf5]">
                 <span className="text-xs font-semibold text-[#061b31]">Mangaluru Corridor Vulnerability Index</span>
                 <span className="text-[11px] text-[#64748d]">Station: Bajpe & Kadri</span>
@@ -322,7 +322,7 @@ export const LandingPage = () => {
                   { name: 'Baikampady Industrial Estate Road', depth: '14 cm', status: 'CAUTION', risk: '48%' },
                   { name: 'Kadri Hills Elevated Pass', depth: '0 cm', status: 'OPEN', risk: '12%' },
                 ].map((item) => (
-                  <div key={item.name} className="p-3 bg-white border border-[#e5edf5] rounded-[4px] flex items-center justify-between">
+                  <div key={item.name} className="p-3 bg-white border border-[#e5edf5] rounded-sm flex items-center justify-between">
                     <div>
                       <div className="text-xs font-semibold text-[#061b31]">{item.name}</div>
                       <div className="text-[11px] text-[#64748d] mt-0.5">Water Depth: {item.depth} • Flood Risk: {item.risk}</div>
@@ -352,8 +352,8 @@ export const LandingPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-white border border-[#e5edf5] rounded-[4px]">
-              <div className="w-8 h-8 rounded-[4px] bg-[#e8e9ff] text-[#533afd] flex items-center justify-center mb-4">
+            <div className="p-6 bg-white border border-[#e5edf5] rounded-sm">
+              <div className="w-8 h-8 rounded-sm bg-[#e8e9ff] text-[#533afd] flex items-center justify-center mb-4">
                 <Send className="w-4 h-4" />
               </div>
               <h3 className="text-sm font-semibold text-[#061b31]">1. Citizen Hazard Report</h3>
@@ -365,8 +365,8 @@ export const LandingPage = () => {
               </div>
             </div>
 
-            <div className="p-6 bg-white border border-[#e5edf5] rounded-[4px]">
-              <div className="w-8 h-8 rounded-[4px] bg-[#e8e9ff] text-[#533afd] flex items-center justify-center mb-4">
+            <div className="p-6 bg-white border border-[#e5edf5] rounded-sm">
+              <div className="w-8 h-8 rounded-sm bg-[#e8e9ff] text-[#533afd] flex items-center justify-center mb-4">
                 <FileCheck className="w-4 h-4" />
               </div>
               <h3 className="text-sm font-semibold text-[#061b31]">2. Patrol & Admin Triage</h3>
@@ -378,8 +378,8 @@ export const LandingPage = () => {
               </div>
             </div>
 
-            <div className="p-6 bg-white border border-[#e5edf5] rounded-[4px]">
-              <div className="w-8 h-8 rounded-[4px] bg-[#e8e9ff] text-[#533afd] flex items-center justify-center mb-4">
+            <div className="p-6 bg-white border border-[#e5edf5] rounded-sm">
+              <div className="w-8 h-8 rounded-sm bg-[#e8e9ff] text-[#533afd] flex items-center justify-center mb-4">
                 <ShieldCheck className="w-4 h-4" />
               </div>
               <h3 className="text-sm font-semibold text-[#061b31]">3. Verified Grid Broadcast</h3>
@@ -408,7 +408,7 @@ export const LandingPage = () => {
               <p className="text-sm text-[#64748d] leading-relaxed">
                 FLOODGUARD incorporates the FLOODGUARD AI Assistant to synthesize rainfall telemetry, historical drainage patterns, and corridor elevations into plain-language operational rationales.
               </p>
-              <div className="p-4 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] space-y-2">
+              <div className="p-4 bg-[#f8fafd] border border-[#e5edf5] rounded-sm space-y-2">
                 <div className="flex items-center gap-2 text-xs font-semibold text-[#061b31]">
                   <Cpu className="w-4 h-4 text-[#533afd]" />
                   <span>Explainability Sample: Kottara Chowki</span>
@@ -425,24 +425,24 @@ export const LandingPage = () => {
               </Link>
             </div>
 
-            <div className="lg:col-span-6 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] p-6 space-y-4">
+            <div className="lg:col-span-6 bg-[#f8fafd] border border-[#e5edf5] rounded-sm p-6 space-y-4">
               <h3 className="text-xs font-semibold text-[#061b31] uppercase tracking-wider">
                 Risk Modeling Features
               </h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px]">
+                <div className="p-3 bg-white border border-[#e5edf5] rounded-sm">
                   <span className="text-xl font-light text-[#061b31] block">87.4%</span>
                   <span className="text-[11px] text-[#64748d]">Model F1-Score</span>
                 </div>
-                <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px]">
+                <div className="p-3 bg-white border border-[#e5edf5] rounded-sm">
                   <span className="text-xl font-light text-[#533afd] block">&lt; 1.2s</span>
                   <span className="text-[11px] text-[#64748d]">Inference Latency</span>
                 </div>
-                <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px]">
+                <div className="p-3 bg-white border border-[#e5edf5] rounded-sm">
                   <span className="text-xl font-light text-[#059669] block">100%</span>
                   <span className="text-[11px] text-[#64748d]">PostGIS Linestring Precision</span>
                 </div>
-                <div className="p-3 bg-white border border-[#e5edf5] rounded-[4px]">
+                <div className="p-3 bg-white border border-[#e5edf5] rounded-sm">
                   <span className="text-xl font-light text-[#d97706] block">15 min</span>
                   <span className="text-[11px] text-[#64748d]">Telemetry Ingestion Window</span>
                 </div>
@@ -468,12 +468,12 @@ export const LandingPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 bg-white border border-[#e5edf5] rounded-[4px] space-y-4">
+            <div className="p-6 bg-white border border-[#e5edf5] rounded-sm space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#dc2626]">Standard GPS Route (Risky)</span>
                 <span className="text-xs text-[#64748d]">Distance: 7.2 km • Est: 18 min</span>
               </div>
-              <div className="p-3 bg-[#fef2f2] border border-[#fecaca] rounded-[4px] text-xs text-[#dc2626]">
+              <div className="p-3 bg-[#fef2f2] border border-[#fecaca] rounded-sm text-xs text-[#dc2626]">
                 Passes through Kottara Chowki underpass (65cm submerged) and Pumpwell circle. High probability of engine stall.
               </div>
               <ul className="text-xs text-[#64748d] space-y-2">
@@ -483,15 +483,15 @@ export const LandingPage = () => {
               </ul>
             </div>
 
-            <div className="p-6 bg-white border border-[#533afd]/40 rounded-[4px] space-y-4 relative">
-              <div className="absolute top-3 right-3 text-[10px] font-semibold bg-[#e8e9ff] text-[#533afd] px-2 py-0.5 rounded-[4px]">
+            <div className="p-6 bg-white border border-[#533afd]/40 rounded-sm space-y-4 relative">
+              <div className="absolute top-3 right-3 text-[10px] font-semibold bg-[#e8e9ff] text-[#533afd] px-2 py-0.5 rounded-sm">
                 RECOMMENDED
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#533afd]">FLOODGUARD Flood-Safe Route</span>
                 <span className="text-xs text-[#64748d]">Distance: 8.9 km • Est: 23 min</span>
               </div>
-              <div className="p-3 bg-[#ecfdf5] border border-[#a7f3d0] rounded-[4px] text-xs text-[#059669]">
+              <div className="p-3 bg-[#ecfdf5] border border-[#a7f3d0] rounded-sm text-xs text-[#059669]">
                 Diverts via Kadri Hills and Mallikatta elevated ridge. Zero submerged bottlenecks encountered.
               </div>
               <ul className="text-xs text-[#64748d] space-y-2">
@@ -520,18 +520,18 @@ export const LandingPage = () => {
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px]">
+                <div className="p-4 bg-[#f8fafd] border border-[#e5edf5] rounded-sm">
                   <h4 className="text-xs font-semibold text-[#061b31]">Hospital Priority Corridors</h4>
                   <p className="text-[11px] text-[#64748d] mt-1">Continuous live clearance monitoring along ambulance arterials to Wenlock District Hospital and KMC Jyothi.</p>
                 </div>
-                <div className="p-4 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px]">
+                <div className="p-4 bg-[#f8fafd] border border-[#e5edf5] rounded-sm">
                   <h4 className="text-xs font-semibold text-[#061b31]">Patrol Barricade Directives</h4>
                   <p className="text-[11px] text-[#64748d] mt-1">Instant digital dispatch order triggering physical barricade placement before vehicles enter inundated dips.</p>
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-5 bg-[#f8fafd] border border-[#e5edf5] rounded-[4px] p-6 space-y-4">
+            <div className="lg:col-span-5 bg-[#f8fafd] border border-[#e5edf5] rounded-sm p-6 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#e5edf5]">
                 <span className="text-xs font-semibold text-[#061b31]">Tactical Dispatch Readiness</span>
                 <Badge status="VERIFIED">STANDBY</Badge>
@@ -576,7 +576,7 @@ export const LandingPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-            <div className="p-6 bg-white border border-[#e5edf5] rounded-[4px]">
+            <div className="p-6 bg-white border border-[#e5edf5] rounded-sm">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#059669] block mb-2">
                 MEASURED FACT
               </span>
@@ -586,7 +586,7 @@ export const LandingPage = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white border border-[#e5edf5] rounded-[4px]">
+            <div className="p-6 bg-white border border-[#e5edf5] rounded-sm">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#533afd] block mb-2">
                 ESTIMATED PROJECTION
               </span>
@@ -596,7 +596,7 @@ export const LandingPage = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white border border-[#e5edf5] rounded-[4px]">
+            <div className="p-6 bg-white border border-[#e5edf5] rounded-sm">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#d97706] block mb-2">
                 FIELD VERIFICATION
               </span>
@@ -612,7 +612,7 @@ export const LandingPage = () => {
       {/* 10. FINAL CALL TO ACTION */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6 sm:px-8 text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] bg-[#e8e9ff] text-[#533afd] text-xs font-semibold">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#e8e9ff] text-[#533afd] text-xs font-semibold">
             <span>Mangaluru Smart Monsoon Initiative</span>
           </div>
 
