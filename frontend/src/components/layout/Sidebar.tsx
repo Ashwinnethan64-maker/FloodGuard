@@ -55,7 +55,7 @@ export const TopContentBar = ({ onOpenMobile }: { onOpenMobile: () => void }) =>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
-        <div className="flex items-center gap-1.5 text-xs text-[#50617a] bg-[#f8fafd] border border-[#e5edf5] px-2 sm:px-2.5 py-1 rounded-sm max-w-[160px] sm:max-w-[240px] truncate">
+        <div className="flex items-center gap-1.5 text-xs text-[#50617a] bg-[#f8fafd] border border-[#e5edf5] px-2 sm:px-2.5 py-1 rounded-sm max-w-40 sm:max-w-60 truncate">
           <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse shrink-0"></span>
           <span className="font-mono text-[11px] truncate">{user?.email || 'Public'}</span>
         </div>

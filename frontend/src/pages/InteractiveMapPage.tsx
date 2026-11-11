@@ -110,15 +110,15 @@ export const InteractiveMapPage = () => {
         {/* Clear Legend */}
         <div className="flex items-center gap-4 text-[11px] text-[#64748d]">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#059669]" />
+            <span className="w-2.5 h-2.5 rounded-xs bg-[#059669]" />
             <span>Passable (Dry)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#d97706]" />
+            <span className="w-2.5 h-2.5 rounded-xs bg-[#d97706]" />
             <span>Caution (Waterlogged)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-[2px] bg-[#dc2626]" />
+            <span className="w-2.5 h-2.5 rounded-xs bg-[#dc2626]" />
             <span>Submerged (Inundated)</span>
           </div>
         </div>

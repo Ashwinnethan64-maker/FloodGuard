@@ -54,6 +54,7 @@ async function fetchVerifiedUserProfile(authUser: any): Promise<UserProfile> {
       if (serverProfile.avatar_url) avatarUrl = serverProfile.avatar_url;
     }
   } catch (err) {
+    console.debug('User profile fetch fallback to JWT metadata:', err);
     // 2. Fall back to app_metadata which is cryptographically signed by Supabase JWT
     if (appMeta.role && ['administrator', 'responder', 'resident'].includes(appMeta.role)) {
       role = appMeta.role as UserRole;

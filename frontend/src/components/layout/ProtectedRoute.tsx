@@ -29,7 +29,7 @@ export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) 
   if (user.account_status === 'suspended') {
     return (
       <div className="flex-1 min-h-[60vh] flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-white border border-[#fecaca] rounded-[6px] p-6 text-center space-y-4 shadow-sm">
+        <div className="max-w-md w-full bg-white border border-[#fecaca] rounded-md p-6 text-center space-y-4 shadow-sm">
           <div className="w-12 h-12 rounded-full bg-[#fef2f2] text-[#dc2626] mx-auto flex items-center justify-center">
             <ShieldAlert className="w-6 h-6" />
           </div>

@@ -298,7 +298,7 @@ export const CitizenReportingPage = () => {
                   <MangaluruMap
                     roads={[]}
                     incidents={[]}
-                    heightClass="h-[280px]"
+                    heightClass="h-70"
                     enableManualLocationPick={true}
                     pickedLocation={{ lat: latitude, lon: longitude }}
                     onLocationPicked={(lat, lon) => {
@@ -372,7 +372,7 @@ export const CitizenReportingPage = () => {
                     type="checkbox"
                     checked={passable2W}
                     onChange={(e) => setPassable2W(e.target.checked)}
-                    className="rounded-[2px] accent-[#059669] w-4 h-4"
+                    className="rounded-xs accent-[#059669] w-4 h-4"
                   />
                 </label>
 
@@ -387,7 +387,7 @@ export const CitizenReportingPage = () => {
                     type="checkbox"
                     checked={passable4W}
                     onChange={(e) => setPassable4W(e.target.checked)}
-                    className="rounded-[2px] accent-[#059669] w-4 h-4"
+                    className="rounded-xs accent-[#059669] w-4 h-4"
                   />
                 </label>
 
@@ -402,7 +402,7 @@ export const CitizenReportingPage = () => {
                     type="checkbox"
                     checked={passableEmergency}
                     onChange={(e) => setPassableEmergency(e.target.checked)}
-                    className="rounded-[2px] accent-[#059669] w-4 h-4"
+                    className="rounded-xs accent-[#059669] w-4 h-4"
                   />
                 </label>
               </div>

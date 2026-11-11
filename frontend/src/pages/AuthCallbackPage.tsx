@@ -67,6 +67,7 @@ export const AuthCallbackPage = () => {
               status = serverProfile.account_status || 'active';
             }
           } catch (e) {
+            console.debug('Failed to fetch server profile, using app_metadata fallback:', e);
             const appMeta = authUser.app_metadata || {};
             role = appMeta.role || 'resident';
             status = appMeta.account_status || 'active';

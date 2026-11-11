@@ -157,7 +157,7 @@ export const LoginPage = () => {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded-[2px] border-[#e5edf5] text-[#533afd] focus:ring-[#533afd] w-3.5 h-3.5"
+                  className="rounded-xs border-[#e5edf5] text-[#533afd] focus:ring-[#533afd] w-3.5 h-3.5"
                 />
                 <span className="text-xs text-[#64748d]">Remember me</span>
               </label>

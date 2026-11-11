@@ -368,7 +368,7 @@ export const DashboardPage = () => {
             <span className="text-[11px] text-[#64748d]">7 Key Hotspots</span>
           }
         >
-          <div className="flex flex-col gap-2 max-h-[380px] overflow-y-auto pr-1">
+          <div className="flex flex-col gap-2 max-h-95 overflow-y-auto pr-1">
             {roads.map((road) => (
               <div
                 key={road.id}
@@ -412,7 +412,7 @@ export const DashboardPage = () => {
             </Link>
           }
         >
-          <div className="flex flex-col gap-2 max-h-[380px] overflow-y-auto pr-1">
+          <div className="flex flex-col gap-2 max-h-95 overflow-y-auto pr-1">
             {incidents.map((inc) => (
               <div
                 key={inc.id}

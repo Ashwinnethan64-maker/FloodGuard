@@ -448,7 +448,7 @@ export const MangaluruMap = ({
               key={vStatus}
               type="button"
               onClick={() => setVerificationFilter(vStatus)}
-              className={`px-2 py-0.5 rounded-[2px] font-medium transition-colors text-[11px] ${
+              className={`px-2 py-0.5 rounded-xs font-medium transition-colors text-[11px] ${
                 verificationFilter === vStatus
                   ? 'bg-[#533afd] text-white shadow-2xs'
                   : 'text-[#64748d] hover:text-[#061b31]'
@@ -511,15 +511,15 @@ export const MangaluruMap = ({
       <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 z-[1000] flex flex-wrap items-center gap-1.5 sm:gap-2 max-w-[calc(100%-16px)]">
         <div className="bg-white/95 backdrop-blur px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-sm border border-[#e5edf5] text-[10px] sm:text-[11px] shadow-xs flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-1 sm:gap-1.5">
-            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-[2px] bg-[#dc2626] shrink-0" />
+            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-xs bg-[#dc2626] shrink-0" />
             <span className="text-[#061b31] font-medium">Submerged</span>
           </div>
           <div className="flex items-center gap-1 sm:gap-1.5">
-            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-[2px] bg-[#d97706] shrink-0" />
+            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-xs bg-[#d97706] shrink-0" />
             <span className="text-[#061b31] font-medium">Caution</span>
           </div>
           <div className="flex items-center gap-1 sm:gap-1.5">
-            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-[2px] bg-[#059669] shrink-0" />
+            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-xs bg-[#059669] shrink-0" />
             <span className="text-[#061b31] font-medium">Passable</span>
           </div>
         </div>
@@ -530,7 +530,7 @@ export const MangaluruMap = ({
               type="checkbox"
               checked={showRoads}
               onChange={(e) => setShowRoads(e.target.checked)}
-              className="rounded-[2px] accent-[#533afd]"
+              className="rounded-xs accent-[#533afd]"
             />
             <span>Corridors ({roads.length})</span>
           </label>
@@ -539,7 +539,7 @@ export const MangaluruMap = ({
               type="checkbox"
               checked={showIncidents}
               onChange={(e) => setShowIncidents(e.target.checked)}
-              className="rounded-[2px] accent-[#533afd]"
+              className="rounded-xs accent-[#533afd]"
             />
             <span>Incidents ({incidents.length})</span>
           </label>

@@ -45,6 +45,7 @@ export const DemonstrationPage = () => {
       else if (stepNum === 4) await demoApiClient.triggerStep4();
       await loadData();
     } catch (err) {
+      console.error(`Simulation step ${stepNum} failed:`, err);
       alert(`Simulation step ${stepNum} failed`);
     } finally {
       setTriggeringStep(null);

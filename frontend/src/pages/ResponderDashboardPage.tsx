@@ -84,6 +84,7 @@ export const ResponderDashboardPage = () => {
       setVerifyingIncident(null);
       await loadResponderData();
     } catch (err) {
+      console.error('Verification submission failed:', err);
       alert('Verification submission failed.');
     } finally {
       setSubmittingAction(false);
@@ -197,7 +198,7 @@ export const ResponderDashboardPage = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#64748d]">Citizen Observation:</span>
-                    <span className="italic truncate max-w-[200px]">{task.description || 'No description provided'}</span>
+                    <span className="italic truncate max-w-50">{task.description || 'No description provided'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#64748d]">Reported At:</span>
@@ -321,7 +322,7 @@ export const ResponderDashboardPage = () => {
       {/* Field Verification Modal */}
       {verifyingIncident && (
         <div className="fixed inset-0 bg-[#061b31]/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-[#e5edf5] rounded-[6px] max-w-md w-full p-6 space-y-4 shadow-xl">
+          <div className="bg-white border border-[#e5edf5] rounded-md max-w-md w-full p-6 space-y-4 shadow-xl">
             <div className="flex items-center justify-between pb-3 border-b border-[#e5edf5]">
               <h3 className="text-sm font-semibold text-[#061b31]">
                 Field Verification: {verifyingIncident.location_name}

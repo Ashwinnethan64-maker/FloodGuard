@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: floodguard-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt && pip install python-multipart opencv-python-headless xgboost"
+    startCommand: "python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: CORS_ORIGINS
+        value: "https://*.vercel.app,https://floodguard.vercel.app"
+

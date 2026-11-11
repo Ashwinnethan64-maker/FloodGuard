@@ -63,7 +63,7 @@ export const BottomNav = () => {
               key={item.to}
               to={item.to}
               className={cn(
-                'flex flex-col items-center justify-center py-1.5 px-2 rounded-sm min-w-[56px] transition-colors relative touch-manipulation',
+                'flex flex-col items-center justify-center py-1.5 px-2 rounded-sm min-w-14 transition-colors relative touch-manipulation',
                 isActive
                   ? 'text-[#533afd]'
                   : 'text-[#64748d] hover:text-[#061b31] active:bg-[#f1f5f9]'

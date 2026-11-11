@@ -188,7 +188,7 @@ export const AIIntelligencePage = () => {
           <div className="grid grid-cols-2 gap-2 text-xs pt-3 border-t border-[#f1f5f9]">
             {distributionData.map(d => (
               <div key={d.name} className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-[2px]" style={{ backgroundColor: d.color }}></span>
+                <span className="w-2.5 h-2.5 rounded-xs" style={{ backgroundColor: d.color }}></span>
                 <span className="text-[#64748d] font-medium">{d.name}:</span>
                 <span className="text-[#061b31] font-semibold">{d.count}</span>
               </div>
@@ -270,7 +270,7 @@ export const AIIntelligencePage = () => {
           title={`Road Risk Matrix (${assessments.length})`}
           subtitle="Real-time multi-factor calculated weights"
         >
-          <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-1">
+          <div className="flex flex-col gap-2 max-h-125 overflow-y-auto pr-1">
             {assessments.map((a) => (
               <div
                 key={a.road_id}

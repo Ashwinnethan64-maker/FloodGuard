@@ -207,7 +207,7 @@ export const SignUpPage = () => {
                   type="checkbox"
                   checked={agreeTerms}
                   onChange={(e) => setAgreeTerms(e.target.checked)}
-                  className="mt-0.5 w-3.5 h-3.5 rounded-[2px] border-[#e5edf5] text-[#533afd] focus:ring-[#533afd]"
+                  className="mt-0.5 w-3.5 h-3.5 rounded-xs border-[#e5edf5] text-[#533afd] focus:ring-[#533afd]"
                 />
                 <span className="text-[11px] leading-snug">
                   I agree to the FLOODGUARD terms of service, civic privacy policy, and geospatial emergency advisory guidelines.

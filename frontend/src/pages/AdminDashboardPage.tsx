@@ -88,6 +88,7 @@ export const AdminDashboardPage = () => {
       setSelectedIncident(null);
       await loadData();
     } catch (err) {
+      console.error('Failed to update verification status:', err);
       alert('Failed to update verification status.');
     } finally {
       setActionLoading(null);
@@ -198,7 +199,7 @@ export const AdminDashboardPage = () => {
               <button
                 key={st}
                 onClick={() => setFilterStatus(st)}
-                className={`px-2.5 py-1 rounded-[3px] font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-xs font-medium transition-colors ${
                   filterStatus === st
                     ? 'bg-[#533afd] text-white shadow-2xs'
                     : 'text-[#64748d] hover:text-[#061b31]'

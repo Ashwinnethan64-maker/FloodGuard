@@ -109,7 +109,7 @@ export const IncidentDetailsPage = () => {
             <img
               src={incident.image_url}
               alt="Submitted flood photograph"
-              className="max-h-72 w-auto object-contain rounded-[2px]"
+              className="max-h-72 w-auto object-contain rounded-xs"
             />
           </div>
         )}

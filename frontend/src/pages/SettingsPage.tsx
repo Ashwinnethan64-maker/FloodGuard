@@ -95,7 +95,7 @@ export const SettingsPage = () => {
                   <span className="text-xs font-semibold text-[#061b31] block">Auto-Sync Weather Station Telemetry</span>
                   <span className="text-[11px] text-[#64748d]">Refreshes rainfall data every 5 minutes from Open-Meteo Weather Grid</span>
                 </div>
-                <input type="checkbox" defaultChecked className="accent-[#533afd] rounded-[2px]" />
+                <input type="checkbox" defaultChecked className="accent-[#533afd] rounded-xs" />
               </div>
 
               <div className="flex items-center justify-between p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
@@ -103,7 +103,7 @@ export const SettingsPage = () => {
                   <span className="text-xs font-semibold text-[#061b31] block">Emergency Dispatch Audio Chimes</span>
                   <span className="text-[11px] text-[#64748d]">Play tone when a corridor is marked BLOCKED by admin patrol</span>
                 </div>
-                <input type="checkbox" defaultChecked className="accent-[#533afd] rounded-[2px]" />
+                <input type="checkbox" defaultChecked className="accent-[#533afd] rounded-xs" />
               </div>
 
               <div className="flex items-center justify-between p-3 rounded-sm bg-[#f8fafd] border border-[#e5edf5]">
@@ -111,7 +111,7 @@ export const SettingsPage = () => {
                   <span className="text-xs font-semibold text-[#061b31] block">High Contrast GIS Cartography</span>
                   <span className="text-[11px] text-[#64748d]">Enhanced road line casing for night & heavy storm visibility</span>
                 </div>
-                <input type="checkbox" defaultChecked className="accent-[#533afd] rounded-[2px]" />
+                <input type="checkbox" defaultChecked className="accent-[#533afd] rounded-xs" />
               </div>
             </div>
           </Card>
