@@ -126,22 +126,22 @@ export const AdminDashboardPage = () => {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e5edf5]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-4 border-b border-[#e5edf5]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-light text-[#061b31] tracking-tight">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-light text-[#061b31] tracking-tight">
               Disaster Management Command Center
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#533afd] text-white uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#533afd] text-white uppercase tracking-wider shrink-0">
               Administrator Console
             </span>
           </div>
-          <p className="text-xs text-[#64748d] mt-1">
+          <p className="text-xs text-[#64748d] mt-1 leading-relaxed">
             Citywide Mangaluru flood operations, incident verification, responder assignments, and role-based security.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
           {weather && (
             <div className="hidden sm:flex items-center gap-2 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-sm text-xs">
               <CloudRain className="w-3.5 h-3.5 text-[#533afd]" />
@@ -157,7 +157,7 @@ export const AdminDashboardPage = () => {
       </div>
 
       {/* Citywide Metrics Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
           <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Total Reports</span>
           <div className="text-2xl font-light text-[#061b31] mt-1">{incidents.length}</div>
@@ -442,11 +442,11 @@ export const AdminDashboardPage = () => {
 
       {/* Verification & Road Closure Modal */}
       {selectedIncident && (
-        <div className="fixed inset-0 bg-[#061b31]/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-[#e5edf5] rounded-[6px] max-w-lg w-full p-6 space-y-4 shadow-xl">
+        <div className="fixed inset-0 bg-[#061b31]/50 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white border border-[#e5edf5] rounded-sm max-w-lg w-full p-4 sm:p-6 space-y-4 shadow-xl max-h-[90vh] overflow-y-auto my-auto">
             <div className="flex items-center justify-between pb-3 border-b border-[#e5edf5]">
-              <h3 className="text-sm font-semibold text-[#061b31]">
-                Review Citizen Submission: {selectedIncident.location_name}
+              <h3 className="text-sm font-semibold text-[#061b31] truncate pr-2">
+                Review: {selectedIncident.location_name}
               </h3>
               <Badge status={selectedIncident.verification_status as any}>{selectedIncident.verification_status}</Badge>
             </div>
@@ -551,9 +551,9 @@ export const AdminDashboardPage = () => {
 
       {/* Role Modification Modal */}
       {editingUser && (
-        <div className="fixed inset-0 bg-[#061b31]/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-[#e5edf5] rounded-[6px] max-w-sm w-full p-5 space-y-4 shadow-xl">
-            <h3 className="text-sm font-semibold text-[#061b31]">
+        <div className="fixed inset-0 bg-[#061b31]/50 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white border border-[#e5edf5] rounded-sm max-w-sm w-full p-4 sm:p-5 space-y-4 shadow-xl max-h-[90vh] overflow-y-auto my-auto">
+            <h3 className="text-sm font-semibold text-[#061b31] truncate">
               Assign Role: {editingUser.email}
             </h3>
 

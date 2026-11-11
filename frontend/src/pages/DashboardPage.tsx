@@ -95,44 +95,44 @@ export const DashboardPage = () => {
       {/* Page Header and Intro */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e5edf5]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-light text-[#061b31] tracking-tight">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-light text-[#061b31] tracking-tight">
               Citizen Flood & Road Navigation Dashboard
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#059669] text-white uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#059669] text-white uppercase tracking-wider shrink-0">
               Citizen / Resident
             </span>
           </div>
-          <p className="text-xs text-[#64748d] mt-1">
+          <p className="text-xs text-[#64748d] mt-1 leading-relaxed">
             Real-time open weather telemetry, flood-aware routing, verified shelters, and citizen hazard reports for Mangaluru commuters.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Link to="/citizen-reports">
-            <Button size="sm">
+        <div className="flex items-center gap-2 shrink-0">
+          <Link to="/citizen-reports" className="flex-1 sm:flex-initial">
+            <Button size="sm" className="w-full sm:w-auto">
               <ShieldAlert className="w-3.5 h-3.5" />
-              <span>Report Road Hazard</span>
+              <span>Report Hazard</span>
             </Button>
           </Link>
-          <Link to="/routes">
-            <Button variant="outline" size="sm">
+          <Link to="/routes" className="flex-1 sm:flex-initial">
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">
               <Layers className="w-3.5 h-3.5" />
-              <span>Flood Routes</span>
+              <span>Routes</span>
             </Button>
           </Link>
         </div>
       </div>
 
       {/* 4 Key Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Incidents */}
-        <Card className="p-5">
+        <Card className="p-4 sm:p-5">
           <div className="flex items-center justify-between text-xs text-[#64748d]">
             <span className="font-medium">Total Reported</span>
             <HelpCircle className="w-4 h-4 text-[#64748d]" />
           </div>
           <div className="mt-2">
-            <span className="text-3xl font-light text-[#061b31] tracking-tight">
+            <span className="text-2xl sm:text-3xl font-light text-[#061b31] tracking-tight">
               {summary?.metrics.total_incidents_reported ?? incidents.length}
             </span>
             <p className="text-[11px] text-[#64748d] mt-1">
@@ -142,13 +142,13 @@ export const DashboardPage = () => {
         </Card>
 
         {/* Verified Incidents */}
-        <Card className="p-5">
+        <Card className="p-4 sm:p-5">
           <div className="flex items-center justify-between text-xs text-[#64748d]">
             <span className="font-medium">Verified Active</span>
             <CheckCircle2 className="w-4 h-4 text-[#059669]" />
           </div>
           <div className="mt-2">
-            <span className="text-3xl font-light text-[#059669] tracking-tight">
+            <span className="text-2xl sm:text-3xl font-light text-[#059669] tracking-tight">
               {summary?.metrics.active_verified_incidents ?? 0}
             </span>
             <p className="text-[11px] text-[#64748d] mt-1">
@@ -158,13 +158,13 @@ export const DashboardPage = () => {
         </Card>
 
         {/* Caution Roads */}
-        <Card className="p-5">
+        <Card className="p-4 sm:p-5">
           <div className="flex items-center justify-between text-xs text-[#64748d]">
             <span className="font-medium">Caution Road Links</span>
             <AlertTriangle className="w-4 h-4 text-[#d97706]" />
           </div>
           <div className="mt-2">
-            <span className="text-3xl font-light text-[#d97706] tracking-tight">
+            <span className="text-2xl sm:text-3xl font-light text-[#d97706] tracking-tight">
               {summary?.metrics.roads_caution_count ?? 0}
             </span>
             <p className="text-[11px] text-[#64748d] mt-1">
@@ -174,13 +174,13 @@ export const DashboardPage = () => {
         </Card>
 
         {/* Blocked Corridors */}
-        <Card className="p-5">
+        <Card className="p-4 sm:p-5">
           <div className="flex items-center justify-between text-xs text-[#64748d]">
             <span className="font-medium">Blocked Arterials</span>
             <XCircle className="w-4 h-4 text-[#dc2626]" />
           </div>
           <div className="mt-2">
-            <span className="text-3xl font-light text-[#dc2626] tracking-tight">
+            <span className="text-2xl sm:text-3xl font-light text-[#dc2626] tracking-tight">
               {summary?.metrics.roads_blocked_count ?? 0}
             </span>
             <p className="text-[11px] text-[#64748d] mt-1">

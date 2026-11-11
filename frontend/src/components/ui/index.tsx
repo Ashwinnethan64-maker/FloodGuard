@@ -52,18 +52,18 @@ export const Card = ({ className, title, subtitle, headerAction, children, ...pr
   return (
     <div
       className={cn(
-        'bg-white border border-[#e5edf5] rounded-sm p-6 transition-all shadow-xs',
+        'bg-white border border-[#e5edf5] rounded-sm p-4 sm:p-6 transition-all shadow-xs overflow-hidden',
         className
       )}
       {...props}
     >
       {(title || headerAction) && (
-        <div className="flex items-start justify-between gap-4 mb-4 pb-3 border-b border-[#f1f5f9]">
-          <div>
-            {title && <h3 className="text-sm font-semibold text-[#061b31] tracking-tight">{title}</h3>}
-            {subtitle && <p className="text-xs text-[#64748d] mt-0.5">{subtitle}</p>}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4 mb-4 pb-3 border-b border-[#f1f5f9]">
+          <div className="min-w-0">
+            {title && <h3 className="text-sm font-semibold text-[#061b31] tracking-tight truncate">{title}</h3>}
+            {subtitle && <p className="text-xs text-[#64748d] mt-0.5 line-clamp-2">{subtitle}</p>}
           </div>
-          {headerAction && <div className="shrink-0">{headerAction}</div>}
+          {headerAction && <div className="shrink-0 flex items-center gap-2 self-start sm:self-auto">{headerAction}</div>}
         </div>
       )}
       {children}

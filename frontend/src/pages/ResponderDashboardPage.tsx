@@ -96,35 +96,35 @@ export const ResponderDashboardPage = () => {
   return (
     <div className="space-y-6">
       {/* Top Tactical Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e5edf5]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-4 border-b border-[#e5edf5]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-light text-[#061b31] tracking-tight">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-light text-[#061b31] tracking-tight">
               Field Responder Dispatch Console
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#d97706] text-white uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#d97706] text-white uppercase tracking-wider shrink-0">
               Authorized Responder Desk
             </span>
           </div>
-          <p className="text-xs text-[#64748d] mt-1">
+          <p className="text-xs text-[#64748d] mt-1 leading-relaxed">
             Assigned flood zones, real-time barricade instructions, and on-site evidence verification for field units.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] px-3 py-1.5 rounded-sm text-xs font-medium flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse" />
-            <span>Unit Status: Active Patrol</span>
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto shrink-0">
+          <div className="bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] px-2.5 sm:px-3 py-1.5 rounded-sm text-xs font-medium flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse shrink-0" />
+            <span className="text-[11px] sm:text-xs">Active Patrol</span>
           </div>
           <Button onClick={loadResponderData} variant="outline" size="sm" disabled={loading}>
             <RefreshCw className={`w-3.5 h-3.5 text-[#533afd] ${loading ? 'animate-spin' : ''}`} />
-            <span>Sync Dispatch</span>
+            <span>Sync</span>
           </Button>
         </div>
       </div>
 
       {/* Responder Top Priority Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="p-4 bg-white border border-[#e5edf5] rounded-sm">
           <span className="text-[10px] font-semibold text-[#64748d] uppercase tracking-wider block">Assigned Tasks</span>
           <div className="text-2xl font-light text-[#d97706] mt-1">{assignedTasks.length}</div>

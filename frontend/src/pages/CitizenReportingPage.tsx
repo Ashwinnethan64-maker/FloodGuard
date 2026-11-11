@@ -136,17 +136,17 @@ export const CitizenReportingPage = () => {
   return (
     <div className="max-w-4xl w-full mx-auto space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e5edf5]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-4 border-b border-[#e5edf5]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-light text-[#061b31] tracking-tight">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-light text-[#061b31] tracking-tight">
               Citizen Flood Incident Reporting
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider shrink-0">
               Verification Triage
             </span>
           </div>
-          <p className="text-xs text-[#64748d] mt-1">
+          <p className="text-xs text-[#64748d] mt-1 leading-relaxed">
             Report active road waterlogging, underpass inundation, or debris hazards across Mangaluru
           </p>
         </div>
@@ -360,43 +360,49 @@ export const CitizenReportingPage = () => {
               <label className="text-xs font-medium text-[#061b31] block mb-2">
                 Vehicle Passability Assessment
               </label>
-              <div className="grid grid-cols-3 gap-3">
-                <label className={`p-3 rounded-sm border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+                <label className={`p-3 rounded-sm border flex flex-row sm:flex-col items-center justify-between sm:justify-center gap-2 cursor-pointer transition-colors touch-manipulation ${
                   passable2W ? 'bg-[#ecfdf5] border-[#a7f3d0] text-[#059669]' : 'bg-[#f8fafd] border-[#e5edf5] text-[#94a3b8]'
                 }`}>
-                  <Bike className="w-5 h-5" />
-                  <span className="text-xs font-semibold">2-Wheelers</span>
+                  <div className="flex items-center gap-2">
+                    <Bike className="w-5 h-5 shrink-0" />
+                    <span className="text-xs font-semibold">2-Wheelers</span>
+                  </div>
                   <input
                     type="checkbox"
                     checked={passable2W}
                     onChange={(e) => setPassable2W(e.target.checked)}
-                    className="rounded-[2px] accent-[#059669]"
+                    className="rounded-[2px] accent-[#059669] w-4 h-4"
                   />
                 </label>
 
-                <label className={`p-3 rounded-sm border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+                <label className={`p-3 rounded-sm border flex flex-row sm:flex-col items-center justify-between sm:justify-center gap-2 cursor-pointer transition-colors touch-manipulation ${
                   passable4W ? 'bg-[#ecfdf5] border-[#a7f3d0] text-[#059669]' : 'bg-[#f8fafd] border-[#e5edf5] text-[#94a3b8]'
                 }`}>
-                  <Car className="w-5 h-5" />
-                  <span className="text-xs font-semibold">4-Wheelers</span>
+                  <div className="flex items-center gap-2">
+                    <Car className="w-5 h-5 shrink-0" />
+                    <span className="text-xs font-semibold">4-Wheelers</span>
+                  </div>
                   <input
                     type="checkbox"
                     checked={passable4W}
                     onChange={(e) => setPassable4W(e.target.checked)}
-                    className="rounded-[2px] accent-[#059669]"
+                    className="rounded-[2px] accent-[#059669] w-4 h-4"
                   />
                 </label>
 
-                <label className={`p-3 rounded-sm border flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+                <label className={`p-3 rounded-sm border flex flex-row sm:flex-col items-center justify-between sm:justify-center gap-2 cursor-pointer transition-colors touch-manipulation ${
                   passableEmergency ? 'bg-[#ecfdf5] border-[#a7f3d0] text-[#059669]' : 'bg-[#f8fafd] border-[#e5edf5] text-[#94a3b8]'
                 }`}>
-                  <Truck className="w-5 h-5" />
-                  <span className="text-xs font-semibold">Ambulances</span>
+                  <div className="flex items-center gap-2">
+                    <Truck className="w-5 h-5 shrink-0" />
+                    <span className="text-xs font-semibold">Emergency Vehicles</span>
+                  </div>
                   <input
                     type="checkbox"
                     checked={passableEmergency}
                     onChange={(e) => setPassableEmergency(e.target.checked)}
-                    className="rounded-[2px] accent-[#059669]"
+                    className="rounded-[2px] accent-[#059669] w-4 h-4"
                   />
                 </label>
               </div>

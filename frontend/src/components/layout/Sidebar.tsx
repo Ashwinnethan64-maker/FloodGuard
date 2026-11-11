@@ -35,26 +35,29 @@ export const TopContentBar = ({ onOpenMobile }: { onOpenMobile: () => void }) =>
   }[userRole];
 
   return (
-    <div className="h-14 bg-white border-b border-[#e5edf5] px-4 sm:px-6 flex items-center justify-between z-20">
-      <div className="flex items-center gap-3">
+    <div className="h-14 bg-white border-b border-[#e5edf5] px-3 sm:px-6 flex items-center justify-between z-20 sticky top-0">
+      <div className="flex items-center gap-2.5">
         <button
           onClick={onOpenMobile}
-          className="p-1.5 rounded-sm hover:bg-[#f8fafd] text-[#64748d] hover:text-[#061b31] border border-[#e5edf5] md:hidden"
+          aria-label="Open navigation sidebar"
+          className="p-2 rounded-sm hover:bg-[#f8fafd] text-[#64748d] hover:text-[#061b31] border border-[#e5edf5] md:hidden touch-manipulation"
         >
           <Menu className="w-4 h-4" />
         </button>
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-[#061b31]">FLOODGUARD Mangaluru</span>
-          <span className={cn("text-[9px] font-bold px-1.5 py-0.2 rounded uppercase", roleBadge.color)}>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="text-xs font-semibold text-[#061b31] truncate max-w-[150px] xs:max-w-none">
+            FLOODGUARD <span className="hidden xs:inline">Mangaluru</span>
+          </span>
+          <span className={cn("text-[9px] font-bold px-1.5 py-0.2 rounded uppercase shrink-0", roleBadge.color)}>
             {roleBadge.label}
           </span>
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#50617a] bg-[#f8fafd] border border-[#e5edf5] px-2.5 py-1 rounded-sm">
-          <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse"></span>
-          <span className="font-mono text-[11px]">{user?.email || 'Public'}</span>
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 text-xs text-[#50617a] bg-[#f8fafd] border border-[#e5edf5] px-2 sm:px-2.5 py-1 rounded-sm max-w-[160px] sm:max-w-[240px] truncate">
+          <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse shrink-0"></span>
+          <span className="font-mono text-[11px] truncate">{user?.email || 'Public'}</span>
         </div>
       </div>
     </div>
@@ -337,13 +340,13 @@ export const Sidebar = ({
       {/* Mobile Backdrop & Drawer */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-[#061b31]/40 backdrop-blur-xs z-40 md:hidden"
+          className="fixed inset-0 bg-[#061b31]/50 backdrop-blur-xs z-40 md:hidden transition-opacity"
           onClick={onCloseMobile}
         />
       )}
       <div
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transition-transform duration-200 md:hidden',
+          'fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-white shadow-2xl transition-transform duration-200 md:hidden flex flex-col',
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >

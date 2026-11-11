@@ -80,24 +80,24 @@ export const FloodAwareRoutingPage = () => {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e5edf5]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-4 border-b border-[#e5edf5]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-light text-[#061b31] tracking-tight">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-light text-[#061b31] tracking-tight">
               Flood-Aware Alternative Route Engine
             </h1>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-[#e8e9ff] text-[#533afd] border border-[#d8dbff] uppercase tracking-wider shrink-0">
               Dijkstra + Inundation Cost
             </span>
           </div>
-          <p className="text-xs text-[#64748d] mt-1">
+          <p className="text-xs text-[#64748d] mt-1 leading-relaxed">
             Dynamic transit path evaluation: excludes verified blocked corridors and heavily penalizes low-elevation waterlogged segments.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-sm text-xs text-[#061b31]">
+        <div className="flex items-center gap-2 bg-white border border-[#e5edf5] px-3 py-1.5 rounded-sm text-xs text-[#061b31] self-start sm:self-auto shrink-0">
           <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse"></span>
-          <span className="text-[#50617a]">PostGIS Geometric Exclusion Grid</span>
+          <span className="text-[#50617a]">PostGIS Geometric Exclusion</span>
         </div>
       </div>
 
@@ -110,8 +110,8 @@ export const FloodAwareRoutingPage = () => {
       </div>
 
       {/* Origin / Destination Input Bar */}
-      <Card className="p-5">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+      <Card className="p-4 sm:p-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-end">
           <div>
             <label className="text-[11px] font-medium text-[#061b31] uppercase tracking-wider block mb-1.5">
               Origin Corridor
@@ -150,7 +150,7 @@ export const FloodAwareRoutingPage = () => {
               <button
                 type="button"
                 onClick={() => setProfile('driving-car')}
-                className={`py-2 px-2.5 rounded-sm border text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
+                className={`py-2 px-2.5 rounded-sm border text-xs font-medium flex items-center justify-center gap-1.5 transition-colors touch-manipulation ${
                   profile === 'driving-car'
                     ? 'bg-[#533afd] text-white border-[#533afd]'
                     : 'bg-[#f8fafd] text-[#50617a] border-[#e5edf5] hover:bg-[#e8e9ff]'
@@ -162,7 +162,7 @@ export const FloodAwareRoutingPage = () => {
               <button
                 type="button"
                 onClick={() => setProfile('foot-walking')}
-                className={`py-2 px-2.5 rounded-sm border text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
+                className={`py-2 px-2.5 rounded-sm border text-xs font-medium flex items-center justify-center gap-1.5 transition-colors touch-manipulation ${
                   profile === 'foot-walking'
                     ? 'bg-[#533afd] text-white border-[#533afd]'
                     : 'bg-[#f8fafd] text-[#50617a] border-[#e5edf5] hover:bg-[#e8e9ff]'
@@ -178,7 +178,7 @@ export const FloodAwareRoutingPage = () => {
             onClick={handleCalculateRoute}
             disabled={loading}
             size="md"
-            className="w-full justify-center"
+            className="w-full justify-center py-2.5"
           >
             <Navigation className="w-3.5 h-3.5" />
             <span>{loading ? 'Evaluating...' : 'Calculate Safe Routes'}</span>
@@ -263,12 +263,12 @@ export const FloodAwareRoutingPage = () => {
               title={selectedRoute.label}
               subtitle={`${originName} → ${destName}`}
               headerAction={
-                <div className="flex items-center gap-4 text-xs font-semibold text-[#061b31]">
-                  <div className="text-right">
+                <div className="flex items-center gap-3 sm:gap-4 text-xs font-semibold text-[#061b31]">
+                  <div className="text-left sm:text-right">
                     <span className="text-[10px] text-[#64748d] block uppercase tracking-wider">Distance</span>
                     <span className="text-sm text-[#533afd]">{selectedRoute.distance_km} km</span>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <span className="text-[10px] text-[#64748d] block uppercase tracking-wider">Est. Transit</span>
                     <span className="text-sm">{selectedRoute.estimated_duration_minutes} mins</span>
                   </div>

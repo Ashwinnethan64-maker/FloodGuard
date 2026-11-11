@@ -53,6 +53,11 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
+
+  /* Safe Area Inset support for modern mobile devices (iPhone notch/pill) */
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+  }
 }
 
 /* Design Tokens Utilities */
